@@ -15,10 +15,10 @@ nrelate is not just another related posts plugin. Our patent-pending technology 
 
 Installing this plugin is as simple as activating it, and you can leave the rest to nrelate.  Once activated, the nrelate servers will immediately begin analyzing your website content and associating similar articles.  Of course, we provide an options page so you can fine tune the display.
 
-There are three ways to display related content;
-1)Automatically display before or after each post.
-2)Use the [nrelate-related] shortcode in your post.
-3)Place the nrelate_related() function in your theme files.
+There are three ways to display related content:<br>
+1. Automatically display before or after each post.<br>
+2. Use the [nrelate-related] shortcode in your post.<br>
+3. Place the nrelate_related() function in your theme files.<br>
 
 Because all of the processing and analyzing runs on our servers and not yours, nrelate doesn't cause any additional load on your hosting account.
 
@@ -35,9 +35,9 @@ Because all of the processing and analyzing runs on our servers and not yours, n
 Use the nrelate_related template tag anywhere in your theme to show related content.
 
 **SHORTCODE**
-You can also use the nrelate-related shortcode to manually place related content into your posts:
-1. Create or edit a Post.
-2. Wherever you want the related content to show up enter the shortcode: [nrelate-related]
+You can also use the nrelate-related shortcode to manually place related content into your posts:<br>
+1. Create or edit a Post.<br>
+2. Wherever you want the related content to show up enter the shortcode: [nrelate-related]<br>
 
 Shortcode Configuration Options
 float = left, right or center
@@ -69,6 +69,10 @@ Absolutely not.  Since the nrelate servers are doing all the hard work, your web
 Once you activate the plugin, nrelate will start analyzing your website.  Related content should show up within two hours.  
 
 == Screenshots ==
+
+1. Related thumbnails
+2. Hovering on a related thumbnail
+3. Text list
 
 
 == Changelog ==
