@@ -20,7 +20,12 @@ There are three ways to display related content:<br>
 2. Use the [nrelate-related] shortcode in your post.<br>
 3. Place the nrelate_related() function in your theme files.<br>
 
-Because all of the processing and analyzing runs on our servers and not yours, nrelate doesn't cause any additional load on your hosting account.
+And two display styles:<br>
+1. Thumbnails<br>
+2. Text<br>
+<a href="http://wordpress.org/extend/plugins/nrelate-related-content/screenshots/">Check out the screenshots.</a>
+
+Because all of the processing and analyzing runs on our servers and not yours, nrelate doesn't cause any additional load on your hosting account (especially if you're using shared hosting).
 
 <a href="http://www.nrelate.com" title="nrelate home page">You can learn more about nrelate here</a>.
 
@@ -68,7 +73,8 @@ nrelate started because we believe we can do a better job then the other service
 Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content.
 
 = Can I show cool thumbnails? =
-Absolutely!  You can show thumbnails or just text if you like.  If you choose the thumbnail option and the plugin does not find an image in your post, we will automatically choose a random image.  You can also choose a default image to show in the plugin options page by entering the url of the image.  It's best to set a 110px square image as the default, but if it's larger, nrelate will auto crop and scale it.
+Absolutely!  You can show thumbnails or just text if you like.  If you choose the thumbnail option and the plugin does not find an image in your post, we will automatically choose a random image.  You can also choose a default image to show in the plugin options page by entering the url of the image.  It's best to set a 110px square image as the default, but if it's larger, nrelate will auto crop and scale it. <br>
+<a href="http://wordpress.org/extend/plugins/nrelate-related-content/screenshots/">Check out the screenshots.</a>
 
 = Will it look like the rest of my site? =
 Many of your website styles will automatically be used by the plugin so it will blend in nicely with your website.  We do need to set some of our own styles to make it work properly.
