@@ -15,11 +15,10 @@ nrelate is not just another related posts plugin. Our patent-pending technology 
 
 Installing this plugin is as simple as activating it, and you can leave the rest to nrelate.  Once activated, the nrelate servers will immediately begin analyzing your website content and associating similar articles.  Of course, we provide an options page so you can fine tune the display.
 
-There are four ways to display related content;
+There are three ways to display related content;
 1)Automatically display before or after each post.
 2)Use the [nrelate-related] shortcode in your post.
-3)Drag the nrelate Related widget to your themes widget area.
-4)Place the nrelate_related() function in your theme files.
+3)Place the nrelate_related() function in your theme files.
 
 Because all of the processing and analyzing runs on our servers and not yours, nrelate doesn't cause any additional load on your hosting account.
 
@@ -33,26 +32,26 @@ Because all of the processing and analyzing runs on our servers and not yours, n
 3. Sit back and relax... nrelate is analyzing your content and will display related content shortly.
 
 **TEMPLATE TAG**
-Use the <?php nrelate_related();?> template tag anywhere in your theme, to show related content.
+Use the nrelate_related template tag anywhere in your theme to show related content.
 
 **SHORTCODE**
-You can also use the nrelate-related shortcode to manually place related content into your posts.
+You can also use the nrelate-related shortcode to manually place related content into your posts:
 1. Create or edit a Post.
 2. Wherever you want the related content to show up enter the shortcode: [nrelate-related]
 
 Shortcode Configuration Options
-* float = left, right or center
-* width = any valid CSS value (100%, 50px, etc)
+float = left, right or center
+width = any valid CSS value (100%, 50px, etc)
 
 Shortcode Defaults
-* float = left
-* width = 100%
+float = left
+width = 100%
 
 Shortcode Examples
-* [nrelate-related] Will use defaults
-* [nrelate-related float='right']
-* [nrelate-related width='50%']
-* [nrelate-related float='right' width='50%']
+[nrelate-related] Will use defaults
+[nrelate-related float='right']
+[nrelate-related width='50%']
+[nrelate-related float='right' width='50%']
 
 
 == Frequently Asked Questions ==
