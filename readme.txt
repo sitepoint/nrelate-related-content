@@ -31,27 +31,29 @@ Because all of the processing and analyzing runs on our servers and not yours, n
 2. Head on over to the nrelate settings page and adjust your settings.
 3. Sit back and relax... nrelate is analyzing your content and will display related content shortly.
 
-**TEMPLATE TAG**
+**TEMPLATE TAG**<br>
 Use the nrelate_related template tag anywhere in your theme to show related content.
+It's best practice to use code like this:<br>
+<em>if (function_exists('nrelate_related')) nrelate_related();</em>
 
-**SHORTCODE**
+**SHORTCODE**<br>
 You can also use the nrelate-related shortcode to manually place related content into your posts:<br>
 1. Create or edit a Post.<br>
 2. Wherever you want the related content to show up enter the shortcode: [nrelate-related]<br>
 
-Shortcode Configuration Options
-float = left, right or center
-width = any valid CSS value (100%, 50px, etc)
+Shortcode Configuration Options:<br>
+float = left, right or center<br>
+width = any valid CSS value (100%, 50px, etc)<br>
 
-Shortcode Defaults
-float = left
-width = 100%
+Shortcode Defaults:<br>
+float = left<br>
+width = 100%<br>
 
-Shortcode Examples
-[nrelate-related] Will use defaults
-[nrelate-related float='right']
-[nrelate-related width='50%']
-[nrelate-related float='right' width='50%']
+Shortcode Examples:<br>
+[nrelate-related] Will use defaults<br>
+[nrelate-related float='right']<br>
+[nrelate-related width='50%']<br>
+[nrelate-related float='right' width='50%']<br>
 
 
 == Frequently Asked Questions ==
@@ -65,8 +67,14 @@ nrelate started because we believe we can do a better job then the other service
 = Will it slow down my website? =
 Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content.
 
+= Can I show cool thumbnails? =
+Absolutely!  You can show thumbnails or just text if you like.  If you choose the thumbnail option and the plugin does not find an image in your post, we will automatically choose a random image.  You can also choose a default image to show in the plugin options page by entering the url of the image.  It's best to set a 110px square image as the default, but if it's larger, nrelate will auto crop and scale it.
+
+= Will it look like the rest of my site? =
+Many of your website styles will automatically be used by the plugin so it will blend in nicely with your website.  We do need to set some of our own styles to make it work properly.
+
 = I just activated the plugin and I don't see anything, what's up? =
-Once you activate the plugin, nrelate will start analyzing your website.  Related content should show up within two hours.  
+Once you activate the plugin, the nrelate server will start analyzing your website.  Related content should show up within two hours.  
 
 == Screenshots ==
 
