@@ -72,12 +72,12 @@ nrelate started because we believe we can do a better job then the other service
 = Will it slow down my website? =
 Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content.
 
-= Can I show cool thumbnails? =
-Absolutely!  You can show thumbnails or just text if you like.  If you choose the thumbnail option and the plugin does not find an image in your post, we will automatically choose a random image.  You can also choose a default image to show in the plugin options page by entering the url of the image.  It's best to set a 110px square image as the default, but if it's larger, nrelate will auto crop and scale it. <br>
+= What are my display choices? =
+You can show related content as cool image thumbnails, or simple text with bullets. When choosing thumbnails we will look in your post to find the first image and use that. You can also choose a default image to show when your post contains none.  In the plugin options page you can enter your default image url. It's best to set a 110px square image as the default, but if it's larger, nrelate will auto crop and scale it. If your post has no image, and you have not set a default, we will show a random one from our image library.<br>
 <a href="http://wordpress.org/extend/plugins/nrelate-related-content/screenshots/">Check out the screenshots.</a>
 
 = Will it look like the rest of my site? =
-Many of your website styles will automatically be used by the plugin so it will blend in nicely with your website.  We do need to set some of our own styles to make it work properly.
+Many of your website styles will automatically be used by the plugin so it will blend in nicely with your website.  We do need to set some of our own styles to make it work properly. However, you can makes changes to our styles by including your own CSS in your stylesheet.
 
 = I just activated the plugin and I don't see anything, what's up? =
 Once you activate the plugin, the nrelate server will start analyzing your website.  Related content should show up within two hours.  
