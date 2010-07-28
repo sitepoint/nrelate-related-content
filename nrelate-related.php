@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire LLC.</a> 
-Version: 0.2
+Version: 0.21
 Author URI: http://nrelate.com/
 
 
@@ -106,6 +106,9 @@ function nrelate_related_plugin_init() {
 }
 
 function add_defaults_nr_rc() {
+	//$current_ping_sites = get_option('ping_sites');
+	//update_option('ping_sites',$current_ping_sites."")
+	
 	$tmp = get_option('nrelate_related_options');
     if(($tmp['related_reset']=='on')||(!is_array($tmp))) {
 		$arr = array(
@@ -251,13 +254,13 @@ $nrelate_related_options = get_option( 'nrelate_related_options' );
 	$related_loc_bottom = $nrelate_related_options['related_loc_bottom'];
 	
 	if ($related_loc_top == "on"){
-	$content_top = nrelate_related();
+	$content_top = nrelate_related(true);
 	} else {
 	$content_top = '';
 	};
 	
 	if ($related_loc_bottom == "on"){
-	$content_bottom = nrelate_related();
+	$content_bottom = nrelate_related(true);
 	} else {
 	$content_bottom = '';
 	};
@@ -285,7 +288,7 @@ function nrelate_related_shortcode ($atts) {
 		"width" => '100%',
 	), $atts));
 
-    return '<div class="nr-shortcode" style="float:'.$float.';width:'.$width.';\">'.nrelate_related().'</div>';
+    return '<div class="nr-shortcode" style="float:'.$float.';width:'.$width.';\">'.nrelate_related(true).'</div>';
 }
 add_shortcode('nrelate-related', 'nrelate_related_shortcode');
 
@@ -315,7 +318,7 @@ function nrelate_related_load_widget() {
  *
  * @since 0.1
  */
-function nrelate_related() {
+function nrelate_related($opt=false) {
 
 if (is_single()) {
 
@@ -330,9 +333,13 @@ $nrelate_related_options = get_option( 'nrelate_related_options' );
 	$markup = <<<EOD
 	<script type="text/javascript" src="http://api.nrelate.com/rcw_wp/index2.php?keywords=$post_title&domain=$wp_root_nr"></script>
 EOD;
-	return $markup;
+	if ($opt){
+		return $markup;
+	}
+	else{
+		echo $markup;
+	}
 }
-
 };
 	
 

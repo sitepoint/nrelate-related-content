@@ -23,7 +23,7 @@ class nrelate_Widget_Related extends WP_Widget {
 		echo "\n\t\t\t" . $before_widget;
 		
 		//Load the main function
-		echo nrelate_related();
+		echo nrelate_related(true);
 		
 		echo "\n\t\t\t" . $after_widget;
 	}
