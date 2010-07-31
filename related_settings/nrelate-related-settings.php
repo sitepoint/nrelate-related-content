@@ -16,15 +16,15 @@ function options_init_nr_rc(){
 	add_settings_field('related_thumbnail', 'Would you like to display thumbnails with text, or text only', 'setting_thumbnail',__FILE__,'main_section');
 	add_settings_field('related_default_image', 'Please provide a link to your default image: (This will show up when a related post does not have a picture in it)<br/><i>For best results image should be 110px square.</i>', 'setting_related_default_image',__FILE__,'main_section');
 	add_settings_field('related_title', 'Please enter a title for the related content box', 'setting_string_nr_rc', __FILE__, 'main_section');
-	add_settings_field('related_number_of_posts', 'How many related posts do you want to display from this website?', 'setting_related_number_of_posts_nr_rc', __FILE__, 'main_section');
-	add_settings_field('related_bar', 'How relevant do you want the results to be?', 'setting_related_bar_nr_rc', __FILE__, 'main_section');
+	add_settings_field('related_number_of_posts', '<b>Maximum</b> number of related posts to display from this site', 'setting_related_number_of_posts_nr_rc', __FILE__, 'main_section');
+	add_settings_field('related_bar', 'How relevant do you want the results to be?<br/><i>Based on the amount/type of content on your website, higher relevancy settings may return little or no posts.</i>', 'setting_related_bar_nr_rc', __FILE__, 'main_section');
 	add_settings_field('related_max_chars_per_line', 'Maximum number of characters per line?<br/><i>Used for TEXT display, not Thumbnails</i>', 'setting_related_max_chars_per_line', __FILE__, 'main_section');
 	add_settings_field('related_max_age', 'How deep into your archive would you like to go for related posts?', 'setting_related_max_age', __FILE__, 'main_section');
 	
 	//Partner Section
 	add_settings_section('partner_section','Partner Settings','section_text_nr_rc_partner',__FILE__);
 	add_settings_field('related_blogoption', 'Would you like to display related content from sites on your blogroll?', 'setting_blogroll',__FILE__,'partner_section');
-	add_settings_field('related_number_of_posts_ext', 'How many related posts do you want to display from sites on your blogroll?', 'setting_related_number_of_posts_nr_rc_ext', __FILE__, 'partner_section');
+	add_settings_field('related_number_of_posts_ext', '<b>Maximum</b> number of related posts to display from this site\'s blogroll', 'setting_related_number_of_posts_nr_rc_ext', __FILE__, 'partner_section');
 	
 	// Layout Section
 	add_settings_section('layout_section', 'Layout Settings', 'section_text_nr_rc_layout', __FILE__);
@@ -77,10 +77,11 @@ function setting_related_number_of_posts_nr_rc() {
 function  setting_related_bar_nr_rc() {
 	$options = get_option('nrelate_related_options');
 	$items = array("Low", "Medium", "High");
+	$itemval = array("Low" => "Low: least relevant", "Medium" => "Med: more relevant", "High" => "High: most relevant");
 	echo "<select id='related_bar' name='nrelate_related_options[related_bar]'>";
 	foreach($items as $item) {
 		$selected = ($options['related_bar']==$item) ? 'selected="selected"' : '';
-		echo "<option value='$item' $selected>$item</option>";
+		echo "<option value='$item' $selected>$itemval[$item]</option>";
 	}
 	echo "</select>";
 }
@@ -384,6 +385,13 @@ function update_nrelate_data(){
 	$backfill = $option['related_default_image'];
 	$number_ext = $option ['related_number_of_posts_ext'];
 	
+	$excerptset = get_option('rss_use_excerpt');
+	$rss_mode = "FULL"; 					
+	if ($excerptset != '0') { // are RSS feeds set to excerpt
+		update_option('nrelate_admin_msg', 'yes');
+		$rss_mode = "SUMMARY";
+	}
+	
 	// Convert max age time frame to minutes
 	switch ($r_max_frame){
 	case 'Hour(s)':
@@ -443,7 +451,7 @@ function update_nrelate_data(){
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$rssurl = get_bloginfo('rss2_url');
 	$bloglist = blogroll();
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&NUMEXT='.$number_ext.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&IMAGEURL='.$backfill.'&RSSURL='.$rssurl;
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&NUMEXT='.$number_ext.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&IMAGEURL='.$backfill.'&RSSURL='.$rssurl.'&RSSMODE='.$rss_mode;
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/processWPadmin.php'); 
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 

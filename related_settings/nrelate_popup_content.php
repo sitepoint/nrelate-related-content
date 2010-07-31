@@ -11,10 +11,12 @@
 	$maxage = $_GET['MAXAGE'];
 	$adcode = $_GET['ADCODE'];
 	$wp_root_nr = $_GET['DOMAIN'];
+	$opt_ext = $_GET['EXTOPT'];
 	$related_title=stripslashes($related_title);
 	//$related_title=urlencode($related_title);
+	
 	$markup = <<<EOD
-	<script type="text/javascript" src="http://api.nrelate.com/rcw_wp/index2.php?widgetstyle=$thumb&domain=$wp_root_nr&keywords=Test&adopt=$ad&logo=$logo&header=$related_title&norelatedposts=$no_related_posts&maxcharperline=$maxcharperline&minrelevance=0&noblogrollposts=$no_related_posts_ext&backfillImageURL=$imageurl&maxageposts=$maxage&adcode=$adcode"></script>
+	<script type="text/javascript" src="http://api.nrelate.com/rcw_wp/preview.php?preview=1&widgetstyle=$thumb&domain=$wp_root_nr&adopt=$ad&logo=$logo&header=$related_title&norelatedposts=$no_related_posts&maxcharperline=$maxcharperline&minrelevance=0&noblogrollposts=$no_related_posts_ext&backfillImageURL=$imageurl&maxageposts=$maxage&adcode=$adcode&blogrollopt=$opt_ext"></script>
 EOD;
 	echo $markup;
 ?>

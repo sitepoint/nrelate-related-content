@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire LLC.</a> 
-Version: 0.21
+Version: 0.22
 Author URI: http://nrelate.com/
 
 
@@ -106,8 +106,6 @@ function nrelate_related_plugin_init() {
 }
 
 function add_defaults_nr_rc() {
-	//$current_ping_sites = get_option('ping_sites');
-	//update_option('ping_sites',$current_ping_sites."")
 	
 	$tmp = get_option('nrelate_related_options');
     if(($tmp['related_reset']=='on')||(!is_array($tmp))) {
@@ -145,6 +143,12 @@ function add_defaults_nr_rc() {
 		$backfillimage = NULL;
 		$number_ext = 3;
 		
+    	$excerptset = get_option('rss_use_excerpt');
+		$rss_mode = "FULL"; 					
+		if ($excerptset != '0') { // are RSS feeds set to excerpt
+			update_option('nrelate_admin_msg', 'yes');
+			$rss_mode = "SUMMARY";
+		}
 		
 		// Convert max age time frame to minutes
 		switch ($r_max_frame)
@@ -208,8 +212,9 @@ function add_defaults_nr_rc() {
 		//get the wordpress root directory
 		$wp_root_nr=get_bloginfo( 'url' );
 		$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
+		$rssurl = get_bloginfo('rss2_url');
 		$bloglist = blogroll_1();
-		$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&NUMEXT='.$number_ext.'&IMAGEURL='.$backfillimage;
+		$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&NUMEXT='.$number_ext.'&IMAGEURL='.$backfillimage.'&RSSURL='.$rssurl.'&RSSMODE='.$rss_mode;
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/processWPadmin.php'); 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
@@ -235,10 +240,78 @@ function add_defaults_nr_rc() {
 		//echo $data;
 		
 	}
+	
+	$excerptset = get_option('rss_use_excerpt');
+	$rss_mode = "FULL"; 					
+	if ($excerptset != '0') { // are RSS feeds set to excerpt
+		update_option('nrelate_admin_msg', 'yes');
+		$rss_mode = "SUMMARY";
+	}
+	
+	//add our ping link to the ping list
+	$current_ping_sites = get_option('ping_sites');
+	$pinglist = <<<EOD
+$current_ping_sites
+http://api.nrelate.com/rpcpinghost/
+EOD;
+	update_option('ping_sites',$pinglist);
+	
+	//enable xmlrpc in database
+	update_option('enable_xmlrpc',1);
+	
+	//send notification to nrelate server of activation and send us rss feed mode information
+	$wp_root_nr = get_bloginfo( 'url' );
+	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
+	$action = "ACTIVATE";
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode;
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/wordpressnotify_activation.php'); 
+	curl_setopt($ch, CURLOPT_POST, 1); 
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost); 
+	curl_exec($ch);
+	curl_close($ch);
+	
 }
 register_activation_hook(__FILE__, 'add_defaults_nr_rc');
 
+function nrelate_deactivate(){
+	//remove our ping link from ping_sites
+	$current_ping_sites = get_option('ping_sites');
+	$new_ping_sites = str_replace("\nhttp://api.nrelate.com/rpcpinghost/", "", $current_ping_sites);
+	update_option('ping_sites',$new_ping_sites);
+	
+	//send notification to nrelate server of deactivation
+	$wp_root_nr = get_bloginfo( 'url' );
+	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
+	$action = "DEACTIVATE";
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action;
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/wordpressnotify_activation.php'); 
+	curl_setopt($ch, CURLOPT_POST, 1); 
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost); 
+	curl_exec($ch);
+	curl_close($ch);
+}
 
+function nrelate_uninstall(){
+	
+	delete_option('nrelate_related_options');
+	
+	//send notification to nrelate server of uninstallation
+	$wp_root_nr = get_bloginfo( 'url' );
+	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
+	$action = "UNINSTALL";
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action;
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/wordpressnotify_activation.php'); 
+	curl_setopt($ch, CURLOPT_POST, 1); 
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost); 
+	curl_exec($ch);
+	curl_close($ch);
+}
+
+register_deactivation_hook(__FILE__, 'nrelate_deactivate');
+register_uninstall_hook(__FILE__, 'nrelate_uninstall');
 /**
  * Inject related posts into the content
  *

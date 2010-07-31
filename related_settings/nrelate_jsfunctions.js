@@ -11,7 +11,7 @@ function nrelate_showhide(nr_div_id, nr_option){
 
 function nrelate_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr){
 	if (!window.focus)return true;
-	var nr_adcode, nr_maxageposts, nr_age_num,age_frame, nr_href, nr_imageurl, nr_title, nr_number_ext, nr_numberrelated, nr_r_title, nr_r_max_char_perline, nr_ad, nr_logo, nr_thumb, nr_adval, nr_logoval, nr_thumbval;
+	var nr_adcode, nr_ext_opt, nr_maxageposts, nr_age_num,age_frame, nr_href, nr_imageurl, nr_title, nr_number_ext, nr_numberrelated, nr_r_title, nr_r_max_char_perline, nr_ad, nr_logo, nr_thumb, nr_adval, nr_logoval, nr_thumbval;
 	nr_title = "Nrelate_Preview";
 	nr_href = NRELATE_RELATED_SETTINGS_URL+"/nrelate_popup_content.php";
 	nr_numberrelated = document.getElementById("related_number_of_posts").value;
@@ -25,7 +25,8 @@ function nrelate_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr){
 	nr_age_num = document.getElementById("related_max_age_num").value;
 	nr_age_frame = document.getElementById("related_max_age_frame").value;
 	nr_adcode = document.getElementById("related_validate_ad").value;
-	
+	nr_ext_opt = document.getElementById("related_blogoption").value;
+	nr_r_title = escape(nr_r_title);
 	// Convert max age time frame to minutes
 
 	switch (nr_age_frame){
@@ -72,7 +73,17 @@ function nrelate_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr){
 	default:
 		nr_thumb = 0;
 	}
-	nr_tag = "?NUM="+nr_numberrelated+"&DOMAIN="+wp_root_nr+"&ADCODE="+nr_adcode+"&IMAGEURL="+escape(nr_imageurl)+"&NUMEXT="+nr_num_ext+"&TITLE="+escape(nr_r_title)+"&MAXCHAR="+nr_r_max_char_perline+"&AD="+nr_ad+"&LOGO="+nr_logo+"&THUMB="+nr_thumb+"&MAXAGE="+nr_maxageposts;
+	
+	// Convert external option parameter
+	switch (nr_ext_opt){
+	case 'On':
+		nr_ext_opt = 1;
+		break;
+	default:
+		nr_ext_opt = 0;
+	}
+	
+	nr_tag = "?NUM="+nr_numberrelated+"&DOMAIN="+wp_root_nr+"&ADCODE="+nr_adcode+"&IMAGEURL="+escape(nr_imageurl)+"&NUMEXT="+nr_num_ext+"&TITLE="+escape(nr_r_title)+"&MAXCHAR="+nr_r_max_char_perline+"&AD="+nr_ad+"&LOGO="+nr_logo+"&THUMB="+nr_thumb+"&MAXAGE="+nr_maxageposts+"&EXTOPT="+nr_ext_opt;
 	nr_link = nr_href+nr_tag;
 	window.open(nr_link,nr_title,'width=600,height=400,scrollbars=yes');
 	return false;

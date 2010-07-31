@@ -79,7 +79,20 @@ function nrelate_main_section() { ?>
 				
 				<!-- Hook for admin messages from all nrelate plugins -->
 				<?php do_action('nrelate_admin_messages');?>
-
+				<li><div id="extra_message"><?php 
+					$wp_root_nr = get_bloginfo( 'url' );
+					$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
+					$curlPost = 'DOMAIN='.$wp_root_nr;
+					$ch = curl_init();
+					curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/wordpressnotify_adminmessage.php'); 
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($ch, CURLOPT_POST, 1);
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
+					$data = curl_exec($ch);
+					$info = curl_getinfo($ch);
+					curl_close($ch);
+					echo $data;
+				?></div></li>
 				</ul>
 				</div>
 				

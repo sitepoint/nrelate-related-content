@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related, feeds, feed, rss, page, pages, Post, posts, nrelate
 Tested up to: 3.0
 Requires at least: 2.9
-Stable tag: 0.21
+Stable tag: 0.22
 
 
 The easiest way to display related content from your site
@@ -90,6 +90,14 @@ Once you activate the plugin, the nrelate server will start analyzing your websi
 
 
 == Changelog ==
+
+= 0.22 =
+* Ping service enabled to notify nrelate of new content
+* Menu settings explained better
+* Improved communication with nrelate server
+* nrelate server can now push message to nrelate plugin dashboard
+* Preview now uses current websites recent posts
+* "nrelate needs help" message has been removed
 
 = 0.21 =
 * nrelate_related() theme function works without echo

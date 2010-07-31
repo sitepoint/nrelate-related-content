@@ -15,17 +15,17 @@
  * If issues are found, change nrelate_admin_msg to "yes"
  */
 function nr_rc_system_check(){
- $excerptset = get_option('rss_use_excerpt'); 
-						
+ $excerptset = get_option('rss_use_excerpt'); 					
 	if ($excerptset != '0') { // are RSS feeds set to excerpt
 		update_option('nrelate_admin_msg', 'yes');
 	}
+
 };
 add_action ('init','nr_rc_system_check');
 
  
  
- 
+
 /**
  * Set messages for dashboard
  *
