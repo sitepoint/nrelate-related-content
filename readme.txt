@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related, feeds, feed, rss, page, pages, Post, posts, nrelate
 Tested up to: 3.0
 Requires at least: 2.9
-Stable tag: 0.22
+Stable tag: 0.2.2
 
 
 The easiest way to display related content from your site
