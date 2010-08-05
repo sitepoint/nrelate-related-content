@@ -1,4 +1,7 @@
 <?php
+
+// Takes domain (user's home url) from POST and sends information to nrelate server
+// Echos back $data which contains message from the server about current status of site indexing
 	$domain = $_POST['domain'];
 	$curlPost = 'domain='.$domain;
 	$ch = curl_init();

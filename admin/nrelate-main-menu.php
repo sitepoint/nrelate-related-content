@@ -80,6 +80,8 @@ function nrelate_main_section() { ?>
 				<!-- Hook for admin messages from all nrelate plugins -->
 				<?php do_action('nrelate_admin_messages');?>
 				<li><div id="extra_message"><?php 
+					// Call to nrelate server (sends home url)
+					// Nrelate server returns any message to be displayed in the nrelate dashboard
 					$wp_root_nr = get_bloginfo( 'url' );
 					$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 					$curlPost = 'DOMAIN='.$wp_root_nr;

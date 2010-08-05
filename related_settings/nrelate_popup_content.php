@@ -1,5 +1,5 @@
 <?php
-
+	// Takes values from GET (sent by the JS) and calls the preview from nrelate server
 	$no_related_posts = $_GET['NUM'];
 	$no_related_posts_ext	= $_GET['NUMEXT'];
 	$related_title = $_GET['TITLE'];

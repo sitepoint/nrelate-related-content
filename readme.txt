@@ -1,9 +1,10 @@
 === nrelate Related Content ===
 Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related, feeds, feed, rss, page, pages, Post, posts, nrelate
-Tested up to: 3.0
+Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.2.3
+Stable tag: 0.3
+
 
 The easiest way to display related content from your site
 
@@ -89,6 +90,9 @@ Once you activate the plugin, the nrelate server will start analyzing your websi
 
 
 == Changelog ==
+
+= 0.3 =
+* Send plugin version to nrelate server for debugging purposes
 
 = 0.2.2 =
 * Ping service enabled to notify nrelate of new content

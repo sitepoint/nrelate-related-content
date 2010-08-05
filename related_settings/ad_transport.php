@@ -16,6 +16,8 @@ function logData1($data) {
         }
     }
 }
+// Takes domain (user's home url) and adcode from POST and sends information to nrelate server
+// Echos back $data which contains message from the server about ad validation
 	logData1('INIT');
 	$domain = $_POST['domain'];
 	$adcode = $_POST['adcode'];

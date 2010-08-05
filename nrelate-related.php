@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire LLC.</a> 
-Version: 0.2.3
+Version: 0.3
 Author URI: http://nrelate.com/
 
 
@@ -88,6 +88,8 @@ function nrelate_related_plugin_init() {
  *
  * @since 0.1
  */
+// Takes user's bookmarks with category name 'blogroll'
+// Returns a string with all of the blogroll link urls separated by the less than character (<).
  function blogroll_1(){
 	$bm = get_bookmarks( array(
 		'category_name'  => 'Blogroll', 
@@ -105,9 +107,15 @@ function nrelate_related_plugin_init() {
 	return $tmp;
 }
 
+// Add default values to nrelate_related_options in wordpress db
+// After conversion, send default values to nrelate server with user's home url and rss url
+// UPDATE (v.0.2.2): add nrelate ping host to ping list and enable xml-rpc ping
+// UPDATE (v.0.2.2): notify nrelate server when this plugin is activated
+// UPDATE (v.0.3): send the plugin version info to nrelate server
 function add_defaults_nr_rc() {
 	
 	$tmp = get_option('nrelate_related_options');
+	// If related_reset value is on or if nrelate_related_options was never created, insert default values
     if(($tmp['related_reset']=='on')||(!is_array($tmp))) {
 		$arr = array(
 		"related_number_of_posts"=> 3,
@@ -128,6 +136,7 @@ function add_defaults_nr_rc() {
 		);
 		update_option('nrelate_related_options', $arr);
 		
+		// Convert some values to send to nrelate server
 		$number = 3;
 		$r_bar = "Low";
 		$r_title = "You may also like -";
@@ -143,6 +152,7 @@ function add_defaults_nr_rc() {
 		$backfillimage = NULL;
 		$number_ext = 3;
 		
+		// Get rss mode information
     	$excerptset = get_option('rss_use_excerpt');
 		$rss_mode = "FULL"; 					
 		if ($excerptset != '0') { // are RSS feeds set to excerpt
@@ -190,7 +200,7 @@ function add_defaults_nr_rc() {
 		 $logo = 0;
 		}
 		
-		//Convert blogroll option parameter
+		// Convert blogroll option parameter
 		switch ($related_blogoption)
 		{
 		case 'Off':
@@ -200,6 +210,7 @@ function add_defaults_nr_rc() {
 		 $blogroll = 1;
 		}
 		
+		// Convert thumbnail option parameter
 		switch ($related_thumbnail)
 		{
 		case 'Thumbnails':
@@ -209,12 +220,14 @@ function add_defaults_nr_rc() {
 			$thumb = 0;
 		}
 		
-		//get the wordpress root directory
+		// Get the wordpress root url and the rss url
 		$wp_root_nr=get_bloginfo( 'url' );
 		$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 		$rssurl = get_bloginfo('rss2_url');
 		$bloglist = blogroll_1();
+		// Write the parameters to be sent
 		$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&NUMEXT='.$number_ext.'&IMAGEURL='.$backfillimage.'&RSSURL='.$rssurl.'&RSSMODE='.$rss_mode;
+		// Curl connection to the nrelate server
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/processWPadmin.php'); 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
@@ -241,6 +254,8 @@ function add_defaults_nr_rc() {
 		
 	}
 	
+	// RSS mode is sent again just incase if the user already had nrelate_related_options in their wordpress db
+	// and doesn't get sent above
 	$excerptset = get_option('rss_use_excerpt');
 	$rss_mode = "FULL"; 					
 	if ($excerptset != '0') { // are RSS feeds set to excerpt
@@ -248,7 +263,9 @@ function add_defaults_nr_rc() {
 		$rss_mode = "SUMMARY";
 	}
 	
-	//add our ping link to the ping list
+	$nrelate_version = "v.0.3";
+	
+	// Add our ping host to the ping list
 	$current_ping_sites = get_option('ping_sites');
 	$pinglist = <<<EOD
 $current_ping_sites
@@ -256,14 +273,14 @@ http://api.nrelate.com/rpcpinghost/
 EOD;
 	update_option('ping_sites',$pinglist);
 	
-	//enable xmlrpc in database
+	// Enable xmlrpc for the user
 	update_option('enable_xmlrpc',1);
 	
-	//send notification to nrelate server of activation and send us rss feed mode information
+	// Send notification to nrelate server of activation and send us rss feed mode information
 	$wp_root_nr = get_bloginfo( 'url' );
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$action = "ACTIVATE";
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode;
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.$nrelate_version;
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/wordpressnotify_activation.php'); 
 	curl_setopt($ch, CURLOPT_POST, 1); 
@@ -274,13 +291,14 @@ EOD;
 }
 register_activation_hook(__FILE__, 'add_defaults_nr_rc');
 
+// Deactivation hook callback
 function nrelate_deactivate(){
-	//remove our ping link from ping_sites
+	// Remove our ping link from ping_sites
 	$current_ping_sites = get_option('ping_sites');
 	$new_ping_sites = str_replace("\nhttp://api.nrelate.com/rpcpinghost/", "", $current_ping_sites);
 	update_option('ping_sites',$new_ping_sites);
 	
-	//send notification to nrelate server of deactivation
+	// Send notification to nrelate server of deactivation
 	$wp_root_nr = get_bloginfo( 'url' );
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$action = "DEACTIVATE";
@@ -293,11 +311,12 @@ function nrelate_deactivate(){
 	curl_close($ch);
 }
 
+//Uninstallation hook callback
 function nrelate_uninstall(){
-	
+	// Delete nrelate options from user's wordpress db
 	delete_option('nrelate_related_options');
 	
-	//send notification to nrelate server of uninstallation
+	// Send notification to nrelate server of uninstallation
 	$wp_root_nr = get_bloginfo( 'url' );
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$action = "UNINSTALL";

@@ -23,6 +23,7 @@ if ( !function_exists('nrelate_msg') ) {
 			}
 			
 	};
+	// Commented out in v.0.2.2 to get rid of "nrelate needs help" message
 	//add_action('init', 'nrelate_dashboard_msg');
 	
 	/**

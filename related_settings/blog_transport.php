@@ -16,6 +16,8 @@ function logData1($data) {
          }
      }
 }
+// Takes domain (user's home url) from POST and sends information to nrelate server
+// Echos back $data which contains message from the server about the status of the sites from blogroll
 	logData1('INIT');
 	$domain = $_POST['domain'];
 	logData1($domain);

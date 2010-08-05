@@ -1,3 +1,4 @@
+// Used to show or hide a div depending on nr_option
 function nrelate_showhide(nr_div_id, nr_option){
 	if(nr_option==0){
 	//document.getElementById(div_id).style.display = "block"; 
@@ -9,6 +10,8 @@ function nrelate_showhide(nr_div_id, nr_option){
 	}
 }
 
+// Takes values from input fields, makes appropriate conversions
+// Opens a pop up window with preview url with these parameters
 function nrelate_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr){
 	if (!window.focus)return true;
 	var nr_adcode, nr_ext_opt, nr_maxageposts, nr_age_num,age_frame, nr_href, nr_imageurl, nr_title, nr_number_ext, nr_numberrelated, nr_r_title, nr_r_max_char_perline, nr_ad, nr_logo, nr_thumb, nr_adval, nr_logoval, nr_thumbval;
@@ -89,6 +92,7 @@ function nrelate_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr){
 	return false;
 }
 
+// Ajax call to blog_transport.php to check the site status from blogroll
 function checkblog(NRELATE_RELATED_SETTINGS_URL,nr_domain){
 	if (nr_domain==""){
 		document.getElementById("bloglinks").innerHTML="";
@@ -116,6 +120,7 @@ function checkblog(NRELATE_RELATED_SETTINGS_URL,nr_domain){
 	}
 }
 
+//Ajax call to ad_transport.php to check ad validation
 function checkad(NRELATE_RELATED_SETTINGS_URL,nr_domain){
 	var nr_adcode = document.getElementById("related_validate_ad").value;
 	if (nr_domain==""){
@@ -142,6 +147,7 @@ function checkad(NRELATE_RELATED_SETTINGS_URL,nr_domain){
 	}
 }
 
+//Ajax call to ad_transport.php to check the site's indexing status
 function checkindex(NRELATE_RELATED_SETTINGS_URL,nr_domain){
 	if (nr_domain==""){
 		document.getElementById("indexcheck").innerHTML="";
