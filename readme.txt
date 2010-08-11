@@ -83,9 +83,9 @@ Many of your website styles will automatically be used by the plugin so it will 
 Once you activate the plugin, the nrelate server will start analyzing your website.  Related content should show up within two hours.  
 
 = Does nrelate work with caching plugins like WP-Super-Cache and W3-Total-Cache? =
-Caching plugins create static html files from each of your pages... like a moment-in-time snapshot. If a static page was already created before you installed the nrelate plugin then that page will not contain the neccessary nrelate code.  There are two ways to fix this:<br/>
-1. Delete your cache: Both WP-Super-Cache and W3-Total-Cache have a button that allows you to delete your cache. Once deleted our code will show up, while your caching plugins rebuild their static files.<br/>
-2. Wait until your cache expires: Both plugins expire your static pages after a designated time. Once that page expires, our code will show up.<br/>
+Caching plugins create static html files from each of your pages... like a moment-in-time snapshot. If a static page was already created before you installed the nrelate plugin then that page will not contain the neccessary nrelate code.  There are two ways to fix this:<br>
+1. Delete your cache: Both WP-Super-Cache and W3-Total-Cache have a button that allows you to delete your cache. Once deleted our code will show up, while your caching plugins rebuild their static files.<br>
+2. Wait until your cache expires: Both plugins expire your static pages after a designated time. Once that page expires, our code will show up.<br>
 
 = Does nrelate work with Feedburner? =
 If you use Feedburner, we cannot easily access your archives, therefore the pool of related content from which to draw links from, will be very small, and the related content may not show up on your blog. We are working to fix this and expect to have a solution in the next few weeks. In the meantime, if you use Feedburner please <a href="http://nrelate.com/forum/">contact us</a> and we will work with you to figure out an alternative way to get your archive.
