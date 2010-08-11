@@ -34,7 +34,7 @@ Because all of the processing and analyzing runs on our servers and not yours, n
 
 1. Activate the nrelate Related posts plugin
 2. Head on over to the nrelate settings page and adjust your settings.
-3. Sit back and relax... nrelate is analyzing your content and will display related content shortly.
+3. Sit back and relax... nrelate is analyzing your content and will display related content within two hours.
 
 **TEMPLATE TAG**<br>
 Use the nrelate_related template tag anywhere in your theme to show related content.
@@ -70,7 +70,7 @@ The nrelate Related Content plugin analyzes your website content, and returns a 
 nrelate started because we believe we can do a better job then the other services out there.  Our patent-pending technology is continously being improved, and the results are better then the competetion.  We're sure you'll be happy with the results... but if you're not, removing nrelate from your website is as easy as deactivating the plugin.
 
 = Will it slow down my website? =
-Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content.
+Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content. In fact, if you are running a local related content plugin like YARPP, you may actually see a speed improvement on your site.
 
 = What are my display choices? =
 You can show related content as cool image thumbnails, or simple text with bullets. When choosing thumbnails we will look in your post to find the first image and use that. You can also choose a default image to show when your post contains none.  In the plugin options page you can enter your default image url. It's best to set a 110px square image as the default, but if it's larger, nrelate will auto crop and scale it. If your post has no image, and you have not set a default, we will show a random one from our image library.<br>
@@ -81,6 +81,17 @@ Many of your website styles will automatically be used by the plugin so it will 
 
 = I just activated the plugin and I don't see anything, what's up? =
 Once you activate the plugin, the nrelate server will start analyzing your website.  Related content should show up within two hours.  
+
+= Does nrelate work with caching plugins like WP-Super-Cache and W3-Total-Cache? =
+Caching plugins create static html files from each of your pages... like a moment-in-time snapshot. If a static page was already created before you installed the nrelate plugin then that page will not contain the neccessary nrelate code.  There are two ways to fix this:<br/>
+1. Delete your cache: Both WP-Super-Cache and W3-Total-Cache have a button that allows you to delete your cache. Once deleted our code will show up, while your caching plugins rebuild their static files.<br/>
+2. Wait until your cache expires: Both plugins expire your static pages after a designated time. Once that page expires, our code will show up.<br/>
+
+= Does nrelate work with Feedburner? =
+If you use Feedburner, we cannot easily access your archives, therefore the pool of related content from which to draw links from, will be very small, and the related content may not show up on your blog. We are working to fix this and expect to have a solution in the next few weeks. In the meantime, if you use Feedburner please <a href="http://nrelate.com/forum/">contact us</a> and we will work with you to figure out an alternative way to get your archive.
+
+= My website is not in English, will nrelate work? =
+Our plugin will work on websistes in the following languages: Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Spanish, Swedish and Turkish.  If you do not see your language on the list or you think that we could improve the relevancy of our plugin in your language, please <a href="http://nrelate.com/forum/">contact us</a> and we will work with you to configure the plugin accordingly.
 
 == Screenshots ==
 
