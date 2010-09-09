@@ -67,7 +67,7 @@ Shortcode Examples:<br>
 The nrelate Related Content plugin analyzes your website content, and returns a list of posts that are related to the current story being viewed by your visitor.
 
 = What makes nrelate different from all the other related content services? =
-nrelate started because we believe we can do a better job than the other services out there.  Our patent-pending technology is continously being improved, and the results are better then the competetion.  We're sure you'll be happy with the results... but if you're not, removing nrelate from your website is as easy as deactivating the plugin.
+nrelate started because we believe we can do a better job than the other services out there.  Our patent-pending technology is continously being improved, and the results are better than the competetion.  We're sure you'll be happy with the results... but if you're not, removing nrelate from your website is as easy as deactivating the plugin.
 
 = Does this plugin slow down my website? =
 Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content. In fact, if you swtich to nrelate from a local related content plugin like YARPP, you may actually see a speed improvement on your site.
@@ -91,10 +91,10 @@ Caching plugins create static html files from each of your pages... like a momen
 Absolutely! If you have images in your post, nrelate will find them and auto-create thumbnails.
 
 = How does the nrelate plugin get my website content? =
-Our plugin creates a unique RSS feed with a secret key that only the nrelate server can access. We need to use this secret feed to archive all your content in case you set your public feed to "Summary" or if you use a service like Feedburner.
+Our plugin creates an additional nrelate specific RSS feed.  We use this feed so that we don't run into issues if your regular RSS feed is set to "Summary" or if you use a service like Feedburner.
 
-= Are you sure this secret RSS feed is not accessible by the public? =
-The RSS feed we create can only be accessed by using a secret key so it is not open to the public in any way. In fact, we were so concerned with making sure this RSS feed would not compromise your public feed, that we hired WordPress lead developer and security expert, Mark Jaquith, to build it for us. 
+= What is in the nrelate specific RSS feed and how is it used? =
+The nrelate specific RSS feed is exactly the same content that is in your RSS feed if you set it to full feed.  Since we had some users that had their feed to just show a summary and others that used Feedburner, we set this up.  The nrelate specific feed can only be accessed by using a random key that is generated upon install.  To make sure this feed is not used for other purposes, we hired WordPress lead developer and security expert, Mark Jaquith, to build it for us.
 
 = My website is not in English, will nrelate work? =
 Our plugin will work on websistes in the following languages: Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Spanish, Swedish and Turkish.  If you do not see your language on the list or you think that we could improve the relevancy of our plugin in your language, please <a href="http://nrelate.com/forum/">contact us</a> and we will work with you to configure the plugin accordingly.
