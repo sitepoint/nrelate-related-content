@@ -1,9 +1,9 @@
 === nrelate Related Content ===
 Contributors: nrelate, slipfire, sbruner
-Tags: related posts, related, feeds, feed, rss, page, pages, Post, posts, nrelate
+Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.3
+Stable tag: 0.40.0
 
 
 The easiest way to display related content from your site
@@ -67,10 +67,10 @@ Shortcode Examples:<br>
 The nrelate Related Content plugin analyzes your website content, and returns a list of posts that are related to the current story being viewed by your visitor.
 
 = What makes nrelate different from all the other related content services? =
-nrelate started because we believe we can do a better job then the other services out there.  Our patent-pending technology is continously being improved, and the results are better then the competetion.  We're sure you'll be happy with the results... but if you're not, removing nrelate from your website is as easy as deactivating the plugin.
+nrelate started because we believe we can do a better job than the other services out there.  Our patent-pending technology is continously being improved, and the results are better then the competetion.  We're sure you'll be happy with the results... but if you're not, removing nrelate from your website is as easy as deactivating the plugin.
 
-= Will it slow down my website? =
-Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content. In fact, if you are running a local related content plugin like YARPP, you may actually see a speed improvement on your site.
+= Does this plugin slow down my website? =
+Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content. In fact, if you swtich to nrelate from a local related content plugin like YARPP, you may actually see a speed improvement on your site.
 
 = What are my display choices? =
 You can show related content as cool image thumbnails, or simple text with bullets. When choosing thumbnails we will look in your post to find the first image and use that. You can also choose a default image to show when your post contains none.  In the plugin options page you can enter your default image url. It's best to set a 110px square image as the default, but if it's larger, nrelate will auto crop and scale it. If your post has no image, and you have not set a default, we will show a random one from our image library.<br>
@@ -87,8 +87,14 @@ Caching plugins create static html files from each of your pages... like a momen
 1. Delete your cache: Both WP-Super-Cache and W3-Total-Cache have a button that allows you to delete your cache. Once deleted our code will show up, while your caching plugins rebuild their static files.<br>
 2. Wait until your cache expires: Both plugins expire your static pages after a designated time. Once that page expires, our code will show up.<br>
 
-= Does nrelate work with Feedburner? =
-If you use Feedburner, we cannot easily access your archives, therefore the pool of related content from which to draw links from, will be very small, and the related content may not show up on your blog. We are working to fix this and expect to have a solution in the next few weeks. In the meantime, if you use Feedburner please <a href="http://nrelate.com/forum/">contact us</a> and we will work with you to figure out an alternative way to get your archive.
+= Does plugin support external images, e.g. uploaded on Flickr? =
+Absolutely! If you have images in your post, nrelate will find them and auto-create thumbnails.
+
+= How does the nrelate plugin get my website content? =
+Our plugin creates a unique RSS feed with a secret key that only the nrelate server can access. We need to use this secret feed to archive all your content in case you set your public feed to "Summary" or if you use a service like Feedburner.
+
+= Are you sure this secret RSS feed is not accessible by the public? =
+The RSS feed we create can only be accessed by using a secret key so it is not open to the public in any way. In fact, we were so concerned with making sure this RSS feed would not compromise your public feed, that we hired WordPress lead developer and security expert, Mark Jaquith, to build it for us. 
 
 = My website is not in English, will nrelate work? =
 Our plugin will work on websistes in the following languages: Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Spanish, Swedish and Turkish.  If you do not see your language on the list or you think that we could improve the relevancy of our plugin in your language, please <a href="http://nrelate.com/forum/">contact us</a> and we will work with you to configure the plugin accordingly.
@@ -101,6 +107,11 @@ Our plugin will work on websistes in the following languages: Dutch, English, Fr
 
 
 == Changelog ==
+
+= 0.40.0 =
+* Fix for feedburner and when feed is set to summary
+* Create custom rss feed for nrelate only
+* Update dashboard messages
 
 = 0.3 =
 * Send plugin version to nrelate server for debugging purposes
@@ -126,3 +137,8 @@ Our plugin will work on websistes in the following languages: Dutch, English, Fr
 
 = 0.1 =
 * Initial release
+
+== Upgrade Notice ==
+
+= 0.40.0 =
+IMPORTANT UPGRADE: This version will allow nrelate to index your data better than ever.

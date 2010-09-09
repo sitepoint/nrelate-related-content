@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire LLC.</a> 
-Version: 0.3
+Version: 0.40.0
 Author URI: http://nrelate.com/
 
 
@@ -63,25 +63,24 @@ add_action( 'plugins_loaded', 'nrelate_related_plugin_init' );
  * @since 0.1
  */
 function nrelate_related_plugin_init() {
-
+	
 	//load dashboard pages
 	require_once ( NRELATE_RELATED_ADMIN_DIR . '/dashboard.php' );
 
 	//load admin pages
 	require_once ( NRELATE_RELATED_SETTINGS_DIR . '/related-menu.php' );
 	
-	//load messages
-	require_once NRELATE_RELATED_ADMIN_DIR . '/messages.php';
-	
-	//load nrelate common functions
-	require_once ( NRELATE_RELATED_ADMIN_DIR . '/common-functions.php' );
-	
 	// Loads and registers the new widget.
 	// Temporarily disabled
 	//add_action( 'widgets_init', 'nrelate_related_load_widget' );
-	
 
 };
+
+// Check dashboard messages if on dashboard page in admin
+if ( is_admin() ) {
+	require_once NRELATE_RELATED_SETTINGS_DIR . '/related-messages.php';
+}
+
 
 /**
  * Define default options for settings 
@@ -226,7 +225,7 @@ function add_defaults_nr_rc() {
 		$rssurl = get_bloginfo('rss2_url');
 		$bloglist = blogroll_1();
 		// Write the parameters to be sent
-		$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&NUMEXT='.$number_ext.'&IMAGEURL='.$backfillimage.'&RSSURL='.$rssurl.'&RSSMODE='.$rss_mode;
+		$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&NUMEXT='.$number_ext.'&IMAGEURL='.$backfillimage.'&RSSURL='.$rssurl.'&RSSMODE='.$rss_mode.'&KEY='.get_option('nrelate_key');
 		// Curl connection to the nrelate server
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/processWPadmin.php'); 
@@ -262,8 +261,8 @@ function add_defaults_nr_rc() {
 		update_option('nrelate_admin_msg', 'yes');
 		$rss_mode = "SUMMARY";
 	}
-	
-	$nrelate_version = "v.0.3";
+
+	$nrelate_version = "v.0.40.0";
 	
 	// Add our ping host to the ping list
 	$current_ping_sites = get_option('ping_sites');
@@ -280,7 +279,7 @@ EOD;
 	$wp_root_nr = get_bloginfo( 'url' );
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$action = "ACTIVATE";
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.$nrelate_version;
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.$nrelate_version.'&KEY='.get_option('nrelate_key');
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/wordpressnotify_activation.php'); 
 	curl_setopt($ch, CURLOPT_POST, 1); 
@@ -315,6 +314,8 @@ function nrelate_deactivate(){
 function nrelate_uninstall(){
 	// Delete nrelate options from user's wordpress db
 	delete_option('nrelate_related_options');
+	delete_option('nrelate_admin_msg');
+	delete_option('nrelate_key');
 	
 	// Send notification to nrelate server of uninstallation
 	$wp_root_nr = get_bloginfo( 'url' );
@@ -331,6 +332,7 @@ function nrelate_uninstall(){
 
 register_deactivation_hook(__FILE__, 'nrelate_deactivate');
 register_uninstall_hook(__FILE__, 'nrelate_uninstall');
+
 /**
  * Inject related posts into the content
  *
@@ -369,6 +371,7 @@ $nrelate_related_options = get_option( 'nrelate_related_options' );
 add_filter( 'the_content', 'nrelate_related_inject' );
 
 
+
 /**
  * nrelate related shortcode
  *
@@ -401,7 +404,6 @@ function nrelate_related_load_widget() {
 	// Register widget.
 	register_widget( 'nrelate_Widget_Related' );
 };
-
 
 /**
  * Primary function

@@ -12,17 +12,6 @@
 
 if ( !function_exists('nrelate_main_section') ) {
 
-
-/**
- * Temporarily resets the admin message to no
- * messages.php updates this to Yes if neccessary
- */
-function nrelate_reset_admin_msg(){
-	update_option('nrelate_admin_msg', 'no');
-}
-add_action ('init','nrelate_reset_admin_msg');
-
-
 /**
  * Setup Dashboard menu and menu page
  */
@@ -34,6 +23,8 @@ function nrelate_setup_dashboard() {
 };
 add_action('admin_menu', 'nrelate_setup_dashboard');
 
+// Load custom RSS feed
+require_once NRELATE_RELATED_ADMIN_DIR . '/rss-feed.php';
 
 
 };

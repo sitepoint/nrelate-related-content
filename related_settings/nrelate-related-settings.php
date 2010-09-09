@@ -446,7 +446,7 @@ function update_nrelate_data(){
 	$rssurl = get_bloginfo('rss2_url');
 	$bloglist = blogroll();
 	// Write the parameters to be sent
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&NUMEXT='.$number_ext.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&IMAGEURL='.$backfill.'&RSSURL='.$rssurl.'&RSSMODE='.$rss_mode;
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&NUMEXT='.$number_ext.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&IMAGEURL='.$backfill.'&RSSURL='.$rssurl.'&RSSMODE='.$rss_mode.'&KEY='.get_option('nrelate_key');
 	// Curl connection to the nrelate server
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/processWPadmin.php'); 
