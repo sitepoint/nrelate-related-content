@@ -6,7 +6,7 @@ Requires at least: 2.9
 Stable tag: 0.40.0
 
 
-The easiest way to display related content from your site
+The easiest way to display related content from your site: Text or Thumbnails.
 
 == Description ==
 The easiest way to display related content from your site
