@@ -70,7 +70,7 @@ The nrelate Related Content plugin analyzes your website content, and returns a 
 nrelate started because we believe we can do a better job than the other services out there.  Our patent-pending technology is continously being improved, and the results are better than the competetion.  We're sure you'll be happy with the results... but if you're not, removing nrelate from your website is as easy as deactivating the plugin.
 
 = Does this plugin slow down my website? =
-Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content. In fact, if you swtich to nrelate from a local related content plugin like YARPP, you may actually see a speed improvement on your site.
+Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content. In fact, if you switch to nrelate from a local related content plugin like YARPP, you may actually see a speed improvement on your site.
 
 = What are my display choices? =
 You can show related content as cool image thumbnails, or simple text with bullets. When choosing thumbnails we will look in your post to find the first image and use that. You can also choose a default image to show when your post contains none.  In the plugin options page you can enter your default image url. It's best to set a 110px square image as the default, but if it's larger, nrelate will auto crop and scale it. If your post has no image, and you have not set a default, we will show a random one from our image library.<br>
