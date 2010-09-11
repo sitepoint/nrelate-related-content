@@ -36,10 +36,13 @@ Because all of the processing and analyzing runs on our servers and not yours, n
 2. Head on over to the nrelate settings page and adjust your settings.
 3. Sit back and relax... nrelate is analyzing your content and will display related content within two hours.
 
+**AUTO PLACEMENT**<br>
+nrelate can automatically place our related content at the "Top of your Post" or the "Bottom of your Post"... or both. Just check the appropriate box on our settings page.
+
 **TEMPLATE TAG**<br>
-Use the nrelate_related template tag anywhere in your theme to show related content.
+If you don't want to have our plugin automatically show our related content, you can use the nrelate_related template tag to place it anywhere in your theme. For example, if you want our related content to show in the sidebar of your site, you may want to place the template tag in your sidebar.php file.
 It's best practice to use code like this:<br>
-<em>if (function_exists('nrelate_related')) nrelate_related();</em>
+<em><?php if (function_exists('nrelate_related')) nrelate_related();?></em>
 
 **SHORTCODE**<br>
 You can also use the nrelate-related shortcode to manually place related content into your posts:<br>
