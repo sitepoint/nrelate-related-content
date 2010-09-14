@@ -42,7 +42,7 @@ nrelate can automatically place our related content at the "Top of your Post" or
 **TEMPLATE TAG**<br>
 If you don't want to have our plugin automatically show our related content, you can use the nrelate_related template tag to place it anywhere in your theme. For example, if you want our related content to show in the sidebar of your site, you may want to place the template tag in your sidebar.php file.
 It's best practice to use code like this:<br>
-<em>if (function_exists('nrelate_related')) nrelate_related();</em><br>
+<em>&lt;?php if (function_exists('nrelate_related')) nrelate_related(); ?&gt;</em><br>
 
 **SHORTCODE**<br>
 You can also use the nrelate-related shortcode to manually place related content into your posts:<br>
