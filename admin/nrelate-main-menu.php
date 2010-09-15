@@ -22,24 +22,25 @@ function nrelate_main_section() { ?>
 			background-repeat: no-repeat;
 			color:red;
 		}
+		#nr_installed_plugins li.related-plugin { background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/relatedcontent.png');}
 		#nr_about li.twitter { background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/twitter.png');}
 		#nr_about li.nrelate { background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/nrelate-n.png');}
 		#nr_about li.forums { background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/forums.png');}
 		
-		#nr_about li{
+		.sidebar-list li{
 			background-repeat:no-repeat;
 			font-size:14px;
 			height:40px;
 			list-style:none outside none;
 			margin-top:5px;
-			padding-left:40px;
+			padding-left:45px;
 			padding-top:5px;
 			vertical-align:middle;
 		}
-		#nr_about li a {
+		.sidebar-list li a {
 			text-decoration:none;
 		}
-		
+	
 	</style>
 
   
@@ -52,11 +53,27 @@ function nrelate_main_section() { ?>
 				 
 	<div id="poststuff" class="metabox-holder has-right-sidebar" style="margin: 30px 10px 0 0 ;">											
 	<div class="clear"></div>
-
+	
+		<!-- Plugins Installed -->
 		<div class="inner-sidebar">
-			<div id="side-sortables" class="meta-box-sortabless ui-sortable" style="position:relative;">
+			<div id="side-bar" class="meta-box-sortabless ui-sortable" style="position:relative;">
 									
-				<div id="nr_about" class="postbox">
+				<div id="nr_installed_plugins" class="postbox sidebar-list">
+					<h3 class="hndle"><span>Configure Installed Plugins:</span></h3>
+					<div class="inside">
+						<?php if (function_exists('nrelate_related')) { ?>
+							<li class="related-plugin"><a href="admin.php?page=nrelate-related">Related Content &raquo;</a></li>
+						<?php } ?>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- About nrelate -->
+		<div class="inner-sidebar">
+			<div id="side-bar" class="meta-box-sortabless ui-sortable" style="position:relative;">
+									
+				<div id="nr_about" class="postbox sidebar-list">
 					<h3 class="hndle"><span>About nrelate:</span></h3>
 					<div class="inside">
 					<li class="nrelate"><a href="http://www.nrelate.com">Visit us</a></li>

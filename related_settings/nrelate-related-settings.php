@@ -28,8 +28,9 @@ function options_init_nr_rc(){
 	
 	// Layout Section
 	add_settings_section('layout_section', 'Layout Settings', 'section_text_nr_rc_layout', __FILE__);
-	add_settings_field('related_loc_top', 'Top of Post', 'setting_related_loc_top', __FILE__, 'layout_section');
-	add_settings_field('related_loc_bottom', 'Bottom of Post', 'setting_related_loc_bottom', __FILE__, 'layout_section');
+	add_settings_field('related_loc_top', 'Top of Post <em>(Automatic)</em>', 'setting_related_loc_top', __FILE__, 'layout_section');
+	add_settings_field('related_loc_bottom', 'Bottom of Post <em>(Automatic)</em>', 'setting_related_loc_bottom', __FILE__, 'layout_section');
+	add_settings_field('related_loc_manual', 'Add to Theme <em>(Manual)</em>', 'setting_related_manual', __FILE__, 'layout_section');
 	add_settings_field('related_display_logo', 'Would you like to support nrelate by displaying our logo?', 'setting_related_display_logo', __FILE__, 'layout_section');
 
 	// Ad Section
@@ -187,6 +188,11 @@ function setting_related_loc_bottom(){
 	$options = get_option('nrelate_related_options');
 	if($options['related_loc_bottom']){ $checked = ' checked="checked" '; }
 	echo "<input ".$checked." id='location-bottom' name='nrelate_related_options[related_loc_bottom]' type='checkbox' />";
+}
+
+// TEXT ONLY - no options
+function setting_related_manual(){
+	echo "Add this code anywhere in your theme to show related content.<br>A good place is either Single.php or Sidebar.php:<br><b>&lt;?php if (function_exists('nrelate_related')) nrelate_related(); ?&gt;</b>";
 }
 
 // CHECKBOX - Show nrelate logo

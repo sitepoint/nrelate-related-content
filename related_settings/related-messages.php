@@ -10,12 +10,16 @@
 
 function nr_rc_message_set(){
 	
-	 // Get options
+	 // Get all options
 	$related_options = get_option('nrelate_related_options');
 
+	// Advertising options
 	$ad_id = $related_options['related_validate_ad'];
 	$display_ad = $related_options['related_display_ad'];
 	
+	// Thumbnail options
+	$show_thumbnails = $related_options['related_thumbnail'];
+	$thumbnailurl = $related_options['related_default_image'];
 	
 	// Let's write some messages
 	
@@ -28,6 +32,16 @@ function nr_rc_message_set(){
 				if ($display_ad == null) {
 					$msg = $msg . '<li class="red">You joined the nrelate advertising program, but <a href="admin.php?page=nrelate-related">"Would you like to display ads?"</a> is not checked.</li>';
 				}			
+	};
+	
+	// Thumbnail
+	if ($show_thumbnails == 'Thumbnails') {
+		// Is there a default thumbnail set?
+		if ($thumbnailurl == null) {
+				$msg = $msg . '<li class="red">Related Content is set to show thumbnails. It\'s a good idea to add a default image just in case no image exists in a post. Add your <a href="admin.php?page=nrelate-related">default image here</a>.</li>';
+		} else {
+				$msg = $msg . '<li class="green">Related Content will show thumbnails, and default thumbnail is set.</li>';
+		}
 	};	
 	
 
