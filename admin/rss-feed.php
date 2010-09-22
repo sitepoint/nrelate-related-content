@@ -32,6 +32,12 @@ function nrelate_custom_feed() {
 		);
 		// Force the feed to return full content
 		add_filter( 'pre_option_rss_use_excerpt', create_function( '', 'return 0;' ) );
+		
+		// Remove all filters from the_permalink_rss
+		// some plugins are filtering this function and causing problems
+		remove_all_filters ('the_permalink_rss');	
+		
+		
 		// Use WP's feed template
 		do_feed_rss2( false );
 		exit();

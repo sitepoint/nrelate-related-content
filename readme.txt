@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.40.1
+Stable tag: 0.40.2
 
 
 The easiest way to display related content from your site: Text or Thumbnails.
@@ -111,6 +111,9 @@ Our plugin will work on websistes in the following languages: Dutch, English, Fr
 
 == Changelog ==
 
+= 0.40.2 =
+* Fixed issue where other plugins inadvertently manipulated RSS content in the nrelate specific feed.
+
 = 0.40.1 =
 * New dashboard notice for default thumbnail
 * Better instructions for Layout Options on admin page
@@ -146,6 +149,9 @@ Our plugin will work on websistes in the following languages: Dutch, English, Fr
 * Initial release
 
 == Upgrade Notice ==
+
+= 0.40.2 =
+IMPORTANT UPGRADE: This version addresses issues where certain plugins inadvertently manipulated RSS content in the nrelate specific feed.
 
 = 0.40.0 =
 IMPORTANT UPGRADE: This version will allow nrelate to index your data better than ever.
