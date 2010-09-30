@@ -111,7 +111,7 @@ Our plugin will work on websistes in the following languages: Dutch, English, Fr
 
 == Changelog ==
 
-= 0.40.2 =
+= 0.40.3 =
 * Fixed issue where seo plugins inadvertently manipulated the RSS content title in the nrelate specific feed.
 * Fixed broken link on related settings page.
 
