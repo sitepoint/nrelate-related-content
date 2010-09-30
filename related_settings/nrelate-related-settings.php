@@ -331,7 +331,7 @@ function nrelate_related_do_page() {
 		<?php echo '<img src='. NRELATE_RELATED_ADMIN_IMAGES .'/nrelate-logo.png alt="nrelate Logo" style="float:left; margin: 0 20px 0 0"; />';?>
 		<h2>Related Content</h2>
 		The related content plugin allows you to display related posts on your single posts pages. 
-		Click <a href="http://nrelate.com/forum/topic.php?id=4" target="_blank">here</a> to read about each setting.<br><br>
+		Click <a href="<?php echo NRELATE_WEBSITE_FORUM_URL ?>" target="_blank">here</a> to read about each setting.<br><br>
 		<div id="indexcheck"></div>
 		<?php
 		$connectionstatus = update_nrelate_data();

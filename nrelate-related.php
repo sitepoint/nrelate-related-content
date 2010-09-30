@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire LLC.</a> 
-Version: 0.40.2
+Version: 0.40.3
 Author URI: http://nrelate.com/
 
 
@@ -23,6 +23,14 @@ Author URI: http://nrelate.com/
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
 // **********************************************************************
 **/
+
+/**
+ * Define Plugin constants
+ */
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.40.3' );
+define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
+define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
+
 
 /**
  * Define some constants
