@@ -36,7 +36,9 @@ function nrelate_custom_feed() {
 		// Remove all filters from these functions
 		// some plugins filter them and cause issues
 		remove_all_filters ('the_title_rss');	
-		remove_all_filters ('the_permalink_rss');	
+		remove_all_filters ('the_permalink_rss');
+        remove_all_filters ('the_content_feed');
+		remove_all_filters ('the_excerpt_rss');	
 		
 		
 		// Use WP's feed template

@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire LLC.</a> 
-Version: 0.40.3
+Version: 0.40.4
 Author URI: http://nrelate.com/
 
 
@@ -27,7 +27,7 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.40.3' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.40.4' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
 
@@ -269,8 +269,6 @@ function add_defaults_nr_rc() {
 		update_option('nrelate_admin_msg', 'yes');
 		$rss_mode = "SUMMARY";
 	}
-
-	$nrelate_version = "v.0.40.2";
 	
 	// Add our ping host to the ping list
 	$current_ping_sites = get_option('ping_sites');
@@ -287,7 +285,7 @@ EOD;
 	$wp_root_nr = get_bloginfo( 'url' );
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$action = "ACTIVATE";
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.$nrelate_version.'&KEY='.get_option('nrelate_key');
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION=v'. NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key');
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/wordpressnotify_activation.php'); 
 	curl_setopt($ch, CURLOPT_POST, 1); 
