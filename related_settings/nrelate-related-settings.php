@@ -6,7 +6,7 @@
  * @subpackage Functions
  */
 // Register our settings. Add the settings section, and settings fields
-wp_enqueue_script('nrelate_java_script_functions', NRELATE_RELATED_SETTINGS_URL.'/nrelate_jsfunctions.js');
+wp_enqueue_script('nrelate_java_script_functions', NRELATE_RELATED_ADMIN_URL.'/nrelate_jsfunctions.js');
 
 function options_init_nr_rc(){
 	register_setting('nrelate_related_options', 'nrelate_related_options', 'related_options_validate' );
@@ -14,11 +14,13 @@ function options_init_nr_rc(){
 	// Main Section
 	add_settings_section('main_section', 'Main Settings', 'section_text_nr_rc', __FILE__);
 	add_settings_field('related_thumbnail', 'Would you like to display thumbnails with text, or text only', 'setting_thumbnail',__FILE__,'main_section');
-	add_settings_field('related_default_image', 'Please provide a link to your default image: (This will show up when a related post does not have a picture in it)<br/><i>For best results image should be 110px square.</i>', 'setting_related_default_image',__FILE__,'main_section');
+	add_settings_field('related_thumbnail_size', '<div id="imagesizepreview_header">Please choose a thumbnail size </div>', 'setting_thumbnail_size',__FILE__,'main_section');
+	add_settings_field('related_default_image', '<div id="imagepreview_header">Please provide a link to your default image: (This will show up when a related post does not have a picture in it)<br/><i>For best results image should be as large (or larger) than the thumbnail size you chose above.</i></div>', 'setting_related_default_image',__FILE__,'main_section');
+	add_settings_field('related_custom_field', '<div id="imagecustomfield_header">If you use a <b>Custom Field</b> for your images, enter it here.</div>', 'setting_related_custom_field',__FILE__,'main_section');
 	add_settings_field('related_title', 'Please enter a title for the related content box', 'setting_string_nr_rc', __FILE__, 'main_section');
 	add_settings_field('related_number_of_posts', '<b>Maximum</b> number of related posts to display from this site', 'setting_related_number_of_posts_nr_rc', __FILE__, 'main_section');
 	add_settings_field('related_bar', 'How relevant do you want the results to be?<br/><i>Based on the amount/type of content on your website, higher relevancy settings may return little or no posts.</i>', 'setting_related_bar_nr_rc', __FILE__, 'main_section');
-	add_settings_field('related_max_chars_per_line', 'Maximum number of characters per line?<br/><i>Used for TEXT display, not Thumbnails</i>', 'setting_related_max_chars_per_line', __FILE__, 'main_section');
+	add_settings_field('related_max_chars_per_line', 'Maximum number of characters per line?', 'setting_related_max_chars_per_line', __FILE__, 'main_section');
 	add_settings_field('related_max_age', 'How deep into your archive would you like to go for related posts?', 'setting_related_max_age', __FILE__, 'main_section');
 	
 	//Partner Section
@@ -30,12 +32,12 @@ function options_init_nr_rc(){
 	add_settings_section('layout_section', 'Layout Settings', 'section_text_nr_rc_layout', __FILE__);
 	add_settings_field('related_loc_top', 'Top of Post <em>(Automatic)</em>', 'setting_related_loc_top', __FILE__, 'layout_section');
 	add_settings_field('related_loc_bottom', 'Bottom of Post <em>(Automatic)</em>', 'setting_related_loc_bottom', __FILE__, 'layout_section');
+    add_settings_field('related_loc_widget', 'Widget area or Sidebar <em>(Automatic)</em>', 'setting_related_widget', __FILE__, 'layout_section');
 	add_settings_field('related_loc_manual', 'Add to Theme <em>(Manual)</em>', 'setting_related_manual', __FILE__, 'layout_section');
 	add_settings_field('related_display_logo', 'Would you like to support nrelate by displaying our logo?', 'setting_related_display_logo', __FILE__, 'layout_section');
 
 	// Ad Section
 	add_settings_section('ad_section', 'Advertising Settings', 'section_text_nr_rc_ad', __FILE__);
-	add_settings_field('related_validate_ad', 'Please Enter your ad ID<br>(<a href="http://www.nrelate.com/advalidate.php" target="_blank">Get Your ID</a>)', 'setting_related_validate_ad', __FILE__, 'ad_section');
 	add_settings_field('related_display_ad', 'Would you like to display ads?', 'setting_related_display_ad', __FILE__, 'ad_section');
 
 
@@ -138,7 +140,7 @@ function setting_blogroll() {
 	$wp_root_nr=get_bloginfo( 'url' );
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$items = array("On", "Off");
-	echo '<select id="related_blogoption" name="nrelate_related_options[related_blogoption]" onChange="checkblog(\''.NRELATE_RELATED_SETTINGS_URL.'\',\''.$wp_root_nr.'\');">';
+	echo '<select id="related_blogoption" name="nrelate_related_options[related_blogoption]">';
 	foreach($items as $item) {
 		if($item=="On")
 			$selection = "Yes";
@@ -150,8 +152,8 @@ function setting_blogroll() {
 	echo "</select>";
 	
 	// Ajax calls to contact nrelate servers and update as necessary
+	echo "<div id='bloglinks'".$blog_div_style."></div>";
 	echo '<script type="text/javascript"> checkindex(\''.NRELATE_RELATED_SETTINGS_URL.'\',\''.$wp_root_nr.'\'); checkblog(\''.NRELATE_RELATED_SETTINGS_URL.'\',\''.$wp_root_nr.'\'); </script>';
-	echo "<div id='bloglinks'".$blog_div_style.">";
 }
 
 // DROP-DOWN-BOX - Name: nrelate_related_options[related_number_of_posts_ext]
@@ -190,6 +192,11 @@ function setting_related_loc_bottom(){
 	echo "<input ".$checked." id='location-bottom' name='nrelate_related_options[related_loc_bottom]' type='checkbox' />";
 }
 
+// TEXT ONLY - use widget
+function setting_related_widget(){
+	echo "To use our widget, visit <a href=\"widgets.php\">your widget page.</a></b>";
+}
+
 // TEXT ONLY - no options
 function setting_related_manual(){
 	echo "Add this code anywhere in your theme to show related content.<br>A good place is either Single.php or Sidebar.php:<br><b>&lt;?php if (function_exists('nrelate_related')) nrelate_related(); ?&gt;</b>";
@@ -206,7 +213,7 @@ function setting_related_display_logo(){
 function setting_thumbnail() {
 	$options = get_option('nrelate_related_options');
 	$items = array("Thumbnails", "Text");
-	echo "<select id='related_thumbnail' name='nrelate_related_options[related_thumbnail]'>";
+	echo "<select id='related_thumbnail' name='nrelate_related_options[related_thumbnail]' onChange='nrelate_showhide_thumbnail();'>";
 	/*?><select id='related_thumbnail' name='nrelate_related_options[related_thumbnail]'>;
 	<?php*/
 	foreach($items as $item) {
@@ -216,6 +223,41 @@ function setting_thumbnail() {
 	echo "</select>";
 }
 
+// RADIO - Name: nrelate_related_options[related_thumbnail_size]
+function setting_thumbnail_size(){
+	$options = get_option('nrelate_related_options');
+	$thumbnailsize = $options['thumbnailsize'];
+	if($options['related_thumbnail']=="Thumbnails"){
+		$divstyle = "style='display:block;'";
+	}
+	else{
+		$divstyle = "style='display:none;'";
+	}
+	echo "<div id='imagesizepreview' ".$divstyle.">";
+	$sizes = array(100,110,120,130,140,150);
+	echo "<table><tr>";
+	foreach($sizes as $size){
+		echo "<td><img src='http://img.nrelate.com/rcw_wp/default_images/preview/preview_cloud_".$size.".jpeg'></td>";
+	}
+	echo "</tr>";
+	echo "<tr align='center'>";
+	foreach($sizes as $size){
+		if($size==110){
+			$defaultmessage = " (Default)";
+		}
+		else{
+			$defaultmessage ="";
+		}
+		$checked = ($options['related_thumbnail_size']==$size) ? 'checked' : '';
+		echo "<td><input type='radio' name='nrelate_related_options[related_thumbnail_size]' id='related_imagesize_".$size."' value='".$size."' ".$checked.">".$size.$defaultmessage."</td>";
+	}
+	echo "</tr>";
+	echo "</table></div>";
+	echo '<script type="text/javascript"> nrelate_showhide_thumbnail();</script>';
+
+	
+}
+
 // TEXTBOX - Name: nrelate_related_options[related_thumbnail]
 //show picture and give ability to change picture
 function setting_related_default_image(){
@@ -223,26 +265,41 @@ function setting_related_default_image(){
 	$options = get_option('nrelate_related_options');
 	// Display preview image
 	echo "<div id='imagepreview' ".$blog_div_style.">";
-	$imageurl = $options['related_default_image'];
-	// Curl connection to nrelate server
-	// Send image url and returns a thumbed version of the image
-	$curlPost = "link=".urlencode($imageurl)."&w=110&h=110";
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/thumbimagecheck.php');
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
-	$data = curl_exec($ch);
-	$imageurl = $data;
-	curl_close($ch);
-	echo "Current default image: &nbsp &nbsp";
-	$imageurl = htmlspecialchars(stripslashes($imageurl));
-	$imagecall = '<img id="imgupload" style="outline: 1px solid #DDDDDD;" src="'.$imageurl.'" alt="No default image chosen" /><br><br>';
-	echo $imagecall;
+	$imageurl = stripslashes(stripslashes($options['related_default_image']));
+	$imageurl = htmlspecialchars($imageurl);
+	
+	// Check if $imageurl is an empty string
+	if($imageurl==""){
+		echo "No default image chosen, until you provide your default image, nrelate will use free images from <a href='http://img.nrelate.com/rcw_wp/".NRELATE_RELATED_PLUGIN_VERSION."/defaultImages.html' target='_blank'>here</a>.<BR>";
+	}
+	else{
+		// Curl connection to nrelate server
+		// Send image url and returns a thumbed version of the image
+		$curlPost = "link=".urlencode($imageurl)."&w=".$options['related_thumbnail_size']."&h=".$options['related_thumbnail_size'];
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/thumbimagecheck.php');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
+		$data = curl_exec($ch);
+		$imageurl_cached = $data;
+		curl_close($ch);
+		echo "Current default image: &nbsp &nbsp";
+		//$imageurl = htmlspecialchars(stripslashes($imageurl));
+		$imagecall = '<img id="imgupload" style="outline: 1px solid #DDDDDD;" src="'.$imageurl_cached.'" alt="No default image chosen" /><br><br>';
+		echo $imagecall;
+	}
 	// User can input an image url
 	echo "Enter the link to your default image (include http://): <br>";
-	echo '<input type="text" size="60" id="related_default_image" name="nrelate_related_options[related_default_image]" value="'.htmlspecialchars(stripslashes($options['related_default_image'])).'">';
-	
+	echo '<input type="text" size="60" id="related_default_image" name="nrelate_related_options[related_default_image]" value="'.$imageurl.'"></div>';
+}
+
+
+// TEXTBOX - Name: nrelate_related_options[related_custom_field]
+function setting_related_custom_field() {
+	$options = get_option('nrelate_related_options');
+	$customfield = $options['related_custom_field'];
+	echo '<div id="imagecustomfield"><input id="related_custom_field" name="nrelate_related_options[related_custom_field]" size="40" type="text" value="'.$customfield.'" /></div>';
 }
 
 ///////////////////////////
@@ -251,7 +308,7 @@ function setting_related_default_image(){
 
 // Section HTML, displayed before the first option
 function section_text_nr_rc_ad() {
-	echo '<p>nrelate can display ads under your related posts and you can earn money.</p>';
+		echo '<p>nrelate can display ads under your related posts and you can earn money. Make sure you have signed up an "Ad ID", and entered it on the <a href="admin.php?page=nrelate-main">nrelate Dashboard page</a>.</p>';
 }
 
 // CHECKBOX - Display ads
@@ -259,16 +316,6 @@ function setting_related_display_ad() {
 	$options = get_option('nrelate_related_options');
 	if($options['related_display_ad']) { $checked = ' checked="checked" '; }
 	echo "<input ".$checked." id='show_ad' name='nrelate_related_options[related_display_ad]' type='checkbox' />";
-}
-
-// TEXTBOX - Validate ads
-function setting_related_validate_ad() {
-	$options = get_option('nrelate_related_options');
-	echo '<input id="related_validate_ad" name="nrelate_related_options[related_validate_ad]" size="10" type="text" value="'.htmlspecialchars(stripslashes($options['related_validate_ad'])).'" />';
-	echo "<div id='adverify'></div>";
-	$wp_root_nr=get_bloginfo( 'url' );
-	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
-	echo '<script type="text/javascript"> checkad(\''.NRELATE_RELATED_SETTINGS_URL.'\',\''.$wp_root_nr.'\'); </script>';
 }
 
 ///////////////////////////
@@ -338,17 +385,18 @@ function nrelate_related_do_page() {
 		if($connectionstatus !="Success"){
 			echo "<br><br><h1 style='color:red;font-size:16px;'>".$connectionstatus."</h1>";
 		}
-		
-		?>
-		<form name="settings" action="options.php" method="post" enctype="multipart/form-action">
-		<?php settings_fields('nrelate_related_options'); ?>
-		<?php do_settings_sections(__FILE__);
 			$wp_root_nr = get_bloginfo( 'url' );
 			$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 			$wp_root_nr = urlencode($wp_root_nr);
-		
 		?>
-		<br><button type="button" class="button-primary" onClick="return nrelate_popup_preview('<?= NRELATE_RELATED_SETTINGS_URL ?>','<?=$wp_root_nr?>')">Preview</button>
+		<form name="settings" action="options.php" method="post" enctype="multipart/form-action">
+        <p class="submit">
+			<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
+		</p>
+        <button type="button" class="button-primary" onClick="return nrelate_popup_preview('<?= NRELATE_RELATED_SETTINGS_URL ?>','<?=$wp_root_nr?>','<?=NRELATE_RELATED_PLUGIN_VERSION ?>');">Preview</button>
+		<?php settings_fields('nrelate_related_options'); ?>
+		<?php do_settings_sections(__FILE__);?>
+		<br><button type="button" class="button-primary" onClick="return nrelate_popup_preview('<?= NRELATE_RELATED_SETTINGS_URL ?>','<?=$wp_root_nr?>','<?=NRELATE_RELATED_PLUGIN_VERSION ?>');">Preview</button>
 		<p class="submit">
 			<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
 		</p>
@@ -375,22 +423,15 @@ function update_nrelate_data(){
 	$r_max_frame = $option['related_max_age_frame'];
 	$r_max_char_per_line = $option['related_max_chars_per_line'];
 	$r_display_ad = $option['related_display_ad'];
-	$r_validate_ad = $option['related_validate_ad'];
 	$r_display_logo = $option['related_display_logo'];
 	$r_related_reset = $option['related_reset'];
 	$related_blogoption = $option['related_blogoption'];
 	$related_thumbnail = $option['related_thumbnail'];
 	$backfill = $option['related_default_image'];
 	$number_ext = $option ['related_number_of_posts_ext'];
+	$related_thumbnail_size = $option['related_thumbnail_size'];
 	
-	// Get user's rss mode information
-	$excerptset = get_option('rss_use_excerpt');
-	$rss_mode = "FULL"; 					
-	if ($excerptset != '0') { // are RSS feeds set to excerpt
-		update_option('nrelate_admin_msg', 'yes');
-		$rss_mode = "SUMMARY";
-	}
-	
+		
 	// Convert max age time frame to minutes
 	switch ($r_max_frame){
 	case 'Hour(s)':
@@ -446,16 +487,24 @@ function update_nrelate_data(){
 		$thumb = 0;
 	}
 	
+	// Get Rssmode from rss_use_excerpt option
+	$excerptset = get_option('rss_use_excerpt');
+	$rss_mode = "FULL"; 					
+	if ($excerptset != '0') { // are RSS feeds set to excerpt
+		update_option('nrelate_admin_msg', 'yes');
+		$rss_mode = "SUMMARY";
+	}
+	
 	// Get the wordpress root url and the wordpress rss url.
 	$wp_root_nr=get_bloginfo( 'url' );
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$rssurl = get_bloginfo('rss2_url');
 	$bloglist = blogroll();
 	// Write the parameters to be sent
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&NUMEXT='.$number_ext.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&IMAGEURL='.$backfill.'&RSSURL='.$rssurl.'&RSSMODE='.$rss_mode.'&KEY='.get_option('nrelate_key');
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&NUMEXT='.$number_ext.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&LOGO='.$logo.'&IMAGEURL='.$backfill.'&RSSURL='.$rssurl.'&RSSMODE='.$rss_mode.'&KEY='.get_option('nrelate_key').'&THUMBSIZE='.$related_thumbnail_size;
 	// Curl connection to the nrelate server
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/processWPadmin.php'); 
+	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated.php'); 
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 	curl_setopt($ch, CURLOPT_POST, 1); 
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost); 
@@ -508,11 +557,9 @@ function related_options_validate($input) {
 	// Like escape all text fields
 	$input['related_default_image'] = like_escape($input['related_default_image']);
 	$input['related_title'] = like_escape($input['related_title']);
-	$input['related_validate_ad'] = like_escape($input['related_validate_ad']);
 	// Add slashes to all text fields
 	$input['related_default_image'] = esc_sql($input['related_default_image']);
 	$input['related_title'] = esc_sql($input['related_title']);
-	$input['related_validate_ad'] = esc_sql($input['related_validate_ad']);
 
 	return $input; // return validated input
 }

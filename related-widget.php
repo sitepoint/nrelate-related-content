@@ -11,9 +11,9 @@
 class nrelate_Widget_Related extends WP_Widget {
 
 	function nrelate_Widget_Related() {
-		$widget_ops = array( 'classname' => 'nrelate-related-widget', 'description' => __('Show related posts', 'nrelate') );
+		$widget_ops = array( 'classname' => 'nrelate-related-widget', 'description' => __('Show related content on your single post pages.', 'nrelate') );
 		$control_ops = array( 'width' => 230, 'height' => 350, 'id_base' => 'nrelate-related' );
-		$this->WP_Widget( 'nrelate-related', __('nrelate Related Widget', 'nrelate'), $widget_ops, $control_ops );
+		$this->WP_Widget( 'nrelate-related', __('nrelate Related Content', 'nrelate'), $widget_ops, $control_ops );
 	}
 	
 
@@ -42,8 +42,11 @@ class nrelate_Widget_Related extends WP_Widget {
 		$instance = wp_parse_args( (array) $instance, $defaults ); ?>
 
 		<div style="float:left;width:98%;"></div>
+        <p>
+        <?php _e('This widget will only appear on single post pages.', 'nrelate')?>
+        </p>
 		<p>
-		<a href="admin.php?page=nrelate-related"><?php _e( 'Adjust your settings','nrelate')?></a>
+		<a href="admin.php?page=<?php echo NRELATE_RELATED_ADMIN_SETTINGS_PAGE?>"><?php _e( 'Adjust your settings here >','nrelate')?></a>
 		</p>
 		<div style="float:left;width:48%;">
 				

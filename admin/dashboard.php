@@ -17,8 +17,11 @@ if ( !function_exists('nrelate_main_section') ) {
  */
 function nrelate_setup_dashboard() {
 	
+		require_once NRELATE_RELATED_ADMIN_DIR . '/nrelate-admin-settings.php';
 		require_once NRELATE_RELATED_ADMIN_DIR . '/nrelate-main-menu.php';
+		require_once NRELATE_RELATED_ADMIN_DIR . '/admin-messages.php';
 		add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_RELATED_ADMIN_IMAGES . '/menu-logo.png');
+		
 		
 };
 add_action('admin_menu', 'nrelate_setup_dashboard');
