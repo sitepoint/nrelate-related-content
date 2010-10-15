@@ -53,6 +53,7 @@
 
 
 /**
+ * MAIN NRELATE FEED
  * Serve a custom full-text feed. Thwarts FeedBurner plugins
  */
 function nrelate_custom_feed() {
@@ -72,9 +73,11 @@ function nrelate_custom_feed() {
 		add_filter( 'pre_option_rss_use_excerpt', create_function( '', 'return 0;' ) );
 		
 		// Remove all filters from these functions
-		// some plugins filter them and cause issues
+		// other plugins may filter them and cause issues
 		remove_all_filters ('the_title_rss');	
 		remove_all_filters ('the_permalink_rss');
+		remove_all_filters ('the_content_feed');
+		remove_all_filters ('the_excerpt_rss');
         
         // Get Post thumbnail
         add_filter('the_excerpt_rss', 'nrelate_get_post_thumb');

@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.41.0
+Stable tag: 0.41.1
 
 
 The best way to display related content: Thumbnails or Text.
@@ -120,6 +120,9 @@ Our plugin will work on websistes in the following languages: Dutch, English, Fr
 
 
 == Changelog ==
+
+= 0.41.1 =
+* Removed more filters in nrelate specific feed.
 
 = 0.41.0 =
 * Allow for multiple thumbnail sizes.
