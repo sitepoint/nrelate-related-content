@@ -10,19 +10,19 @@ function nrelate_main_section() { ?>
 	<div class="wrap" style="margin: 10px 0 0 0;">
 	 
 	 <style type="text/css">
-		#nr-messages div.green {
+		#nr-messages li.green {
 			padding-left: 25px;
 			background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/yes.gif');
 			background-repeat: no-repeat;
 			color:green;
 		}
-		#nr-messages div.red {
+		#nr-messages li.red {
 			padding-left: 25px;
 			background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/no.gif');
 			background-repeat: no-repeat;
 			color:red;
 		}
-		#nr-messages div.info {
+		#nr-messages li.info {
 			padding-left: 25px;
 			background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/information.png');
 			background-repeat: no-repeat;
@@ -58,9 +58,8 @@ function nrelate_main_section() { ?>
 
   
 	<div id="dashboard-head">
-	<?php
-	echo '<img src='. NRELATE_RELATED_ADMIN_IMAGES .'/nrelate-logo.png alt="nrelate Logo" style="float:left; margin: 0 20px 0 0"; />';?>
-	<h2><?php _e('nrelate Dashboard')?></h2>
+	<?php echo '<img src='. NRELATE_RELATED_ADMIN_IMAGES .'/nrelate-logo.png alt="nrelate Logo" style="float:left; margin: 0 20px 0 0"; />';?>
+	<h2>nrelate Dashboard</h2>
 
 	<div class="clear"></div>
 		</div>
@@ -73,10 +72,10 @@ function nrelate_main_section() { ?>
 			<div id="side-bar" class="meta-box-sortabless ui-sortable" style="position:relative;">
 									
 				<div id="nr_installed_plugins" class="postbox sidebar-list">
-					<h3 class="hndle"><span><?php _e('Configure Installed Plugins:')?></span></h3>
+					<h3 class="hndle"><span>Configure Installed Plugins:</span></h3>
 					<div class="inside">
 						<?php if (function_exists('nrelate_related')) { ?>
-							<li class="related-plugin"><a href="admin.php?page=<?php echo NRELATE_RELATED_ADMIN_SETTINGS_PAGE ?>"><?php _e('Related Content')?> &raquo;</a></li>
+							<li class="related-plugin"><a href="admin.php?page=<?php echo NRELATE_RELATED_ADMIN_SETTINGS_PAGE ?>">Related Content &raquo;</a></li>
 						<?php } ?>
 					</div>
 				</div>
@@ -90,11 +89,11 @@ function nrelate_main_section() { ?>
 			<div id="side-bar" class="meta-box-sortabless ui-sortable" style="position:relative;">
 									
 				<div id="nr_about" class="postbox sidebar-list">
-					<h3 class="hndle"><span><?php _e('About nrelate:')?></span></h3>
+					<h3 class="hndle"><span>About nrelate:</span></h3>
 					<div class="inside">
-					<li class="nrelate"><a href="http://www.nrelate.com"><?php _e('Visit us')?></a></li>
-					<li class="forums"><a href="http://www.nrelate.com/forum"><?php _e('Ask us')?></a></li>
-					<li class="twitter"><a href="http://www.twitter.com/nrelate"><?php _e('Follow us')?></a></li>
+					<li class="nrelate"><a href="http://www.nrelate.com">Visit us</a></li>
+					<li class="forums"><a href="http://www.nrelate.com/forum">Ask us</a></li>
+					<li class="twitter"><a href="http://www.twitter.com/nrelate">Follow us</a></li>
 					</div>
 				</div>
 			</div>
@@ -107,13 +106,13 @@ function nrelate_main_section() { ?>
 										
 				<!-- Message -->
 				<div id="nr-messages" class="postbox">
-					<h3 class="hndle"><span><?php _e('Messages:')?></span></h3>
+					<h3 class="hndle"><span>Messages:</span></h3>
 					<ul class="inside">
 				
 					<!-- Hook for admin messages from all nrelate plugins -->
 					<?php do_action('nrelate_admin_messages');?>
-					<li>
-					<div class="info" id="extra_message"><?php 
+					<li class="info">
+					<div id="extra_message"><?php 
 						// Call to nrelate server (sends home url)
 						// Nrelate server returns any message to be displayed in the nrelate dashboard
 						$wp_root_nr = get_bloginfo( 'url' );

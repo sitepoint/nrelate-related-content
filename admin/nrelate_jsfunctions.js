@@ -138,7 +138,7 @@ function checkblog(NRELATE_RELATED_SETTINGS_URL,nr_domain){
 	}
 }
 
-//Ajax call to a_transport.php to check ad validation
+//Ajax call to ad_transport.php to check ad validation
 function checkad(NRELATE_RELATED_ADMIN_URL,nr_domain,nr_adcodeopt,NRELATE_RELATED_PLUGIN_VERSION){
 	var nr_adcode = document.getElementById("admin_validate_ad").value;
 	if (nr_domain==""){
@@ -157,7 +157,7 @@ function checkad(NRELATE_RELATED_ADMIN_URL,nr_domain,nr_adcodeopt,NRELATE_RELATE
 				document.getElementById("adverify").innerHTML=xmlHttp.responseText;
 			}
 		}
-		xmlHttp.open("POST",NRELATE_RELATED_ADMIN_URL+"/a_transport.php",true);
+		xmlHttp.open("POST",NRELATE_RELATED_ADMIN_URL+"/ad_transport.php",true);
 		xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xmlHttp.send("domain="+nr_domain+"&adcode="+nr_adcode+"&adcodeopt="+nr_adcodeopt+"&nrversion="+NRELATE_RELATED_PLUGIN_VERSION);
 	}catch(e){
@@ -165,7 +165,7 @@ function checkad(NRELATE_RELATED_ADMIN_URL,nr_domain,nr_adcodeopt,NRELATE_RELATE
 	}
 }
 
-//Ajax call to index_transport.php to check the site's indexing status
+//Ajax call to ad_transport.php to check the site's indexing status
 function checkindex(NRELATE_RELATED_SETTINGS_URL,nr_domain){
 	if (nr_domain==""){
 		document.getElementById("indexcheck").innerHTML="";

@@ -13,12 +13,12 @@ function options_admin_init_nr(){
 	register_setting('nrelate_admin_options', 'nrelate_admin_options', 'admin_options_validate' );
 	
 	// Ad Section
-	add_settings_section('ad_section', __('Advertising','nrelate'), 'section_text_nr_ad', __FILE__);
-	add_settings_field('admin_validate_ad', __('Please Enter your ad ID','nrelate').'<br>(<a href="http://www.nrelate.com/advalidate.php" target="_blank">'.__('Get Your ID','nrelate') . '</a>)', 'setting_admin_validate_ad', __FILE__, 'ad_section');	
+	add_settings_section('ad_section', 'Advertising', 'section_text_nr_ad', __FILE__);
+	add_settings_field('admin_validate_ad', 'Please Enter your ad ID<br>(<a href="http://www.nrelate.com/advalidate.php" target="_blank">Get Your ID</a>)', 'setting_admin_validate_ad', __FILE__, 'ad_section');	
 
 	// Communication Section
-	add_settings_section('comm_section', __('Communication','nrelate'), 'section_text_nr_comm', __FILE__);
-	add_settings_field('admin_email_address', __('Check here to send nrelate the admin email address (under "General Settings").<br/>We promise not to overwhelm you with email.','nrelate'), 'setting_admin_email', __FILE__, 'comm_section');	
+	add_settings_section('comm_section', 'Communication', 'section_text_nr_comm', __FILE__);
+	add_settings_field('admin_email_address', 'Check here to send nrelate the admin email address (under "General Settings").<br/>We promise not to overwhelm you with email.', 'setting_admin_email', __FILE__, 'comm_section');	
 	
 }
 add_action('admin_init', 'options_admin_init_nr' );
@@ -34,7 +34,7 @@ add_action('admin_init', 'options_admin_init_nr' );
 
 // Section HTML: Advertising
 function section_text_nr_ad() {
-		_e('<p>Become a part of the nrelate advertising network and earn some extra money on your blog.</p>','nrelate');
+		echo '<p>nrelate can display ads under your admin posts and you can earn money.</p>';
 }
 
 // TEXTBOX - Validate ads
@@ -56,7 +56,7 @@ function setting_admin_validate_ad() {
 
 // Section HTML: Communication
 function section_text_nr_comm() {
-		_e('<p>nrelate may need to communicate with you when we release new features or have a problem accessing your website.</p>','nrelate');
+		echo '<p>nrelate may need to communicate with you when we release new features or have a problem accessing your website.</p>';
 }
 
 // CHECKBOX - Admin email address
@@ -75,7 +75,7 @@ function nrelate_admin_do_page() { ?>
 		<div class="inner-sidebar">
 			<div id="side-bar" class="meta-box-sortabless ui-sortable" style="position:relative;">
 				<div id="nr_settings" class="postbox sidebar-list">
-				<h3 class="hndle"><span><?php _e('General Settings:','nrelate')?></span></h3>
+				<h3 class="hndle"><span>General Settings:</span></h3>
 					<div class="inside">
 					<?php $connectionstatus = update_nrelate_admin_data();
 					if($connectionstatus !="Success"){
@@ -86,7 +86,7 @@ function nrelate_admin_do_page() { ?>
 					<?php settings_fields('nrelate_admin_options'); ?>
 					<?php do_settings_sections(__FILE__);?>
 		
-					<p class="submit"><input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes','nrelate'); ?>" /></p>
+					<p class="submit"><input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" /></p>
 					</form>
 					</div>
 				</div>

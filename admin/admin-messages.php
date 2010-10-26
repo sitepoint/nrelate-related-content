@@ -12,7 +12,7 @@ function nr_admin_message_set(){
 	
 	// Let's write some messages
 	// Simple create div with id adverify for nrelate to populate the content
-		$msg = $msg . '<li id="adverify"></li>';
+		$msg = $msg . '<div id="adverify"></div>';
 
 	echo $msg;
 };
