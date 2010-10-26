@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire LLC.</a> 
-Version: 0.41.1
+Version: 0.42.0
 Author URI: http://nrelate.com/
 
 
@@ -27,13 +27,16 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.41.1' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.42.0' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
 
 /**
  * Define Path constants
  */
+ if ( ! defined( 'NRELATE_PLUGIN_BASENAME' ) )
+	define( 'NRELATE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+	
 if ( ! defined( 'NRELATE_RELATED_PLUGIN_BASENAME' ) )
 	define( 'NRELATE_RELATED_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
@@ -72,6 +75,7 @@ add_action( 'plugins_loaded', 'nrelate_related_plugin_init' );
  *
  * @since 0.1
  */
+
 function nrelate_related_plugin_init() {
 	
 	//load dashboard pages
@@ -166,9 +170,10 @@ function add_defaults_nr_rc() {
 		"related_max_age_frame" => "Year(s)",
 		"related_display_ad" => false,
 		"related_loc_bottom" => "on",
+		"related_loc_top" => "off",
 		"related_display_logo" => true,		
 		"related_reset" => "",
-		"related_blogoption" => "Off",	
+		"related_blogoption" => "off",	
 		"related_max_chars_per_line" => 100,
 		"related_thumbnail" => "Thumbnails",
 		"related_thumbnail_size" => 110,
@@ -359,7 +364,6 @@ function nrelate_uninstall(){
 	// Delete nrelate options from user's wordpress db
 	delete_option('nrelate_related_options');
 	delete_option('nrelate_admin_msg');
-	delete_option('nrelate_key');
 	
 	// Send notification to nrelate server of uninstallation
 	$wp_root_nr = get_bloginfo( 'url' );
@@ -392,25 +396,24 @@ $nrelate_related_options = get_option( 'nrelate_related_options' );
 	$related_loc_bottom = $nrelate_related_options['related_loc_bottom'];
 	
 	if ($related_loc_top == "on"){
-	$content_top = nrelate_related(true);
+		$content_top = nrelate_related(true);
 	} else {
-	$content_top = '';
+		$content_top = '';
 	};
 	
 	if ($related_loc_bottom == "on"){
-	$content_bottom = nrelate_related(true);
+		$content_bottom = nrelate_related(true);
 	} else {
-	$content_bottom = '';
+		$content_bottom = '';
 	};
+
+	$original = $content;
 	
-		$original = $content;
-		
-		$content  = $content_top;
-		$content .= $original;
-		$content .= $content_bottom;
-		
-		
-       return $content;
+	$content  = $content_top;
+	$content .= $original;
+	$content .= $content_bottom;
+	
+	return $content;
 }
 add_filter( 'the_content', 'nrelate_related_inject' );
 
@@ -456,29 +459,94 @@ function nrelate_related_load_widget() {
  *
  * @since 0.1
  */
+
+$nr_i=0;
+
 function nrelate_related($opt=false) {
+	global $nr_i;
+	if (is_single() && $nr_i===0) {
+		$nr_i+=1;
+		// Assign options
+		$post_urlencoded = urlencode(get_permalink());
+		$post_title = urlencode(get_the_title($href));
+		$wp_root_nr = get_bloginfo( 'url' );
+		$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
+		$wp_root_nr = urlencode($wp_root_nr);
+		$version = NRELATE_RELATED_PLUGIN_VERSION;
+		$markup = <<<EOD
+<div class="nr_clear"></div><div id="nrelate_related" class="nrelate_related"></div><div class="nr_clear"></div>
+		
+<script type="text/javascript">
+var css=document.createElement("link");
+css.setAttribute("rel", "stylesheet");
+css.setAttribute("type", "text/css");
+css.setAttribute("href", "http://api.nrelate.com/rcw_wp/$version/nrelate-panels.css");
+document.getElementsByTagName("head")[0].appendChild(css);
 
-if (is_single()) {
+var nr_load_link = false;
+var nr_clicked_link = null;
 
-// Assign options
-$nrelate_related_options = get_option( 'nrelate_related_options' );
+function nr_clickthrough(nr_dest_url) {
+	var nr_src_url = window.location.href;
+	var nr_iframe_src= "http://api.nrelate.com/rcw_wp/track.html?clicked=true" +
+		"&src_url=" + nr_src_url +
+		"&dest_url=" + nr_dest_url;
+	var nr_iframe = document.getElementById('nr_clickthrough_frame');
+	nr_iframe.src = nr_iframe_src;
+	nr_load_link = true;
+	nr_clicked_link = nr_dest_url;
+}
 
-	$post_title = urlencode(get_the_title($href));
-	$wp_root_nr = get_bloginfo( 'url' );
-	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
-	$wp_root_nr = urlencode($wp_root_nr);
-	$version = NRELATE_RELATED_PLUGIN_VERSION;
-	$markup = <<<EOD
-	<script type="text/javascript" src="http://api.nrelate.com/rcw_wp/$version/?keywords=$post_title&domain=$wp_root_nr"></script>
+function nr_loadframe() {
+	if(nr_load_link) {
+		nr_load_link = false;
+		window.location.href = nr_clicked_link;
+	}
+}
+
+document.write('<iframe  id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px;" onload="javascript:nr_loadframe();"></iframe>');
+
+
+function nr_fix_css() {
+	var nr_height = 0; 
+	jQuery("a.nr_rc_panel").each(function() {
+		if (jQuery(this).height() > nr_height) {
+			nr_height = jQuery(this).height();
+		}
+	});
+	jQuery("a.nr_rc_panel").css("height", nr_height + "px");
+}
+
+function nr_onload() {
+       var nr_url="http://api.nrelate.com/rcw_wp/0.42.0/?tag=nrelate_related";
+       nr_url+="&keywords=$post_title&domain=$wp_root_nr&url=$post_urlencoded&p=wp";
+       var nr_head = document.getElementsByTagName("head")[0]; var nr_script = document.createElement("script");
+       nr_script.type = "text/javascript"; nr_script.async = true; nr_script.src = nr_url; nr_head.appendChild(nr_script);
+}
+if (window.attachEvent) { window.attachEvent("onload", nr_onload); }
+else if (window.addEventListener) { window.addEventListener("load", nr_onload, false); }
+else { document.addEventListener("load", nr_onload, false);}
+
+</script>
+
 EOD;
 	if ($opt){
 		return $markup;
-	}
-	else{
+	}else{
 		echo $markup;
 	}
-}
-};
 	
+
+}
+
+
+};
+
+//if(is_single()){
+	$nrelate_related_options = get_option( 'nrelate_related_options' );
+	if($nrelate_related_options['related_thumbnail']=="Thumbnails"){
+		wp_enqueue_script("jquery");
+	}
+//}
 
 ?>
