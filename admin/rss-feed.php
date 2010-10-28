@@ -69,6 +69,11 @@ function nrelate_custom_feed() {
 				'paged' => get_query_var( 'paged' )
 			)
 		);
+		
+        // Show full content even if MORE tag is present
+		global $more;
+		$more = 1;
+		
 		// Force the feed to return full content
 		add_filter( 'pre_option_rss_use_excerpt', create_function( '', 'return 0;' ) );
 		
