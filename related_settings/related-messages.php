@@ -21,9 +21,9 @@ function nr_rc_message_set(){
 	if ($show_thumbnails == 'Thumbnails') {
 		// Is there a default thumbnail set?
 		if ($thumbnailurl == null || $thumbnailurl == '') {
-				$msg = $msg . '<li class="red">Related content is set to show thumbnails. It\'s a good idea to add a default image just in case a post does not have images in it. Add your <a href="admin.php?page=nrelate-related">default image here</a>.</li>';
+				$msg = $msg . '<li><div class="red">Related content is set to show thumbnails. It\'s a good idea to add a default image just in case a post does not have images in it. Add your <a href="admin.php?page=nrelate-related">default image here</a>.</div></li>';
 		} else {
-				$msg = $msg . '<li class="green">Related Content will show thumbnails, and default thumbnail is set.</li>';
+				$msg = $msg . '<li><div class="green">Related Content will show thumbnails, and default thumbnail is set.</div></li>';
 		}
 	};	
 	
