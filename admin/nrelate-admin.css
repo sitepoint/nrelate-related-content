@@ -1,0 +1,15 @@
+/*
+Styles for nrelate admin screen
+*/
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>> Plugin Settings <<<<<*/
+
+/* Thumbnails for style one */
+.nrelate-layout-thumbnails-1 {
+float: left;
+padding: 10px;
+text-align:center;
+}
+.nrelate-layout-thumbnails-1 label{
+padding:5px 0 0;
+}

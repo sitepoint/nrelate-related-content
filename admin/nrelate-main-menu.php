@@ -10,35 +10,42 @@ function nrelate_main_section() { ?>
 	<div class="wrap" style="margin: 10px 0 0 0;">
 	 
 	 <style type="text/css">
+		#poststuff p {
+			font-size:12px !important;
+		}
+		.form-table th {
+			line-height:130%;
+		}
 		#nr-messages div.green {
 			padding-left: 25px;
-			background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/yes.gif');
+			background-image: url( '<?php echo NRELATE_ADMIN_IMAGES ?>/yes.gif');
 			background-repeat: no-repeat;
 			color:green;
 		}
 		#nr-messages div.red {
 			padding-left: 25px;
-			background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/no.gif');
+			background-image: url( '<?php echo NRELATE_ADMIN_IMAGES ?>/no.gif');
 			background-repeat: no-repeat;
 			color:red;
 		}
 		#nr-messages div.info {
 			padding-left: 25px;
-			background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/information.png');
+			background-image: url( '<?php echo NRELATE_ADMIN_IMAGES ?>/information.png');
 			background-repeat: no-repeat;
 			color:blue;
 			font-weight:bold;
 		}
-		#nr_settings .inside h3 {
+		#nr-admin-settings .inside h3 {
 			background:none;
 		}
-		#nr_settings table.form-table {
+		#nr-admin-settings table.form-table {
 			border-bottom:1px solid #dfdfdf;
 		}
-		#nr_installed_plugins li.related-plugin { background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/relatedcontent.png');}
-		#nr_about li.twitter { background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/twitter.png');}
-		#nr_about li.nrelate { background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/nrelate-n.png');}
-		#nr_about li.forums { background-image: url( '<?php echo NRELATE_RELATED_ADMIN_IMAGES ?>/forums.png');}
+		#nr_installed_plugins li.active-plugins { padding-left: 0px;}
+		#nr_installed_plugins li.active-plugins a { padding-left: 5px; text-decoration:none;}
+		#nr_about li.twitter { background-image: url( '<?php echo NRELATE_ADMIN_IMAGES ?>/twitter.png');}
+		#nr_about li.nrelate { background-image: url( '<?php echo NRELATE_ADMIN_IMAGES ?>/nrelate-n.png');}
+		#nr_about li.forums { background-image: url( '<?php echo NRELATE_ADMIN_IMAGES ?>/forums.png');}
 		
 		.sidebar-list li{
 			background-repeat:no-repeat;
@@ -53,95 +60,47 @@ function nrelate_main_section() { ?>
 		.sidebar-list li a {
 			text-decoration:none;
 		}
+		#nr_rss_feeds li {
+			font-size:12px;
+			list-style:outside;
+			padding:0 0 10px 0;
+			height:100%;
+		}
+		#nr_rss_feeds ul {
+			margin:0 0 0 15px;
+		}
 	
 	</style>
-
-  
-	<div id="dashboard-head">
-	<?php
-	echo '<img src='. NRELATE_RELATED_ADMIN_IMAGES .'/nrelate-logo.png alt="nrelate Logo" style="float:left; margin: 0 20px 0 0"; />';?>
-	<h2><?php _e('nrelate Dashboard')?></h2>
-
-	<div class="clear"></div>
-		</div>
-				 
-	<div id="poststuff" class="metabox-holder has-right-sidebar" style="margin: 30px 10px 0 0 ;">											
-	<div class="clear"></div>
 	
-		<!-- Plugins Installed -->
-		<div class="inner-sidebar">
-			<div id="side-bar" class="meta-box-sortabless ui-sortable" style="position:relative;">
-									
+<div id="nrelate-dashboard" style="overflow: hidden;">
+
+<?php echo '<img src="'. NRELATE_ADMIN_IMAGES .'/nrelate-logo.png" alt="nrelate Logo" style="float:left; margin: 0 20px 0 0"; />'?>
+<h2><?php _e('nrelate Dashboard')?></h2>
+
+<div class="metabox-holder has-right-sidebar" id="poststuff">
+
+	<div class="inner-sidebar" id="side-info-column">
+
+		<div class="meta-box-sortables ui-sortable" id="side-sortables">
+		
+				<!-- Plugins Installed -->
 				<div id="nr_installed_plugins" class="postbox sidebar-list">
 					<h3 class="hndle"><span><?php _e('Configure Installed Plugins:')?></span></h3>
 					<div class="inside">
-						<?php if (function_exists('nrelate_related')) { ?>
-							<li class="related-plugin"><a href="admin.php?page=<?php echo NRELATE_RELATED_ADMIN_SETTINGS_PAGE ?>"><?php _e('Related Content')?> &raquo;</a></li>
-						<?php } ?>
+						<!-- Hook to let us know which plugins are active -->
+						<?php do_action('nrelate_active_plugin_notice');?>
 					</div>
 				</div>
-			</div>
-		</div>
 
-	<?php nrelate_admin_do_page(); 	// Get Admin settings from nrelate-admin-settings.php ?>
-		
-		<!-- About nrelate -->
-		<div class="inner-sidebar">
-			<div id="side-bar" class="meta-box-sortabless ui-sortable" style="position:relative;">
-									
-				<div id="nr_about" class="postbox sidebar-list">
-					<h3 class="hndle"><span><?php _e('About nrelate:')?></span></h3>
-					<div class="inside">
-					<li class="nrelate"><a href="http://www.nrelate.com"><?php _e('Visit us')?></a></li>
-					<li class="forums"><a href="http://www.nrelate.com/forum"><?php _e('Ask us')?></a></li>
-					<li class="twitter"><a href="http://www.twitter.com/nrelate"><?php _e('Follow us')?></a></li>
-					</div>
-				</div>
-			</div>
-		</div>
-
-										
-		<div class="has-sidebar nr-padded" >
-			<div id="post-body-content" class="has-sidebar-content">
-				<div class="meta-box-sortabless">
-										
-				<!-- Message -->
-				<div id="nr-messages" class="postbox">
-					<h3 class="hndle"><span><?php _e('Messages:')?></span></h3>
-					<ul class="inside">
-				
-					<!-- Hook for admin messages from all nrelate plugins -->
-					<?php do_action('nrelate_admin_messages');?>
-					<li>
-					<div class="info" id="extra_message"><?php 
-						// Call to nrelate server (sends home url)
-						// Nrelate server returns any message to be displayed in the nrelate dashboard
-						$wp_root_nr = get_bloginfo( 'url' );
-						$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
-						$curlPost = 'DOMAIN='.$wp_root_nr;
-						$ch = curl_init();
-						curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/wordpressnotify_adminmessage.php'); 
-						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-						curl_setopt($ch, CURLOPT_POST, 1);
-						curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
-						$data = curl_exec($ch);
-						$info = curl_getinfo($ch);
-						curl_close($ch);
-						echo $data;?>
-					</div>
-					</li>
-					</ul>
-				</div>
-				
 				<!-- RSS Feeds -->
-				<div id="nr-blog" class="postbox">
-					<h3><?php _e('From our Blog:'); ?></h3>
-						<div class="inside">
+				<div id="nr_rss_feeds" class="postbox sidebar-list">
+					<h3 class="hndle"><span><?php _e('From Our Blog:')?></span></h3>
+					<div class="inside">
 						<?php // Get RSS Feed(s)
 						include_once(ABSPATH . WPINC . '/feed.php');
 
 						// Get a SimplePie feed object from the specified feed source.
-						$rss = fetch_feed('http://nrelate.com/blog/?feed=rss2');
+						$rss = fetch_feed('http://nrelate.com/theblog/feed');
 						if (!is_wp_error( $rss ) ) : // Checks that the object is created correctly 
 						// Figure out how many total items there are, but limit it to 5. 
 						$maxitems = $rss->get_item_quantity(5); 
@@ -165,11 +124,67 @@ function nrelate_main_section() { ?>
 					</ul>
 					</div>
 				</div>
-			</div>
-
 				
+				<!-- About nrelate -->
+				<div id="nr_about" class="postbox sidebar-list">
+					<h3 class="hndle"><span><?php _e('About nrelate:')?></span></h3>
+					<div class="inside">
+					<li class="nrelate"><a href="http://www.nrelate.com"><?php _e('Visit us')?></a></li>
+					<li class="forums"><a href="http://www.nrelate.com/forum"><?php _e('Ask us')?></a></li>
+					<li class="twitter"><a href="http://www.twitter.com/nrelate"><?php _e('Follow us')?></a></li>
+					</div>
+				</div>
 
-	</div>
-	</div>
-	</div>
-<?php };?>
+			</div><!-- #side-sortables -->
+		</div><!-- #side-info-column -->
+
+		
+		<div id="post-body">
+			<div id="post-body-content">
+
+				<!-- Message -->
+				<div id="nr-messages" class="postbox">
+					<h3 class="hndle"><span><?php _e('Messages:')?></span></h3>
+					<ul class="inside">
+				
+					<!-- Hook for admin messages from all nrelate plugins -->
+					<?php do_action('nrelate_admin_messages');?>
+					<li>
+					<div class="info" id="extra_message"><?php 
+						// Call to nrelate server (sends home url)
+						// Nrelate server returns any message to be displayed in the nrelate dashboard
+						$wp_root_nr = get_bloginfo( 'url' );
+						$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
+						$curlPost = 'DOMAIN='.$wp_root_nr;
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_adminmessage.php'); 
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+						curl_setopt($ch, CURLOPT_POST, 1);
+						curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
+						$data = curl_exec($ch);
+						$info = curl_getinfo($ch);
+						curl_close($ch);
+						echo $data;?>
+					</div>
+					</li>
+					</ul>
+				</div>
+				
+				<?php nrelate_admin_do_page(); 	// Get Admin settings from nrelate-admin-settings.php ?>
+
+
+
+
+
+
+
+</div>
+</div>
+
+
+
+
+<div class="clear"></div></div>
+
+<?php }
+?>

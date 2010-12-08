@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire LLC.</a>
-Version: 0.42.1
+Version: 0.42.2
 Author URI: http://nrelate.com/
 
 
@@ -27,9 +27,9 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.42.1' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.42.2' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
-define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
+define( 'NRELATE_RELATED_ADMIN_VERSION', '0.01.0' );
 
 /**
  * Define Path constants
@@ -55,14 +55,12 @@ if ( ! defined( 'NRELATE_RELATED_SETTINGS_URL' ) )
 if ( ! defined( 'NRELATE_RELATED_ADMIN_DIR' ) )
 	define( 'NRELATE_RELATED_ADMIN_DIR', NRELATE_RELATED_PLUGIN_DIR . '/admin' );
 
-if ( ! defined( 'NRELATE_RELATED_ADMIN_URL' ) )
-	define( 'NRELATE_RELATED_ADMIN_URL', NRELATE_RELATED_PLUGIN_URL . '/admin' );
-
-if ( ! defined( 'NRELATE_RELATED_ADMIN_IMAGES' ) )
-	define( 'NRELATE_RELATED_ADMIN_IMAGES', NRELATE_RELATED_PLUGIN_URL . '/admin/images' );
+if ( ! defined( 'NRELATE_RELATED_IMAGE_DIR' ) )
+	define( 'NRELATE_RELATED_IMAGE_DIR', NRELATE_RELATED_PLUGIN_URL . '/images' );
 
 // Load Language
 load_plugin_textdomain('nrelate-related', false, NRELATE_RELATED_PLUGIN_DIR . '/language');
+
 
 // Launch the plugin.
 add_action( 'plugins_loaded', 'nrelate_related_plugin_init' );
@@ -72,9 +70,6 @@ add_action( 'plugins_loaded', 'nrelate_related_plugin_init' );
  *
  * @since 0.1
  */
-
-
-
 function nrelate_related_plugin_init() {
 
 	//load dashboard pages
@@ -92,6 +87,22 @@ function nrelate_related_plugin_init() {
 if ( is_admin() ) {
 	require_once NRELATE_RELATED_SETTINGS_DIR . '/related-messages.php';
 }
+
+/**
+ * Tells the dashboard that we're active
+ * Shows icon and link to settings page
+ */
+function nr_rc_plugin_active(){ ?>
+	<li class="active-plugins">
+		<?php echo '<img src='. NRELATE_RELATED_IMAGE_DIR .'/relatedcontent.png style="float:left"; />'?>
+		<a href="admin.php?page=<?php echo NRELATE_RELATED_ADMIN_SETTINGS_PAGE ?>">
+		<?php _e('Related Content')?> &raquo;</a>
+	</li>
+<?php
+};
+add_action ('nrelate_active_plugin_notice','nr_rc_plugin_active');
+
+
 /**
  * Add settings link on plugin page
  *
@@ -198,14 +209,6 @@ function add_defaults_nr_rc() {
 		$number_ext = 3;
 		$related_thumbnail_size=110;
 
-		// Get rss mode information
-    	$excerptset = get_option('rss_use_excerpt');
-		$rss_mode = "FULL";
-		if ($excerptset != '0') { // are RSS feeds set to excerpt
-			update_option('nrelate_admin_msg', 'yes');
-			$rss_mode = "SUMMARY";
-		}
-
 		// Convert max age time frame to minutes
 		switch ($r_max_frame)
 		{
@@ -269,10 +272,9 @@ function add_defaults_nr_rc() {
 		// Get the wordpress root url and the rss url
 		$wp_root_nr=get_bloginfo( 'url' );
 		$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
-		$rssurl = get_bloginfo('rss2_url');
 		$bloglist = blogroll_1();
 		// Write the parameters to be sent
-		$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&NUMEXT='.$number_ext.'&IMAGEURL='.$backfillimage.'&RSSURL='.$rssurl.'&RSSMODE='.$rss_mode.'&KEY='.get_option('nrelate_key').'&THUMBSIZE='.$related_thumbnail_size;
+		$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&NUMEXT='.$number_ext.'&IMAGEURL='.$backfillimage.'&THUMBSIZE='.$related_thumbnail_size;
 		// Curl connection to the nrelate server
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated.php');
@@ -309,6 +311,8 @@ function add_defaults_nr_rc() {
 		$rss_mode = "SUMMARY";
 	}
 
+	$rssurl = get_bloginfo('rss2_url');
+
 	// Add our ping host to the ping list
 	$current_ping_sites = get_option('ping_sites');
 	$pingexist = strpos($current_ping_sites, "http://api.nrelate.com/rpcpinghost/");
@@ -326,9 +330,9 @@ EOD;
 	$wp_root_nr = get_bloginfo( 'url' );
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$action = "ACTIVATE";
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key');
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/wordpressnotify_activation.php');
+	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php');
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
 	curl_exec($ch);
@@ -339,18 +343,34 @@ register_activation_hook(__FILE__, 'add_defaults_nr_rc');
 
 // Deactivation hook callback
 function nrelate_deactivate(){
-	// Remove our ping link from ping_sites
-	$current_ping_sites = get_option('ping_sites');
-	$new_ping_sites = str_replace("\nhttp://api.nrelate.com/rpcpinghost/", "", $current_ping_sites);
-	update_option('ping_sites',$new_ping_sites);
+
+	if(function_exists('nrelate_popular')){
+    	//popular plugin is activated, don't delete xmlrpc pinghost
+	}
+	else{
+		// Remove our ping link from ping_sites
+		$current_ping_sites = get_option('ping_sites');
+		$new_ping_sites = str_replace("\nhttp://api.nrelate.com/rpcpinghost/", "", $current_ping_sites);
+		update_option('ping_sites',$new_ping_sites);
+	}
+	// RSS mode is sent again just incase if the user already had nrelate_related_options in their wordpress db
+	// and doesn't get sent above
+	$excerptset = get_option('rss_use_excerpt');
+	$rss_mode = "FULL";
+	if ($excerptset != '0') { // are RSS feeds set to excerpt
+		update_option('nrelate_admin_msg', 'yes');
+		$rss_mode = "SUMMARY";
+	}
+
+	$rssurl = get_bloginfo('rss2_url');
 
 	// Send notification to nrelate server of deactivation
 	$wp_root_nr = get_bloginfo( 'url' );
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$action = "DEACTIVATE";
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key');
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/wordpressnotify_activation.php');
+	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php');
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
 	curl_exec($ch);
@@ -359,17 +379,40 @@ function nrelate_deactivate(){
 
 //Uninstallation hook callback
 function nrelate_uninstall(){
-	// Delete nrelate options from user's wordpress db
+	// Delete nrelate related options from user's wordpress db
 	delete_option('nrelate_related_options');
 	delete_option('nrelate_admin_msg');
+
+	if(function_exists('nrelate_popular')){
+    	//popular plugin is activated, don't delete xmlrpc pinghost
+	}
+	else{
+		// This occurs if the user is deleting all of nrelate's products
+		// Delete nrelate admin options from users wordpress db
+		delete_option('nrelate_admin_options');
+		$current_ping_sites = get_option('ping_sites');
+		$new_ping_sites = str_replace("\nhttp://api.nrelate.com/rpcpinghost/", "", $current_ping_sites);
+		update_option('ping_sites',$new_ping_sites);
+	}
+
+	// RSS mode is sent again just incase if the user already had nrelate_related_options in their wordpress db
+	// and doesn't get sent above
+	$excerptset = get_option('rss_use_excerpt');
+	$rss_mode = "FULL";
+	if ($excerptset != '0') { // are RSS feeds set to excerpt
+		update_option('nrelate_admin_msg', 'yes');
+		$rss_mode = "SUMMARY";
+	}
+
+	$rssurl = get_bloginfo('rss2_url');
 
 	// Send notification to nrelate server of uninstallation
 	$wp_root_nr = get_bloginfo( 'url' );
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$action = "UNINSTALL";
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key');
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/wordpressnotify_activation.php');
+	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php');
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
 	curl_exec($ch);
@@ -386,32 +429,35 @@ register_uninstall_hook(__FILE__, 'nrelate_uninstall');
  * @since 0.1
  */
 function nrelate_related_inject($content) {
-	global $post;
 
-$nrelate_related_options = get_option( 'nrelate_related_options' );
+	if (in_the_loop()) { // only inject if we're in the loop
+		global $post;
 
-	$related_loc_top = $nrelate_related_options['related_loc_top'];
-	$related_loc_bottom = $nrelate_related_options['related_loc_bottom'];
+		$nrelate_related_options = get_option( 'nrelate_related_options' );
 
-	if ($related_loc_top == "on"){
-		$content_top = nrelate_related(true);
-	} else {
-		$content_top = '';
-	};
+		$related_loc_top = $nrelate_related_options['related_loc_top'];
+		$related_loc_bottom = $nrelate_related_options['related_loc_bottom'];
 
-	if ($related_loc_bottom == "on"){
-		$content_bottom = nrelate_related(true);
-	} else {
-		$content_bottom = '';
-	};
+		if ($related_loc_top == "on"){
+			$content_top = nrelate_related(true);
+		} else {
+			$content_top = '';
+		};
 
-	$original = $content;
+		if ($related_loc_bottom == "on"){
+			$content_bottom = nrelate_related(true);
+		} else {
+			$content_bottom = '';
+		};
 
-	$content  = $content_top;
-	$content .= $original;
-	$content .= $content_bottom;
+		$original = $content;
 
-	return $content;
+		$content  = $content_top;
+		$content .= $original;
+		$content .= $content_bottom;
+
+		return $content;
+	}
 }
 add_filter( 'the_content', 'nrelate_related_inject' );
 
@@ -474,12 +520,12 @@ function nrelate_related($opt=false) {
 		$markup = <<<EOD
 <div class="nr_clear"></div>
 <div id="nrelate_related" class="nrelate_related"></div>
-<link rel="stylesheet" href="http://api.nrelate.com/rcw_wp/0.42.1/nrelate-panels.css" type="text/css" /><!--[if IE 6]><link rel="stylesheet" href="http://api.nrelate.com/rcw_wp/0.42.1/ie6-panels.css" type="text/css" /><![endif]-->
+<link rel="stylesheet" href="http://static.nrelate.com/rcw_wp/$version/nrelate-panels.css" type="text/css" /><!--[if IE 6]><link rel="stylesheet" href="http://static.nrelate.com/rcw_wp/$version/ie6-panels.css" type="text/css" /><![endif]-->
 <script type="text/javascript">
 var nr_load_link=false;var nr_clicked_link=null;function nr_clickthrough(nr_dest_url){var nr_src_url=window.location.href;var nr_iframe_src="http://api.nrelate.com/rcw_wp/track.html?clicked=true"+"&src_url="+nr_src_url+"&dest_url="+nr_dest_url;var nr_iframe=document.getElementById('nr_clickthrough_frame');nr_iframe.src=nr_iframe_src;nr_load_link=true;nr_clicked_link=nr_dest_url;}
 function nr_loadframe(){if(nr_load_link){nr_load_link=false;window.location.href=nr_clicked_link;}}
-document.write('<iframe  id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nr_loadframe();"></iframe>');function nr_fix_css(){var nr_height=0;jQuery("a.nr_rc_panel").each(function(){if(jQuery(this).height()>nr_height){nr_height=jQuery(this).height();}});jQuery("a.nr_rc_panel").css("height",nr_height+"px");}
-function nr_onload(){var nr_url="http://api.nrelate.com/rcw_wp/0.42.1/?tag=nrelate_related";nr_url+="&keywords=$post_title&domain=$wp_root_nr&url=$post_urlencoded";var nr_head=document.getElementsByTagName("head")[0];var nr_script=document.createElement("script");nr_script.type="text/javascript";nr_script.async=true;nr_script.src=nr_url;nr_head.appendChild(nr_script);}
+document.write('<iframe  id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nr_loadframe();"></iframe>');function nr_rc_fix_css(){var nr_height=0;jQuery("a.nr_rc_panel").each(function(){if(jQuery(this).height()>nr_height){nr_height=jQuery(this).height();}});jQuery("a.nr_rc_panel").css("height",nr_height+"px");}
+function nr_onload(){var nr_url="http://api.nrelate.com/rcw_wp/$version/?tag=nrelate_related";nr_url+="&keywords=$post_title&domain=$wp_root_nr&url=$post_urlencoded";var nr_head=document.getElementsByTagName("head")[0];var nr_script=document.createElement("script");nr_script.type="text/javascript";nr_script.async=true;nr_script.src=nr_url;nr_head.appendChild(nr_script);}
 if(window.attachEvent){window.attachEvent("onload",nr_onload);}
 else if(window.addEventListener){window.addEventListener("load",nr_onload,false);}
 else{document.addEventListener("load",nr_onload,false);}</script>

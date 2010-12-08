@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.42.1
+Stable tag: 0.42.2
 
 
 The best way to display related content: Thumbnails or Text.
@@ -120,6 +120,13 @@ Our plugin will work on websistes in the following languages: Dutch, English, Fr
 
 
 == Changelog ==
+
+= 0.42.2 =
+* Fixed issue so plugins now snap to admin dashboard properly.
+* Fixed layout thumbnails on settings page so they float (better for smaller screens).
+* Custom Field for Images is now an Admin setting.
+* Added additional dashboard messages.
+* Rewrote dashboard code.
 
 = 0.42.1 =
 * Fix for inclusion of IE6 CSS.

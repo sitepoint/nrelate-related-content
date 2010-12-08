@@ -14,7 +14,6 @@
 	if ( empty( $key ) ) {
 		$key = wp_generate_password( 24, false, false );
 		update_option( 'nrelate_key', $key );
-		add_defaults_nr_rc(); // Send the key to nrelate
 	}
 
 /**
@@ -38,8 +37,8 @@
     function nrelate_get_custom_field_image($content) {
         global $post;
  
-        $options = get_option('nrelate_related_options');
-        $customfield = $options['related_custom_field'];
+        $options = get_option('nrelate_admin_options');
+        $customfield = $options['admin_custom_field'];
             if ($customfield != null) {  
                 $customfieldvalue = get_post_meta($post->ID, $customfield, $single = true);
                     if ($customfieldvalue != null) {        

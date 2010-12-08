@@ -21,8 +21,7 @@ function logData1($data) {
 	logData1('INIT');
 	$domain = $_POST['domain'];
 	$adcode = $_POST['adcode'];
-	$adcodeopt = $_POST['adcodeopt'];
-	$version = $_POST['nrversion'];
+	$adminversion = $_POST['adminversion'];
 	logData1($domain);
 	switch ($adcodeopt){
 	case true:
@@ -31,9 +30,9 @@ function logData1($data) {
 	default:
 		$ad = 0;
 	}
-	$curlPost = 'domain='.$domain.'&adcode='.$adcode.'&adcodeopt='.$ad;
+	$curlPost = 'domain='.$domain.'&adcode='.$adcode;
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/'.$version.'/adcheck2.php'); 
+	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.$adminversion.'/adcheck.php'); 
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost); 
