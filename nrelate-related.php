@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire LLC.</a>
-Version: 0.42.2
+Version: 0.42.3
 Author URI: http://nrelate.com/
 
 
@@ -27,7 +27,7 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.42.2' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.42.3' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.01.0' );
 
@@ -325,6 +325,16 @@ EOD;
 	}
 	// Enable xmlrpc for the user
 	update_option('enable_xmlrpc',1);
+	
+	
+	//Set up a unique nrelate key, for secure feed access
+	$key = get_option( 'nrelate_key' );
+	if ( empty( $key ) ) {
+		$key = wp_generate_password( 24, false, false );
+		update_option( 'nrelate_key', $key );
+	}
+	
+	
 
 	// Send notification to nrelate server of activation and send us rss feed mode information
 	$wp_root_nr = get_bloginfo( 'url' );
@@ -429,35 +439,32 @@ register_uninstall_hook(__FILE__, 'nrelate_uninstall');
  * @since 0.1
  */
 function nrelate_related_inject($content) {
+	global $post;
 
-	if (in_the_loop()) { // only inject if we're in the loop
-		global $post;
+$nrelate_related_options = get_option( 'nrelate_related_options' );
 
-		$nrelate_related_options = get_option( 'nrelate_related_options' );
+	$related_loc_top = $nrelate_related_options['related_loc_top'];
+	$related_loc_bottom = $nrelate_related_options['related_loc_bottom'];
 
-		$related_loc_top = $nrelate_related_options['related_loc_top'];
-		$related_loc_bottom = $nrelate_related_options['related_loc_bottom'];
+	if ($related_loc_top == "on"){
+		$content_top = nrelate_related(true);
+	} else {
+		$content_top = '';
+	};
 
-		if ($related_loc_top == "on"){
-			$content_top = nrelate_related(true);
-		} else {
-			$content_top = '';
-		};
+	if ($related_loc_bottom == "on"){
+		$content_bottom = nrelate_related(true);
+	} else {
+		$content_bottom = '';
+	};
 
-		if ($related_loc_bottom == "on"){
-			$content_bottom = nrelate_related(true);
-		} else {
-			$content_bottom = '';
-		};
+	$original = $content;
 
-		$original = $content;
+	$content  = $content_top;
+	$content .= $original;
+	$content .= $content_bottom;
 
-		$content  = $content_top;
-		$content .= $original;
-		$content .= $content_bottom;
-
-		return $content;
-	}
+	return $content;
 }
 add_filter( 'the_content', 'nrelate_related_inject' );
 
@@ -510,9 +517,11 @@ function nrelate_related($opt=false) {
 	global $nr_i;
 	if (is_single() && $nr_i===0) {
 		$nr_i+=1;
+		global $wp_query;
+		$post_id = $wp_query->post->ID; 
 		// Assign options
 		$post_urlencoded = urlencode(get_permalink());
-		$post_title = urlencode(get_the_title($href));
+		$post_title = urlencode(get_the_title($post_id));
 		$wp_root_nr = get_bloginfo( 'url' );
 		$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 		$wp_root_nr = urlencode($wp_root_nr);

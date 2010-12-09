@@ -6,15 +6,7 @@
  * @subpackage Functions
  */
 
-/**
- * Set up a unique nrelate key, for secure feed access
- *
- */
-	$key = get_option( 'nrelate_key' );
-	if ( empty( $key ) ) {
-		$key = wp_generate_password( 24, false, false );
-		update_option( 'nrelate_key', $key );
-	}
+
 
 /**
  * Get Post thumbnail

@@ -22,13 +22,7 @@ if ( !function_exists('nrelate_setup_dashboard') ) {
 		define( 'NRELATE_ADMIN_DIR_NAME', trim( dirname( NRELATE_DASHBOARD_FILE ), '/' ) );
 		define( 'NRELATE_ADMIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_ADMIN_DIR_NAME );
 		define( 'NRELATE_ADMIN_URL', WP_PLUGIN_URL . '/' . NRELATE_ADMIN_DIR_NAME );
-		define( 'NRELATE_ADMIN_IMAGES', NRELATE_ADMIN_URL . '/images' );
-		
-		
-/**
- * Load custom RSS feed
- */
-require_once NRELATE_ADMIN_DIR . '/rss-feed.php';
+		define( 'NRELATE_ADMIN_IMAGES', NRELATE_ADMIN_URL . '/images' );		
 
 /**
  * Setup Dashboard menu and menu page
@@ -43,6 +37,12 @@ function nrelate_setup_dashboard() {
 		
 };
 add_action('admin_menu', 'nrelate_setup_dashboard');
+
+
+/**
+ * Load custom RSS feed
+ */
+require_once NRELATE_ADMIN_DIR . '/rss-feed.php';
 
 
 /**

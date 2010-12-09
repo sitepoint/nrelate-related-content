@@ -1,5 +1,3 @@
-
-
 <?php
 $debug=false;
 function logData1($data) {
