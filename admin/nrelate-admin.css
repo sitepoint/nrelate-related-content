@@ -13,3 +13,9 @@ text-align:center;
 .nrelate-layout-thumbnails-1 label{
 padding:5px 0 0;
 }
+
+/* Help icon */
+.nrelate-help {
+float: left;
+text-align: left;
+}

@@ -104,6 +104,7 @@ function setting_string_nr_rc() {
 	$options = get_option('nrelate_related_options');
 	$r_title = stripslashes(stripslashes($options['related_title']));
 	$r_title = htmlspecialchars($r_title);
+	nrelate_thickbox_youtube('cWEpWJ7Ftsw','related_title_video');
 	echo '<input id="related_title" name="nrelate_related_options[related_title]" size="40" type="text" value="'.$r_title.'" />';
 }
 
@@ -244,7 +245,9 @@ function setting_thumbnail_size(){
 	else{
 		$divstyle = "style='display:none;'";
 	}
+	
 	echo "<div id='imagesizepreview' ".$divstyle.">";
+	nrelate_thickbox_youtube('9Y09dHk8nO0','related_thumbnailsize_video');
 	$sizes = array(80,90,100,110,120,130,140,150);
 	
 	foreach($sizes as $size){ ?>
@@ -342,6 +345,7 @@ function section_text_nr_rc_reset() {
 /****************************************************************
  ******************** Build the Admin Page ********************** 
 *****************************************************************/
+
 function nrelate_related_do_page() {
 
 //Convert some visual option parameters for preview purposes

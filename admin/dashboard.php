@@ -13,6 +13,9 @@
 
 if ( !function_exists('nrelate_setup_dashboard') ) {
 
+//Check system requirements
+add_action('admin_init', 'nrelate_system_check', 0);
+
 /**
  * Define Admin constants
  */
@@ -32,9 +35,7 @@ function nrelate_setup_dashboard() {
 		require_once NRELATE_ADMIN_DIR . '/nrelate-admin-settings.php';
 		require_once NRELATE_ADMIN_DIR . '/nrelate-main-menu.php';
 		require_once NRELATE_ADMIN_DIR . '/admin-messages.php';
-		add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/menu-logo.png');
-		
-		
+		add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/menu-logo.png');	
 };
 add_action('admin_menu', 'nrelate_setup_dashboard');
 
@@ -52,6 +53,61 @@ require_once NRELATE_ADMIN_DIR . '/rss-feed.php';
     echo '<link rel="stylesheet" type="text/css" href="' . NRELATE_ADMIN_URL . '/nrelate-admin.css" media="screen" />';
 }
 add_action('admin_head', 'nrelate_admin_css');
+
+/**
+ * Load thickbox
+ */
+function nrelate_load_thickbox() {
+	wp_enqueue_script('thickbox');
+	wp_enqueue_style('thickbox');
+}
+add_action('admin_print_styles','nrelate_load_thickbox');
+
+/**
+ * Common function to load YouTube videos into our admin
+ * $youtube_id = youtube id, not full url
+ * $div_id = unique div id for each thickbox instance
+ */
+function nrelate_thickbox_youtube($youtube_id, $div_id) { ?>
+
+<div id="<?php echo $div_id ?>" style="display:none">
+	<div class="nrelate_help_video">
+		<object width="640" height="385">
+			<param name="movie" value="http://www.youtube.com/v/<?php echo $youtube_id ?>&autoplay=1?fs=1&amp;hl=en_US"></param>
+			<param name="allowFullScreen" value="true"></param>
+			<param name="allowscriptaccess" value="always"></param>
+			<embed src="http://www.youtube.com/v/<?php echo $youtube_id ?>&autoplay=1?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="385"></embed>
+		</object>
+	</div>
+</div>
+<a class="thickbox" href="#TB_inline?height=385&amp;width=640&amp;inlineId=<?php echo $div_id ?>">
+	<img class="nrelate-help" src=<?php echo NRELATE_ADMIN_IMAGES ?>/help.png />
+</a>
+<?php
+}
+	
+/**
+ * System check
+ *
+ * verifies whether the current system meets our minimum requirements
+ */
+function nrelate_system_check(){
+	$plugin = NRELATE_PLUGIN_BASENAME;
+	$warning = "<p><strong>".__('nrelate Warning:', 'nrelate')."</strong></p>";
+	
+	// curl	
+	if ( !function_exists('curl_init')) {
+		$message .= "<p>".__('This nrelate plugin requires CURL installed on your server. Please contact your web host and ask them to install CURL.','nrelate')."</p>";
+	}
+
+	$closing .= "<p>".__('The nrelate plugin has been deactivated.','nrelate')."<br/><br/>".__('Refresh this page to return to your WordPress dashboard.','nrelate')."</p>";
+		
+	if (!empty($message)) {
+		deactivate_plugins($plugin);
+		wp_die( $warning . $message . $closing );
+	}
+}
+
 
 
 /**

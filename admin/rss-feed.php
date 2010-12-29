@@ -74,6 +74,13 @@ function nrelate_custom_feed() {
 		remove_all_filters ('the_permalink_rss');
 		remove_all_filters ('the_content_feed');
 		remove_all_filters ('the_excerpt_rss');
+		
+		// Convert all named entities into numbered entities
+		// XML does not like most named entities
+		// some plugins have been known to send named entities to the feed
+		add_filter('the_title_rss', 'ent2ncr', 0);
+		add_filter('the_content_feed', 'ent2ncr', 0);
+		add_filter('the_excerpt_rss', 'ent2ncr', 0);
         
         // Get Post thumbnail
         add_filter('the_excerpt_rss', 'nrelate_get_post_thumb');

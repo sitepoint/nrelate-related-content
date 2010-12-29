@@ -79,7 +79,7 @@ function section_text_nr_customfield() {
 function setting_admin_custom_field() {
 	$options = get_option('nrelate_admin_options');
 	$customfield = $options['admin_custom_field'];
-	echo '<br/><div id="imagecustomfield"><input id="admin_custom_field" name="nrelate_admin_options[admin_custom_field]" size="40" type="text" value="'.$customfield.'" /></div>';
+	echo '<div id="imagecustomfield"><input id="admin_custom_field" name="nrelate_admin_options[admin_custom_field]" size="40" type="text" value="'.$customfield.'" /></div>';
 }
 
 
