@@ -25,7 +25,13 @@ add_action('admin_init', 'nrelate_system_check', 0);
 		define( 'NRELATE_ADMIN_DIR_NAME', trim( dirname( NRELATE_DASHBOARD_FILE ), '/' ) );
 		define( 'NRELATE_ADMIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_ADMIN_DIR_NAME );
 		define( 'NRELATE_ADMIN_URL', WP_PLUGIN_URL . '/' . NRELATE_ADMIN_DIR_NAME );
-		define( 'NRELATE_ADMIN_IMAGES', NRELATE_ADMIN_URL . '/images' );		
+		define( 'NRELATE_ADMIN_IMAGES', NRELATE_ADMIN_URL . '/images' );
+		
+/**
+ * Load Javascript
+ */
+wp_enqueue_script('jquery');
+wp_enqueue_script('nrelate_admin_js', NRELATE_ADMIN_URL.'/nrelate_admin_jsfunctions.js');
 
 /**
  * Setup Dashboard menu and menu page
@@ -35,7 +41,7 @@ function nrelate_setup_dashboard() {
 		require_once NRELATE_ADMIN_DIR . '/nrelate-admin-settings.php';
 		require_once NRELATE_ADMIN_DIR . '/nrelate-main-menu.php';
 		require_once NRELATE_ADMIN_DIR . '/admin-messages.php';
-		add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/menu-logo.png');	
+		add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/menu-logo.gif');	
 };
 add_action('admin_menu', 'nrelate_setup_dashboard');
 
@@ -44,7 +50,6 @@ add_action('admin_menu', 'nrelate_setup_dashboard');
  * Load custom RSS feed
  */
 require_once NRELATE_ADMIN_DIR . '/rss-feed.php';
-
 
 /**
  * Add CSS for admin pages
@@ -56,6 +61,8 @@ add_action('admin_head', 'nrelate_admin_css');
 
 /**
  * Load thickbox
+ *
+ * used for help videos
  */
 function nrelate_load_thickbox() {
 	wp_enqueue_script('thickbox');
@@ -95,7 +102,7 @@ function nrelate_system_check(){
 	$plugin = NRELATE_PLUGIN_BASENAME;
 	$warning = "<p><strong>".__('nrelate Warning:', 'nrelate')."</strong></p>";
 	
-	// curl	
+	// is curl installed?
 	if ( !function_exists('curl_init')) {
 		$message .= "<p>".__('This nrelate plugin requires CURL installed on your server. Please contact your web host and ask them to install CURL.','nrelate')."</p>";
 	}
@@ -118,7 +125,7 @@ function nrelate_system_check(){
  * @param string $new_option - new Option name
  * @param string $new_option_key - new Option key name
  * 
- * Since v1.5
+ * Since v0.42.2
  */
 function nrelate_upgrade_option($old_option, $old_option_key, $new_option, $new_option_key) {
     $old_value = get_option($old_option);

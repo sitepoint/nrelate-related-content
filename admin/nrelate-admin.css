@@ -19,3 +19,8 @@ padding:5px 0 0;
 float: left;
 text-align: left;
 }
+
+/* Styles for Admin settings page */
+.toplevel_page_nrelate-main .postbox input[type="text"], .toplevel_page_nrelate-main .stuffbox textarea {
+width: 100%;
+}

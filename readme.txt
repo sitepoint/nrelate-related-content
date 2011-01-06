@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.42.4
+Stable tag: 0.42.5
 
 
 The best way to display related content: Thumbnails or Text.
@@ -87,7 +87,10 @@ You can show related content as cool image thumbnails (choose from six image siz
 Many of your website styles will automatically be used by the plugin so it will blend in nicely with your website.  We do need to set some of our own styles to make it work properly. However, you can makes changes to our styles by including your own CSS in your stylesheet.
 
 = I just activated the plugin and I don't see anything, what's up? =
-Once you activate the plugin, the nrelate server will start analyzing your website.  Related content should show up within two hours.  
+Once you activate the plugin, the nrelate server will start analyzing your website.  Related content should show up within two hours.
+
+= Can I use your plugin with WordPress Multisite? =
+Absolutely. You must activate our plugin on each individual website in your Multi-site install. You cannot use "Network Activate".
 
 = Does nrelate work with caching plugins like WP-Super-Cache and W3-Total-Cache? =
 Caching plugins create static html files from each of your pages... like a moment-in-time snapshot. If a static page was already created before you installed the nrelate plugin then that page will not contain the neccessary nrelate code.  There are two ways to fix this:<br>
@@ -120,6 +123,10 @@ Our plugin will work on websistes in the following languages: Dutch, English, Fr
 
 
 == Changelog ==
+
+= 0.42.5 =
+* Fixes issue where themes use get_the_excerpt to create a meta description, and our plugin filters it.
+* Leverage jquery for optimized loading.
 
 = 0.42.4 =
 * Convert all named entities into numbered entities in nrelate custom feed.
@@ -207,6 +214,9 @@ Our plugin will work on websistes in the following languages: Dutch, English, Fr
 * Initial release.
 
 == Upgrade Notice ==
+
+= 0.42.5 =
+MAJOR SPEED ENHANCEMENT
 
 = 0.41.0 =
 MAJOR FEATURE ENHANCEMENT: choose from multiple thumbnail sizes, Post thumbnails and custom field images are now supported.

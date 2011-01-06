@@ -277,7 +277,7 @@ function setting_related_default_image(){
 	
 	// Check if $imageurl is an empty string
 	if($imageurl==""){
-		_e("No default image chosen, until you provide your default image, nrelate will use free images from <a href='http://img.nrelate.com/rcw_wp/".NRELATE_RELATED_PLUGIN_VERSION."/defaultImages.html' target='_blank'>here</a>.<BR>","nrelate");
+		_e("No default image chosen, until you provide your default image, nrelate will use <a class=\"thickbox\" href='http://img.nrelate.com/rcw_wp/".NRELATE_RELATED_PLUGIN_VERSION."/defaultImages.html?KeepThis=true&TB_iframe=true&height=400&width=600' target='_blank'>these images</a>.<BR>","nrelate");
 	}
 	else{
 		// Curl connection to nrelate server
@@ -298,6 +298,7 @@ function setting_related_default_image(){
 	}
 	// User can input an image url
 	_e("Enter the link to your default image (include http://): <br>");
+	nrelate_thickbox_youtube('OzTtXJUgW3c','related_default_image');
 	echo '<input type="text" size="60" id="related_default_image" name="nrelate_related_options[related_default_image]" value="'.$imageurl.'"></div>';
 }
 

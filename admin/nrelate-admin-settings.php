@@ -9,7 +9,6 @@
  */
 
 // Register our settings. Add the settings section, and settings fields
-wp_enqueue_script('nrelate_admin_js', NRELATE_ADMIN_URL.'/nrelate_admin_jsfunctions.js');
 
 function options_admin_init_nr(){
 	register_setting('nrelate_admin_options', 'nrelate_admin_options', 'admin_options_validate' );
