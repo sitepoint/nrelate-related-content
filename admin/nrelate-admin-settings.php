@@ -2,7 +2,7 @@
 /**
  * nrelate Admin Settings
  *
- * customfield settings for all nrelate plugins
+ * Admin settings for all nrelate plugins
  *
  * @package nrelate
  * @subpackage Functions
@@ -125,9 +125,11 @@ function update_nrelate_admin_data(){
 	switch ($send_email){
 	case true:
 		$send_email = 1;
+		$user_email = $n_user_email;
 		break;
 	default:
 		$send_email = 0;
+		$user_email = null;
 	}
 	
 	// Get Rssmode from rss_use_excerpt option
@@ -145,7 +147,7 @@ function update_nrelate_admin_data(){
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$rssurl = get_bloginfo('rss2_url');
 	// Write the parameters to be sent
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&ADCODE='.$r_validate_ad.'&EMAIL='.$n_user_email.'&EMAILOPT='.$send_email.'&CUSTOM='.$custom_field.'&RSSMODE='.$rss_mode.'&RSSURL='.$rssurl.'&KEY='.get_option('nrelate_key');
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&ADCODE='.$r_validate_ad.'&EMAIL='.$user_email.'&EMAILOPT='.$send_email.'&CUSTOM='.$custom_field.'&RSSMODE='.$rss_mode.'&RSSURL='.$rssurl.'&KEY='.get_option('nrelate_key');
 	// Curl connection to the nrelate server
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/processWPadmin.php'); 

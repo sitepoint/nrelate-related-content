@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.42.5
+Stable tag: 0.42.6
 
 
 The best way to display related content: Thumbnails or Text.
@@ -123,6 +123,15 @@ Our plugin will work on websistes in the following languages: Dutch, English, Fr
 
 
 == Changelog ==
+
+= 0.42.6 =
+* Removed our related content from single attachment pages.
+* Filter out Javascript from the nrelate custom feed.
+* Fixed Communication setting bug.
+* Auto move ad validate option from related settings to admin settings.
+* Optimized code to only load admin specific functions when is_admin.
+* Updated Javascript from height to innerHeight.
+* Include link to css stylesheet for reference.
 
 = 0.42.5 =
 * Fixes issue where themes use get_the_excerpt to create a meta description, and our plugin filters it.

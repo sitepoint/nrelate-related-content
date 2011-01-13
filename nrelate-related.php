@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.42.5
+Version: 0.42.6
 Author URI: http://nrelate.com/
 
 
@@ -27,7 +27,7 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.42.5' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.42.6' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.01.0' );
 
@@ -520,7 +520,7 @@ $nr_i=0;
 
 function nrelate_related($opt=false) {
 	global $nr_i;
-	if (is_single() && $nr_i===0) {
+	if ((is_single() && $nr_i===0) && (!is_attachment()))  {
 		$nr_i+=1;
 		global $wp_query;
 		$post_id = $wp_query->post->ID;
@@ -539,7 +539,7 @@ function nrelate_related($opt=false) {
 var nr_url="http://api.nrelate.com/rcw_wp/$version/?tag=nrelate_related";nr_url+="&keywords=$post_title&domain=$wp_root_nr&url=$post_urlencoded";jQuery.getScript(nr_url);
 var nr_load_link=false;var nr_clicked_link=null;function nr_clickthrough(nr_dest_url){var nr_src_url=window.location.href;var nr_iframe_src="http://api.nrelate.com/rcw_wp/track.html?clicked=true"+"&src_url="+nr_src_url+"&dest_url="+nr_dest_url;var nr_iframe=document.getElementById('nr_clickthrough_frame');nr_iframe.src=nr_iframe_src;nr_load_link=true;nr_clicked_link=nr_dest_url;}
 function nr_loadframe(){if(nr_load_link){nr_load_link=false;window.location.href=nr_clicked_link;}}
-document.write('<iframe  id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nr_loadframe();"></iframe>');function nr_rc_fix_css(){var nr_height=0;jQuery("a.nr_rc_panel").each(function(){if(jQuery(this).height()>nr_height){nr_height=jQuery(this).height();}});jQuery("a.nr_rc_panel").css("height",nr_height+"px");}
+document.write('<iframe  id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nr_loadframe();"></iframe>');function nr_rc_fix_css(){var nr_height=0;jQuery("a.nr_rc_panel").each(function(){if(jQuery(this).innerHeight()>nr_height){nr_height=jQuery(this).innerHeight();}});jQuery("a.nr_rc_panel").css("height",nr_height+"px");}
 </script>
 <div class="nr_clear"></div>
 

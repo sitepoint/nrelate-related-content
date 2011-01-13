@@ -28,7 +28,7 @@ function options_init_nr_rc(){
 	add_settings_field('related_default_image', __('<div id="imagepreview_header" '.$divstyle.'>Please provide a link to your default image: (This will show up when a related post does not have a picture in it)<br/><i>For best results image should be as large (or larger) than the thumbnail size you chose above.</i></div>','nrelate'), 'setting_related_default_image',__FILE__,'main_section');
 	add_settings_field('related_custom_field', __('<div id="imagecustomfield_header" '.$divstyle.'>If you use <b>Custom Fields</b> for your images, nrelate can show them.</div>','nrelate'), 'setting_related_custom_field',__FILE__,'main_section');
 	add_settings_field('related_title', __('Please enter a title for the related content box','nrelate'), 'setting_string_nr_rc', __FILE__, 'main_section');
-	add_settings_field('related_number_of_posts', __('<b>Maximum</b> number of related posts to display from this site','nrelate'), 'setting_related_number_of_posts_nr_rc', __FILE__, 'main_section');
+	add_settings_field('related_number_of_posts', __('<b>Maximum</b> number of related posts to display from this site</br><em>To display multiple rows of thumbnails, choose more than will fit in one row.</em>','nrelate'), 'setting_related_number_of_posts_nr_rc', __FILE__, 'main_section');
 	add_settings_field('related_bar', __('How relevant do you want the results to be?<br/><i>Based on the amount/type of content on your website, higher relevancy settings may return little or no posts.</i>','nrelate'), 'setting_related_bar_nr_rc', __FILE__, 'main_section');
 	add_settings_field('related_max_chars_per_line', __('Maximum number of characters per line?','nrelate'), 'setting_related_max_chars_per_line', __FILE__, 'main_section');
 	add_settings_field('related_max_age', __('How deep into your archive would you like to go for related posts?','nrelate'), 'setting_related_max_age', __FILE__, 'main_section');
@@ -44,6 +44,7 @@ function options_init_nr_rc(){
 	add_settings_field('related_loc_bottom',__('Bottom of post <em>(Automatic)</em>','nrelate'), 'setting_related_loc_bottom', __FILE__, 'layout_section');
     add_settings_field('related_loc_widget',__('Widget area or Sidebar <em>(Automatic)</em>','nrelate'), 'setting_related_widget', __FILE__, 'layout_section');
 	add_settings_field('related_loc_manual',__('Add to Theme <em>(Manual)</em>','nrelate','nrelate'), 'setting_related_manual', __FILE__, 'layout_section');
+	add_settings_field('related_css_link',__('Change the Style','nrelate','nrelate'), 'setting_related_css_link', __FILE__, 'layout_section');
 	add_settings_field('related_display_logo',__('Would you like to support nrelate by displaying our logo?','nrelate'), 'setting_related_display_logo', __FILE__, 'layout_section');
 
 	// Ad Section
@@ -212,6 +213,14 @@ function setting_related_widget(){
 // TEXT ONLY - no options
 function setting_related_manual(){
 	_e("Add this code anywhere in your theme to show related content.<br>A good place is either Single.php or Sidebar.php:","nrelate"); echo"<br><b>&lt;?php if (function_exists('nrelate_related')) nrelate_related(); ?&gt;</b>";
+}
+
+// TEXT ONLY - no options
+function setting_related_css_link(){
+	_e("You can change the look of the related content by adding custom css styles to your themes stylesheet.","nrelate");
+	echo '<br><a class="thickbox" href="http://static.nrelate.com/rcw_wp/'. NRELATE_RELATED_PLUGIN_VERSION . '/nrelate-panels.css?KeepThis=true&TB_iframe=true&height=400&width=600 target=\'_blank\'">';
+	_e("View the default nrelate related styles","nrelate");
+	echo "</a>";
 }
 
 // CHECKBOX - Show nrelate logo

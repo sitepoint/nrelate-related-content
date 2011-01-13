@@ -40,6 +40,16 @@
         return $content;    
     }
 
+/**
+ * Remove Javascript from our feed
+ *
+ */	
+function nrelate_remove_script($content) {
+	global $post;
+	$content = preg_replace('#(\n?<script[^>]*?>.*?</script[^>]*?>)|(\n?<script[^>]*?/>)#is', '', $content);
+	return $content;
+}
+
 
 
 
@@ -89,7 +99,11 @@ function nrelate_custom_feed() {
         // Get custom field images
         add_filter('the_excerpt_rss', 'nrelate_get_custom_field_image');
         add_filter('the_content_feed', 'nrelate_get_custom_field_image');
-        
+		
+        // Remove Javascript
+		add_filter('the_excerpt_rss', 'nrelate_remove_script');
+        add_filter('the_content_feed', 'nrelate_remove_script');
+		        
 
 		// Use WP's feed template
 		do_feed_rss2( false );

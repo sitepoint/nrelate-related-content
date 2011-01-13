@@ -31,8 +31,50 @@ add_action('admin_init', 'nrelate_system_check', 0);
  * Load Javascript
  */
 wp_enqueue_script('jquery');
-wp_enqueue_script('nrelate_admin_js', NRELATE_ADMIN_URL.'/nrelate_admin_jsfunctions.js');
 
+/**
+ * Load custom RSS feed
+ */
+require_once NRELATE_ADMIN_DIR . '/rss-feed.php';
+
+	
+/**
+ * System check
+ *
+ * verifies whether the current system meets our minimum requirements
+ */
+function nrelate_system_check(){
+	$plugin = NRELATE_PLUGIN_BASENAME;
+	$warning = "<p><strong>".__('nrelate Warning:', 'nrelate')."</strong></p>";
+	
+	// is curl installed?
+	if ( !function_exists('curl_init')) {
+		$message .= "<p>".__('This nrelate plugin requires CURL installed on your server. Please contact your web host and ask them to install CURL.','nrelate')."</p>";
+	}
+
+	$closing .= "<p>".__('The nrelate plugin has been deactivated.','nrelate')."<br/><br/>".__('Refresh this page to return to your WordPress dashboard.','nrelate')."</p>";
+		
+	if (!empty($message)) {
+		deactivate_plugins($plugin);
+		wp_die( $warning . $message . $closing );
+	}
+}
+
+
+
+
+/********************
+ *  Admin only code
+ *******************/
+ if (is_admin()) {
+ 
+ 
+/**
+ * load javascript
+ */
+ wp_enqueue_script('nrelate_admin_js', NRELATE_ADMIN_URL.'/nrelate_admin_jsfunctions.js');
+ 
+ 
 /**
  * Setup Dashboard menu and menu page
  */
@@ -44,14 +86,8 @@ function nrelate_setup_dashboard() {
 		add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/menu-logo.gif');	
 };
 add_action('admin_menu', 'nrelate_setup_dashboard');
-
-
-/**
- * Load custom RSS feed
- */
-require_once NRELATE_ADMIN_DIR . '/rss-feed.php';
-
-/**
+ 
+ /**
  * Add CSS for admin pages
  */
  function nrelate_admin_css() {
@@ -92,30 +128,6 @@ function nrelate_thickbox_youtube($youtube_id, $div_id) { ?>
 </a>
 <?php
 }
-	
-/**
- * System check
- *
- * verifies whether the current system meets our minimum requirements
- */
-function nrelate_system_check(){
-	$plugin = NRELATE_PLUGIN_BASENAME;
-	$warning = "<p><strong>".__('nrelate Warning:', 'nrelate')."</strong></p>";
-	
-	// is curl installed?
-	if ( !function_exists('curl_init')) {
-		$message .= "<p>".__('This nrelate plugin requires CURL installed on your server. Please contact your web host and ask them to install CURL.','nrelate')."</p>";
-	}
-
-	$closing .= "<p>".__('The nrelate plugin has been deactivated.','nrelate')."<br/><br/>".__('Refresh this page to return to your WordPress dashboard.','nrelate')."</p>";
-		
-	if (!empty($message)) {
-		deactivate_plugins($plugin);
-		wp_die( $warning . $message . $closing );
-	}
-}
-
-
 
 /**
  * Old to New Options for all plugins
@@ -139,13 +151,24 @@ function nrelate_upgrade_option($old_option, $old_option_key, $new_option, $new_
         update_option($new_option, $new_value);
     }
 }
-
-/* Old -> New options
- *
- */
- if (is_admin()) {
+// move custom field option from related settings to admin settings
 nrelate_upgrade_option('nrelate_related_options', 'related_custom_field', 'nrelate_admin_options', 'admin_custom_field');
-}
+
+// move ad code field option from related settings to admin settings - since 0.42.6
+nrelate_upgrade_option('nrelate_related_options', 'related_validate_ad', 'nrelate_admin_options', 'admin_validate_ad');
+};/* end is_admin */
+
+
+
+ 
+
+
+
+
+
+
+
+
 
 
 };/* end !function_exists */
