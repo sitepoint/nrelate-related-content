@@ -11,7 +11,7 @@ The best way to display related content: Thumbnails or Text.
 == Description ==
 The best way to display related content from your site, and/or your blogroll.
 
-nrelate is not just another related posts plugin. Our patent-pending technology continously analyzes your website content and displays other related posts from your website.  This ultimately leads to higher page-views for your site, and a better user experience for your visitors.
+nrelate is not just another related posts plugin. Our patent-pending technology continuously analyzes your website content and displays other related posts from your website.  This ultimately leads to higher page-views for your site, and a better user experience for your visitors.
 
 Installing this plugin is as simple as activating it, and you can leave the rest to nrelate.  Once activated, the nrelate servers will immediately begin analyzing your website content and associating similar articles.  Of course, we provide an options page so you can fine tune the display.
 
@@ -74,7 +74,7 @@ Shortcode Examples:<br>
 The nrelate Related Content plugin analyzes your website content, and returns a list of posts that are related to the current story being viewed by your visitor.  If you like, you can also include posts from the websites in your blogroll.
 
 = What makes nrelate different from all the other related content services? =
-nrelate started because we believe we can do a better job than the other services out there.  Our patent-pending technology is continously being improved, and the results are better than the competetion.  We're sure you'll be happy with the results... but if you're not, removing nrelate from your website is as easy as deactivating the plugin.
+nrelate started because we believe we can do a better job than the other services out there.  Our patent-pending technology is continuously being improved, and the results are better than the competition.  We're sure you'll be happy with the results... but if you're not, removing nrelate from your website is as easy as deactivating the plugin.
 
 = Does this plugin slow down my website? =
 Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content. In fact, if you switch to nrelate from a local related content plugin like YARPP, you may actually see a speed improvement on your site.
@@ -93,7 +93,7 @@ Once you activate the plugin, the nrelate server will start analyzing your websi
 Absolutely. You must activate our plugin on each individual website in your Multi-site install. You cannot use "Network Activate".
 
 = Does nrelate work with caching plugins like WP-Super-Cache and W3-Total-Cache? =
-Caching plugins create static html files from each of your pages... like a moment-in-time snapshot. If a static page was already created before you installed the nrelate plugin then that page will not contain the neccessary nrelate code.  There are two ways to fix this:<br>
+Caching plugins create static html files from each of your pages... like a moment-in-time snapshot. If a static page was already created before you installed the nrelate plugin then that page will not contain the necessary nrelate code.  There are two ways to fix this:<br>
 1. Delete your cache: Both WP-Super-Cache and W3-Total-Cache have a button that allows you to delete your cache. Once deleted our code will show up, while your caching plugins rebuild their static files.<br>
 2. Wait until your cache expires: Both plugins expire your static pages after a designated time. Once that page expires, our code will show up.<br>
 
@@ -113,7 +113,7 @@ Our plugin creates an additional nrelate specific RSS feed.  We use this feed so
 The nrelate specific RSS feed is exactly the same content that is in your RSS feed if you set it to full feed.  Since we had some users that had their feed to just show a summary and others that used Feedburner, we set this up.  The nrelate specific feed can only be accessed by using a random key that is generated upon install.  To make sure this feed is not used for other purposes, we hired WordPress lead developer and security expert, Mark Jaquith, to build it for us.
 
 = My website is not in English, will nrelate work? =
-Our plugin will work on websistes in the following languages: Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Spanish, Swedish and Turkish.  If you do not see your language on the list or you think that we could improve the relevancy of our plugin in your language, please <a href="http://nrelate.com/forum/">contact us</a> and we will work with you to configure the plugin accordingly.
+Our plugin will work on websites in the following languages: Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Spanish, Swedish and Turkish.  If you do not see your language on the list or you think that we could improve the relevancy of our plugin in your language, please <a href="http://nrelate.com/forum/">contact us</a> and we will work with you to configure the plugin accordingly.
 
 == Screenshots ==
 
