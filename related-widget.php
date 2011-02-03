@@ -45,6 +45,7 @@ class nrelate_Widget_Related extends WP_Widget {
         <p>
         <?php _e('This widget will only appear on single post pages.', 'nrelate')?>
         </p>
+		<p>Using this widget overrides your automatic placement settings.</p>
 		<p>
 		<a href="admin.php?page=<?php echo NRELATE_RELATED_ADMIN_SETTINGS_PAGE?>"><?php _e( 'Adjust your settings here >','nrelate')?></a>
 		</p>

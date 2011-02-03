@@ -16,8 +16,7 @@ padding:5px 0 0;
 
 /* Help icon */
 .nrelate-help {
-float: left;
-text-align: left;
+text-align: right;
 }
 
 /* Styles for Admin settings page */

@@ -44,6 +44,7 @@ function nrelate_main_section() { ?>
 		#nr_installed_plugins li.active-plugins { padding-left: 0px;}
 		#nr_installed_plugins li.active-plugins a { padding-left: 5px; text-decoration:none;}
 		#nr_about li.twitter { background-image: url( '<?php echo NRELATE_ADMIN_IMAGES ?>/twitter.png');}
+		#nr_about li.facebook { background-image: url( '<?php echo NRELATE_ADMIN_IMAGES ?>/facebook.png');}
 		#nr_about li.nrelate { background-image: url( '<?php echo NRELATE_ADMIN_IMAGES ?>/nrelate-n.png');}
 		#nr_about li.forums { background-image: url( '<?php echo NRELATE_ADMIN_IMAGES ?>/forums.png');}
 		
@@ -69,6 +70,14 @@ function nrelate_main_section() { ?>
 		#nr_rss_feeds ul {
 			margin:0 0 0 15px;
 		}
+		#nr_about  {
+      float:left;
+    }
+    #nr_about li {
+      display:inline;
+      width:80px;
+      float:left;
+    }
 	
 	</style>
 	
@@ -129,9 +138,12 @@ function nrelate_main_section() { ?>
 				<div id="nr_about" class="postbox sidebar-list">
 					<h3 class="hndle"><span><?php _e('About nrelate:')?></span></h3>
 					<div class="inside">
-					<li class="nrelate"><a href="http://www.nrelate.com"><?php _e('Visit us')?></a></li>
-					<li class="forums"><a href="http://www.nrelate.com/forum"><?php _e('Ask us')?></a></li>
-					<li class="twitter"><a href="http://www.twitter.com/nrelate"><?php _e('Follow us')?></a></li>
+            <ul>
+              <li class="nrelate"><a href="http://www.nrelate.com"><?php _e('Visit us')?></a></li>
+              <li class="forums"><a href="http://www.nrelate.com/forum"><?php _e('Ask us')?></a></li>
+              <li class="twitter"><a href="http://www.twitter.com/nrelate"><?php _e('Follow us')?></a></li>
+              <li class="facebook"><a href="http://www.facebook.com/nrelatecommunity"><?php _e('Like us')?></a></li>
+            </ul>
 					</div>
 				</div>
 

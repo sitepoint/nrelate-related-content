@@ -9,6 +9,12 @@
 // Register our settings. Add the settings section, and settings fields
 wp_enqueue_script('nrelate_related_js', NRELATE_RELATED_SETTINGS_URL.'/nrelate_related_jsfunctions.js');
 
+// If the widget is active, disable some options
+if ( is_active_widget(false, false, 'nrelate-related', true) ) {
+	$fieldstatus = 'DISABLED';
+}
+
+
 function options_init_nr_rc(){
 	register_setting('nrelate_related_options', 'nrelate_related_options', 'related_options_validate' );
 	
@@ -24,10 +30,10 @@ function options_init_nr_rc(){
 	// Main Section
 	add_settings_section('main_section', __('Main Settings','nrelate'), 'section_text_nr_rc', __FILE__);
 	add_settings_field('related_thumbnail', __('Would you like to display thumbnails with text, or text only','nrelate'), 'setting_thumbnail',__FILE__,'main_section');
-	add_settings_field('related_thumbnail_size', __('<div id="imagesizepreview_header" '.$divstyle.'>Please choose a thumbnail size </div>','nrelate'), 'setting_thumbnail_size',__FILE__,'main_section');
-	add_settings_field('related_default_image', __('<div id="imagepreview_header" '.$divstyle.'>Please provide a link to your default image: (This will show up when a related post does not have a picture in it)<br/><i>For best results image should be as large (or larger) than the thumbnail size you chose above.</i></div>','nrelate'), 'setting_related_default_image',__FILE__,'main_section');
+	add_settings_field('related_thumbnail_size', __('<div id="imagesizepreview_header" '.$divstyle.'>Please choose a thumbnail size','nrelate') . nrelate_thickbox_youtube('9Y09dHk8nO0','related_thumbnailsize_video') . '</div>', 'setting_thumbnail_size',__FILE__,'main_section');
+	add_settings_field('related_default_image', __('<div id="imagepreview_header" '.$divstyle.'>Please provide a link to your default image: (This will show up when a related post does not have a picture in it)<br/><i>For best results image should be as large (or larger) than the thumbnail size you chose above.</i>' . nrelate_thickbox_youtube('OzTtXJUgW3c','related_default_image') . '</div>','nrelate'), 'setting_related_default_image',__FILE__,'main_section');
 	add_settings_field('related_custom_field', __('<div id="imagecustomfield_header" '.$divstyle.'>If you use <b>Custom Fields</b> for your images, nrelate can show them.</div>','nrelate'), 'setting_related_custom_field',__FILE__,'main_section');
-	add_settings_field('related_title', __('Please enter a title for the related content box','nrelate'), 'setting_string_nr_rc', __FILE__, 'main_section');
+	add_settings_field('related_title', __('Please enter a title for the related content box','nrelate') . nrelate_thickbox_youtube('cWEpWJ7Ftsw','related_title_video'), 'setting_string_nr_rc', __FILE__, 'main_section');
 	add_settings_field('related_number_of_posts', __('<b>Maximum</b> number of related posts to display from this site</br><em>To display multiple rows of thumbnails, choose more than will fit in one row.</em>','nrelate'), 'setting_related_number_of_posts_nr_rc', __FILE__, 'main_section');
 	add_settings_field('related_bar', __('How relevant do you want the results to be?<br/><i>Based on the amount/type of content on your website, higher relevancy settings may return little or no posts.</i>','nrelate'), 'setting_related_bar_nr_rc', __FILE__, 'main_section');
 	add_settings_field('related_max_chars_per_line', __('Maximum number of characters per line?','nrelate'), 'setting_related_max_chars_per_line', __FILE__, 'main_section');
@@ -105,7 +111,6 @@ function setting_string_nr_rc() {
 	$options = get_option('nrelate_related_options');
 	$r_title = stripslashes(stripslashes($options['related_title']));
 	$r_title = htmlspecialchars($r_title);
-	nrelate_thickbox_youtube('cWEpWJ7Ftsw','related_title_video');
 	echo '<input id="related_title" name="nrelate_related_options[related_title]" size="40" type="text" value="'.$r_title.'" />';
 }
 
@@ -187,7 +192,8 @@ function setting_related_number_of_posts_nr_rc_ext(){
 
 // Section HTML, displayed before the first option
 function section_text_nr_rc_layout(){
-	_e('<p><strong>Related posts will only show up once per page.</strong></p><p>Where do you want your related content to display?</p>','nrelate');
+	$video = nrelate_thickbox_youtube('2kc32vFYO68','related_automatic_layout');
+	echo '<div><strong>Related posts will only show up once per page.</strong><br/>Where do you want your related content to display?' . $video . '</div>';
 }
 
 // CHECKBOX - Location Post Top
@@ -199,9 +205,10 @@ function setting_related_loc_top(){
 
 // CHECKBOX - Location Post Bottom
 function setting_related_loc_bottom(){
+	global $fieldstatus;
 	$options = get_option('nrelate_related_options');
 	if($options['related_loc_bottom']=='on'){ $checked = ' checked="checked" '; }
-	echo "<input ".$checked." id='related_loc_bottom' name='nrelate_related_options[related_loc_bottom]' type='checkbox'/>";
+	echo "<input ".$checked." id='related_loc_bottom' name='nrelate_related_options[related_loc_bottom]' type='checkbox' " . $fieldstatus . "/>";
 }
 
 
@@ -256,7 +263,6 @@ function setting_thumbnail_size(){
 	}
 	
 	echo "<div id='imagesizepreview' ".$divstyle.">";
-	nrelate_thickbox_youtube('9Y09dHk8nO0','related_thumbnailsize_video');
 	$sizes = array(80,90,100,110,120,130,140,150);
 	
 	foreach($sizes as $size){ ?>
@@ -307,7 +313,6 @@ function setting_related_default_image(){
 	}
 	// User can input an image url
 	_e("Enter the link to your default image (include http://): <br>");
-	nrelate_thickbox_youtube('OzTtXJUgW3c','related_default_image');
 	echo '<input type="text" size="60" id="related_default_image" name="nrelate_related_options[related_default_image]" value="'.$imageurl.'"></div>';
 }
 

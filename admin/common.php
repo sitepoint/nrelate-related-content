@@ -1,8 +1,8 @@
 <?php
 /**
- * Dashboard Functions File
+ * Common Admin Functions File
  *
- * Load dashboard common functions
+ * Load Admin common functions
  *
  * Checks if another nrelate plugin loaded these functions first
  * 
@@ -10,8 +10,6 @@
  * @subpackage Functions
  */
 
-
-if ( !function_exists('nrelate_setup_dashboard') ) {
 
 //Check system requirements
 add_action('admin_init', 'nrelate_system_check', 0);
@@ -21,23 +19,12 @@ add_action('admin_init', 'nrelate_system_check', 0);
  */
 		define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
 
-		define( 'NRELATE_DASHBOARD_FILE', plugin_basename( __FILE__ ) );
-		define( 'NRELATE_ADMIN_DIR_NAME', trim( dirname( NRELATE_DASHBOARD_FILE ), '/' ) );
+		define( 'NRELATE_ADMIN_COMMON_FILE', plugin_basename( __FILE__ ) );
+		define( 'NRELATE_ADMIN_DIR_NAME', trim( dirname( NRELATE_ADMIN_COMMON_FILE ), '/' ) );
 		define( 'NRELATE_ADMIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_ADMIN_DIR_NAME );
 		define( 'NRELATE_ADMIN_URL', WP_PLUGIN_URL . '/' . NRELATE_ADMIN_DIR_NAME );
 		define( 'NRELATE_ADMIN_IMAGES', NRELATE_ADMIN_URL . '/images' );
-		
-/**
- * Load Javascript
- */
-wp_enqueue_script('jquery');
 
-/**
- * Load custom RSS feed
- */
-require_once NRELATE_ADMIN_DIR . '/rss-feed.php';
-
-	
 /**
  * System check
  *
@@ -59,9 +46,6 @@ function nrelate_system_check(){
 		wp_die( $warning . $message . $closing );
 	}
 }
-
-
-
 
 /********************
  *  Admin only code
@@ -111,22 +95,24 @@ add_action('admin_print_styles','nrelate_load_thickbox');
  * $youtube_id = youtube id, not full url
  * $div_id = unique div id for each thickbox instance
  */
-function nrelate_thickbox_youtube($youtube_id, $div_id) { ?>
+function nrelate_thickbox_youtube($youtube_id, $div_id) {
 
-<div id="<?php echo $div_id ?>" style="display:none">
+$output = '
+<div id="' . $div_id .'" style="display:none">
 	<div class="nrelate_help_video">
 		<object width="640" height="385">
-			<param name="movie" value="http://www.youtube.com/v/<?php echo $youtube_id ?>&autoplay=1?fs=1&amp;hl=en_US"></param>
+			<param name="movie" value="http://www.youtube.com/v/' . $youtube_id . '&autoplay=1?fs=1&amp;hl=en_US"></param>
 			<param name="allowFullScreen" value="true"></param>
 			<param name="allowscriptaccess" value="always"></param>
-			<embed src="http://www.youtube.com/v/<?php echo $youtube_id ?>&autoplay=1?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="385"></embed>
+			<embed src="http://www.youtube.com/v/' . $youtube_id . '&autoplay=1?fs=1&amp;hl=en_US" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="385"></embed>
 		</object>
 	</div>
 </div>
-<a class="thickbox" href="#TB_inline?height=385&amp;width=640&amp;inlineId=<?php echo $div_id ?>">
-	<img class="nrelate-help" src=<?php echo NRELATE_ADMIN_IMAGES ?>/help.png />
-</a>
-<?php
+<a class="thickbox" href="#TB_inline?height=385&amp;width=640&amp;inlineId=' . $div_id . '">
+	<img class="nrelate-help" src=' . NRELATE_ADMIN_IMAGES . '/help.png />
+</a>';
+
+return $output;
 }
 
 /**
@@ -157,21 +143,5 @@ nrelate_upgrade_option('nrelate_related_options', 'related_custom_field', 'nrela
 // move ad code field option from related settings to admin settings - since 0.42.6
 nrelate_upgrade_option('nrelate_related_options', 'related_validate_ad', 'nrelate_admin_options', 'admin_validate_ad');
 };/* end is_admin */
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-};/* end !function_exists */
-
 
 ?>

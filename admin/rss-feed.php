@@ -71,7 +71,7 @@ function nrelate_custom_feed() {
 			)
 		);
 		
-        // Show full content even if MORE tag is present
+    // Show full content even if MORE tag is present
 		global $more;
 		$more = 1;
 		
