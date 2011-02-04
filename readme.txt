@@ -80,7 +80,7 @@ nrelate started because we believe we can do a better job than the other service
 Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content. In fact, if you switch to nrelate from a local related content plugin like YARPP, you may actually see a speed improvement on your site.
 
 = What are my display choices? =
-You can show related content as cool image thumbnails (choose from six image sizes), or simple text with bullets. When choosing thumbnails we will look in your post to find the first image and use that. You can also choose a default image to show when your post contains none.  In the plugin options page you can enter your default image url. If your post has no image, and you have not set a default, we will show a random one from our image library.<br>
+You can show related content as cool image thumbnails (choose from eight image sizes), or simple text with bullets. When choosing thumbnails we will look in your post to find the first image and use that. You can also choose a default image to show when your post contains none.  In the plugin options page you can enter your default image url. If your post has no image, and you have not set a default, we will show a random one from our image library.<br>
 <a href="http://wordpress.org/extend/plugins/nrelate-related-content/screenshots/">Check out the screenshots.</a>
 
 = Will it look like the rest of my site? =
@@ -110,7 +110,7 @@ Yes. Just go to our settings page, and fill in the name of the custom field you 
 Our plugin creates an additional nrelate specific RSS feed.  We use this feed so that we don't run into issues if your regular RSS feed is set to "Summary" or if you use a service like Feedburner.
 
 = What is in the nrelate specific RSS feed and how is it used? =
-The nrelate specific RSS feed is exactly the same content that is in your RSS feed if you set it to full feed.  Since we had some users that had their feed to just show a summary and others that used Feedburner, we set this up.  The nrelate specific feed can only be accessed by using a random key that is generated upon install.  To make sure this feed is not used for other purposes, we hired WordPress lead developer and security expert, Mark Jaquith, to build it for us.
+The nrelate specific RSS feed is exactly the same content that is in your RSS feed if you set it to full feed. It helps us see you full post content even if you have your main feed set to show a summary if you use Feedburner.  The nrelate specific feed can only be accessed by using a random key that is generated upon install.  To make sure this feed is not used for other purposes, we hired WordPress lead developer and security expert, Mark Jaquith, to build it for us.
 
 = My website is not in English, will nrelate work? =
 Our plugin will work on websites in the following languages: Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Spanish, Swedish and Turkish.  If you do not see your language on the list or you think that we could improve the relevancy of our plugin in your language, please <a href="http://nrelate.com/forum/">contact us</a> and we will work with you to configure the plugin accordingly.
