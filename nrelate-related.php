@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.42.7
+Version: 0.44.0
 Author URI: http://nrelate.com/
 
 
@@ -27,7 +27,7 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.42.7' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.44.0' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.01.0' );
 
@@ -80,6 +80,8 @@ if (is_admin()) {
 		}			
 		//load related menu
 		require_once ( NRELATE_RELATED_SETTINGS_DIR . '/related-menu.php' );
+} else {
+	require_once ( NRELATE_RELATED_ADMIN_DIR . '/common-frontend.php' );
 }
 
 /**
@@ -184,7 +186,6 @@ function nrelate_related_load_widget() {
 };
 add_action( 'widgets_init', 'nrelate_related_load_widget' );
 
-
 /**
  * Primary function
  *
@@ -202,21 +203,29 @@ function nrelate_related($opt=false) {
 		global $wp_query;
 		$post_id = $wp_query->post->ID;
 		// Assign options
+		$nrelate_related_options = get_option( 'nrelate_related_options' );
+		$nr_domain = substr(home_url(), 7);
+		$nr_width_class = 'nr_'.$nrelate_related_options['related_thumbnail_size'];
 		$post_urlencoded = urlencode(get_permalink());
 		$post_title = urlencode(get_the_title($post_id));
 		$wp_root_nr = get_bloginfo( 'url' );
 		$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 		$wp_root_nr = urlencode($wp_root_nr);
 		$version = NRELATE_RELATED_PLUGIN_VERSION;
+
 		$markup = <<<EOD
 <div class="nr_clear"></div>
-<div id="nrelate_related" class="nrelate_related"></div>
-<link rel="stylesheet" href="http://static.nrelate.com/rcw_wp/$version/nrelate-panels.css" type="text/css" /><!--[if IE 6]><link rel="stylesheet" href="http://static.nrelate.com/rcw_wp/$version/ie6-panels.css" type="text/css" /><![endif]-->
+<div id="nrelate_related" class="nrelate_related $nr_width_class"></div>
 <script type="text/javascript">
-var nr_url="http://api.nrelate.com/rcw_wp/$version/?tag=nrelate_related";nr_url+="&keywords=$post_title&domain=$wp_root_nr&url=$post_urlencoded";jQuery.getScript(nr_url);
-var nr_load_link=false;var nr_clicked_link=null;function nr_clickthrough(nr_dest_url){var nr_src_url=window.location.href;var nr_iframe_src="http://api.nrelate.com/rcw_wp/track.html?clicked=true"+"&src_url="+nr_src_url+"&dest_url="+nr_dest_url;var nr_iframe=document.getElementById('nr_clickthrough_frame');nr_iframe.src=nr_iframe_src;nr_load_link=true;nr_clicked_link=nr_dest_url;}
-function nr_loadframe(){if(nr_load_link){nr_load_link=false;window.location.href=nr_clicked_link;}}
-document.write('<iframe  id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nr_loadframe();"></iframe>');function nr_rc_fix_css(){var nr_height=0;jQuery("a.nr_rc_panel").each(function(){if(jQuery(this).innerHeight()>nr_height){nr_height=jQuery(this).innerHeight();}});jQuery("a.nr_rc_panel").css("height",nr_height+"px");}
+/* <![CDATA[ */ 
+var nr_url="http://api.nrelate.com/rcw_wp/$version/?tag=nrelate_related";
+nr_url+="&keywords=$post_title&domain=$wp_root_nr&url=$post_urlencoded";
+var nr_domain="$nr_domain";
+var nr_load_link=false;
+var nr_clicked_link=null;
+document.write('<iframe  id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nr_loadframe();"></iframe>');
+jQuery.getScript(nr_url);
+/* ]]> */ 
 </script>
 <div class="nr_clear"></div>
 EOD;

@@ -18,6 +18,7 @@ add_action('admin_init', 'nrelate_system_check', 0);
  * Define Admin constants
  */
 		define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
+		define( 'NRELATE_WEBSITE_AD_SIGNUP', 'http://nrelate.com/partners/content-publishers/sign-up-for-advertising/' );
 
 		define( 'NRELATE_ADMIN_COMMON_FILE', plugin_basename( __FILE__ ) );
 		define( 'NRELATE_ADMIN_DIR_NAME', trim( dirname( NRELATE_ADMIN_COMMON_FILE ), '/' ) );
@@ -67,7 +68,8 @@ function nrelate_setup_dashboard() {
 		require_once NRELATE_ADMIN_DIR . '/nrelate-admin-settings.php';
 		require_once NRELATE_ADMIN_DIR . '/nrelate-main-menu.php';
 		require_once NRELATE_ADMIN_DIR . '/admin-messages.php';
-		add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/menu-logo.gif');	
+		global $dashboardpage;
+		$dashboardpage = add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/menu-logo.gif');
 };
 add_action('admin_menu', 'nrelate_setup_dashboard');
  
@@ -114,6 +116,74 @@ $output = '
 
 return $output;
 }
+
+/**
+ * Add Dashboard help
+ *
+ * add contextual help page to dashboard
+ * Since v0.44.0
+ */
+function nrelate_dasboard_help($contextual_help, $screen_id, $screen) {
+	global $dashboardpage;
+	if ($screen_id == $dashboardpage) {
+		$contextual_help = nrelate_site_inventory();
+	}
+	return $contextual_help;
+}
+add_action('contextual_help', 'nrelate_dasboard_help', 10, 3);
+
+
+/**
+ * Website inventory for support
+ *
+ * used in dashboard help page
+ * Since v0.44.0
+ * @credits http://wordpress.org/extend/plugins/wphelpcenter/
+ */
+function nrelate_site_inventory(){
+	$theme = get_theme(get_current_theme());
+		$themename = $theme[Name];
+		$themeversion = $theme[Version];
+		$themeauthor = $theme[Author];
+	$url = get_option('siteurl');
+	$wp_version = get_bloginfo('version');
+	global $wpmu_version, $wp_version;
+		is_null($wpmu_version) ? $wp_type = __('WordPress (single user)', 'nrelate') : $wp_type = __('WordPress MU', 'nrelate');
+	$phpversion = phpversion();
+	
+	//get active plugins
+	$all_plugins = get_plugins();
+	$active_plugins = array();
+	$inactive_plugins = array();
+	foreach ( (array)$all_plugins as $plugin_file => $plugin_data) {
+		if ( is_plugin_active($plugin_file) ) {
+			$active_plugins[ $plugin_file ] = $plugin_data;
+		} else {
+			$inactive_plugins[ $plugin_file ] = $plugin_data;
+		}
+	}
+	foreach ( (array)$active_plugins as $plugin_file => $plugin_data) {
+		$plugins .= esc_html($plugin_data['Title']). '&nbsp;' . __('version:', 'nrelate').' '.esc_html($plugin_data['Version']). '&nbsp' . __('by:', 'nrelate') . '&nbsp' . esc_html($plugin_data['Author']).'&#10;' ;
+	}
+
+$message = <<<EOD
+<strong>If you are having trouble with our plugin please copy the information below and email it to: support@nrelate.com</strong>
+<textarea style="width:90%; height:200px;">
+URL: $url 
+WordPress Version: $wp_version
+WordPress Type: $wp_type
+PHP Version: $phpversion
+Active Theme: $themename $themeversion by $themeauthor
+
+Active Plugins:
+$plugins
+</textarea>
+EOD;
+
+return $message;
+}
+
+
 
 /**
  * Old to New Options for all plugins

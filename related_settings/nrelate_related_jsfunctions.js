@@ -4,12 +4,14 @@ function nrelate_related_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr, 
 	if (!window.focus)return true;
 	var nr_thumbsize, nr_ext_opt, nr_maxageposts, nr_age_num,age_frame, nr_href, nr_imageurl, nr_title, nr_number_ext, nr_numberrelated, nr_r_title, nr_r_max_char_perline, nr_ad, nr_logo, nr_thumb, nr_adval, nr_logoval, nr_thumbval;
 	nr_title = "Nrelate_Preview";
-	nr_href = NRELATE_RELATED_SETTINGS_URL+"/nrelate_popup_content.php";
+	nr_href = 'http://api.nrelate.com/rcw_wp/' + NRELATE_RELATED_PLUGIN_VERSION + '/nrelate_popup_content.php';
 	nr_numberrelated = document.getElementById("related_number_of_posts").value;
 	nr_num_ext = document.getElementById("related_number_of_posts_ext").value;
 	nr_r_title = document.getElementById("related_title").value;
 	nr_r_max_char_perline = document.getElementById("related_max_chars_per_line").value;
 	nr_adval = document.getElementById("show_ad").checked;
+	nr_num_ads = document.getElementById("related_number_of_ads").value;
+	nr_ads_placement = document.getElementById("related_ad_placement").value;
 	nr_logoval = document.getElementById("show_logo").checked;
 	nr_thumbval = document.getElementById("related_thumbnail").value;
 	nr_imageurl = document.getElementById("related_default_image").value;
@@ -82,9 +84,12 @@ function nrelate_related_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr, 
 	}
 	
 	nr_tag = "?NUM="+nr_numberrelated+"&DOMAIN="+wp_root_nr+"&IMAGEURL="+escape(nr_imageurl)+"&NUMEXT="+nr_num_ext+"&TITLE="+escape(nr_r_title)+"&MAXCHAR="+nr_r_max_char_perline+"&AD="+nr_ad+"&LOGO="+nr_logo+"&THUMB="+nr_thumb+"&MAXAGE="+nr_maxageposts+"&EXTOPT="+nr_ext_opt+"&THUMBSIZE="+nr_thumbsize+"&RELATED_VERSION="+NRELATE_RELATED_PLUGIN_VERSION;
-	nr_link = nr_href+nr_tag;
-	window.open(nr_link,nr_title,'width=600,height=400,scrollbars=yes');
-	return false;
+	nr_tag += '&NUMADS=' + nr_num_ads + '&ADSPLACE=' + nr_ads_placement;
+	//http://api.nrelate.com/rcw_wp/0.44.0/nrelate_popup_content.php
+	nr_link = nr_href + nr_tag;
+	//window.open(nr_link,nr_title,'width=600,height=400,scrollbars=yes');
+	//return false;
+	return nr_link;
 }
 
 // Ajax call to blog_transport.php to check the site status from blogroll
@@ -113,3 +118,24 @@ function checkblog(NRELATE_RELATED_SETTINGS_URL,nr_domain){
 		alert("Can't connect to server:\n" + e.toString()); 
 	}
 }
+
+function nr_iframe_reload(){
+	document.getElementById('TB_iframeContent').src = nrelate_related_popup_preview(nr_plugin_settings_url, nr_plugin_domain, nr_plugin_version)+'&TB_iframe=1&width=822&height=372';
+	jQuery('#TB_iframeContent').unbind('load');
+}
+
+jQuery(document).ready(function($){
+	$('.nrelate_preview_button').click(function(event){
+		event.preventDefault();
+		_url = nrelate_related_popup_preview(nr_plugin_settings_url, nr_plugin_domain, nr_plugin_version)+'&TB_iframe=1&width=822&height=372';
+		tb_show('nRelate - preview', _url, false);
+		$('#TB_iframeContent').load(function(){
+			nr_iframe_reload();
+		});
+	});
+	
+	$('#show_ad').click(function(){
+		$('#ads_warning').slideDown('fast');
+	});
+	
+});

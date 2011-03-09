@@ -15,7 +15,7 @@ function options_admin_init_nr(){
 	
 	// Ad Section
 	add_settings_section('ad_section', __('Advertising','nrelate'), 'section_text_nr_ad', __FILE__);
-	add_settings_field('admin_validate_ad', __('Please Enter your ad ID','nrelate').'<br>(<a href="http://nrelate.com/partners/content-publishers/sign-up-for-advertising/" target="_blank">'.__('Get Your ID','nrelate') . '</a>)', 'setting_admin_validate_ad', __FILE__, 'ad_section');	
+	add_settings_field('admin_validate_ad', __('Please Enter your ad ID','nrelate').'<br>(<a href="' . NRELATE_WEBSITE_AD_SIGNUP . '" target="_blank">'.__('Get Your ID','nrelate') . '</a>)', 'setting_admin_validate_ad', __FILE__, 'ad_section');	
 
 	// Communication Section
 	add_settings_section('comm_section', __('Communication','nrelate'), 'section_text_nr_comm', __FILE__);
@@ -82,14 +82,13 @@ function setting_admin_custom_field() {
 }
 
 
-
 /****************************************************************
  ******************** Build the Admin Page ********************** 
 *****************************************************************/
 function nrelate_admin_do_page() { ?> 
 
 		<div id="nr-admin-settings" class="postbox">
-			<h3 class="hndle"><span><?php _e('Settings:')?></span></h3>
+			<h3 class="hndle"><span><?php _e('Common settings for all nrelate products:')?></span></h3>
 				<ul class="inside">
 					<?php $connectionstatus = update_nrelate_admin_data();
 					if($connectionstatus !="Success"){

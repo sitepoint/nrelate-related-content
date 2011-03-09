@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.42.7
+Stable tag: 0.44.0
 
 
 The best way to display related content: Thumbnails or Text.
@@ -25,6 +25,8 @@ And two display styles:<br>
 1. Thumbnails<br>
 2. Text<br>
 <a href="http://wordpress.org/extend/plugins/nrelate-related-content/screenshots/">Check out the screenshots.</a>
+
+Advertising is also possible with the plugin. Ads come with the same display options as the related content and are a great way to earn a little extra income from your blog.
 
 Because all of the processing and analyzing runs on our servers and not yours, nrelate doesn't cause any additional load on your hosting account (especially if you're using shared hosting).
 
@@ -80,8 +82,20 @@ nrelate started because we believe we can do a better job than the other service
 Absolutely not.  Since the nrelate servers are doing all the hard work, your website can focus on what it does best... show content. In fact, if you switch to nrelate from a local related content plugin like YARPP, you may actually see a speed improvement on your site.
 
 = What are my display choices? =
-You can show related content as cool image thumbnails (choose from eight image sizes), or simple text with bullets. When choosing thumbnails we will look in your post to find the first image and use that. You can also choose a default image to show when your post contains none.  In the plugin options page you can enter your default image url. If your post has no image, and you have not set a default, we will show a random one from our image library.<br>
+You can show related content as cool image thumbnails (choose from six image sizes), or simple text with bullets. When choosing thumbnails we will look in your post to find the first image and use that. You can also choose a default image to show when your post contains none.  In the plugin options page you can enter your default image url. If your post has no image, and you have not set a default, we will show a random one from our image library.<br>
 <a href="http://wordpress.org/extend/plugins/nrelate-related-content/screenshots/">Check out the screenshots.</a>
+
+= Is advertising optional? =
+Yes, you always have the option to display or not display ads.
+
+= What ad display options do you offer? =
+If you sign up for advertising, you will be able to display up to ten advertisements within the plugin. If you have selected the thumbnail view, then thumbnails will show up. If you have selected text links, then text ads will show up. You can show ads either at the front, end, or mixed within your content links.
+
+= Does nrelate offer a revenue share on ads? =
+Yes, its your blog, you should be making money on it!
+
+= Where do I sign up for ads? =
+After installing the plugin, you can <a href="http://nrelate.com/partners/content-publishers/sign-up-for-advertising/">sign up for advertising here.</a>
 
 = Will it look like the rest of my site? =
 Many of your website styles will automatically be used by the plugin so it will blend in nicely with your website.  We do need to set some of our own styles to make it work properly. However, you can makes changes to our styles by including your own CSS in your stylesheet.
@@ -110,7 +124,7 @@ Yes. Just go to our settings page, and fill in the name of the custom field you 
 Our plugin creates an additional nrelate specific RSS feed.  We use this feed so that we don't run into issues if your regular RSS feed is set to "Summary" or if you use a service like Feedburner.
 
 = What is in the nrelate specific RSS feed and how is it used? =
-The nrelate specific RSS feed is exactly the same content that is in your RSS feed if you set it to full feed. It helps us see you full post content even if you have your main feed set to show a summary if you use Feedburner.  The nrelate specific feed can only be accessed by using a random key that is generated upon install.  To make sure this feed is not used for other purposes, we hired WordPress lead developer and security expert, Mark Jaquith, to build it for us.
+The nrelate specific RSS feed is exactly the same content that is in your RSS feed if you set it to full feed.  Since we had some users that had their feed to just show a summary and others that used Feedburner, we set this up.  The nrelate specific feed can only be accessed by using a random key that is generated upon install.  To make sure this feed is not used for other purposes, we hired WordPress lead developer and security expert, Mark Jaquith, to build it for us.
 
 = My website is not in English, will nrelate work? =
 Our plugin will work on websites in the following languages: Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Spanish, Swedish and Turkish.  If you do not see your language on the list or you think that we could improve the relevancy of our plugin in your language, please <a href="http://nrelate.com/forum/">contact us</a> and we will work with you to configure the plugin accordingly.
@@ -123,6 +137,11 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 
 == Changelog ==
+
+= 0.44.0 =
+* New ad options
+* Reset all standard WordPress RSS filters in nrelate specific feed.
+* Add Debug information in dropdown help menu.
 
 = 0.42.7 =
 * Optimized plugin code.

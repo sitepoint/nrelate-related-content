@@ -56,7 +56,8 @@ function options_init_nr_rc(){
 	// Ad Section
 	add_settings_section('ad_section',__('Advertising Settings','nrelate'), 'section_text_nr_rc_ad', __FILE__);
 	add_settings_field('related_display_ad',__('Would you like to display ads?','nrelate'), 'setting_related_display_ad', __FILE__, 'ad_section');
-
+	add_settings_field('related_ad_number',__('How many ad spaces do you wish to show?','nrelate'), 'setting_related_ad_number', __FILE__, 'ad_section');
+	add_settings_field('related_ad_placement',__('Where would you like to place the ads?','nrelate'), 'setting_related_ad_placement', __FILE__, 'ad_section');
 
 	// Reset Setting
 	add_settings_section('reset_section',__('Reset Settings to Default','nrelate'), 'section_text_nr_rc_reset', __FILE__);
@@ -169,7 +170,7 @@ function setting_blogroll() {
 	echo "</select>";
 	
 	// Ajax calls to contact nrelate servers and update as necessary
-	echo "<div id='bloglinks'".$blog_div_style."></div>";
+	echo "<div id='bloglinks'></div>";
 	echo '<script type="text/javascript"> checkindex(\''.NRELATE_RELATED_SETTINGS_URL.'\',\''.$wp_root_nr.'\'); checkblog(\''.NRELATE_RELATED_SETTINGS_URL.'\',\''.$wp_root_nr.'\'); </script>';
 }
 
@@ -177,7 +178,7 @@ function setting_blogroll() {
 // Number of posts from external sites
 function setting_related_number_of_posts_nr_rc_ext(){
 	$options = get_option('nrelate_related_options');
-	$items = array("0","1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+	$items = array("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
 	echo "<div id='blogrollnumber'><select id='related_number_of_posts_ext' name='nrelate_related_options[related_number_of_posts_ext]'>";
 	foreach($items as $item) {
 		$selected = ($options['related_number_of_posts_ext']==$item) ? 'selected="selected"' : '';
@@ -337,7 +338,14 @@ function setting_related_custom_field() {
 
 // Section HTML, displayed before the first option
 function section_text_nr_rc_ad() {
-		_e('<p>nrelate can display ads under your related posts and you can earn money. Make sure you have signed up for an "Ad ID", and entered it on the <a href="admin.php?page=nrelate-main">nrelate Dashboard page</a>.</p>','nrelate');
+		_e('<p>nrelate can display ads under your related posts and you can earn money. Make sure you have signed up for an <a href="' . NRELATE_WEBSITE_AD_SIGNUP . '" target="_blank">Advertising ID</a>, and entered it on the <a href="admin.php?page=nrelate-main">nrelate Dashboard page</a>.</p>','nrelate');
+		
+		$admin_options = get_option('nrelate_admin_options');
+		
+		if (empty($admin_options['admin_validate_ad'])) {
+			echo '<div id="ads_warning" class="nr_error" style="margin-right:15px; display:none;"><p>';
+			echo (__('Before you can display ads, you must sign up for an "Advertising ID". Please' ,'nrelate') . ' <a href="' . NRELATE_WEBSITE_AD_SIGNUP . '">' . __('click here','nrelate') . '</a>' . __(' to sign up.','nrelate') . '</p></div>');
+		}
 }
 
 // CHECKBOX - Display ads
@@ -345,6 +353,30 @@ function setting_related_display_ad() {
 	$options = get_option('nrelate_related_options');
 	if($options['related_display_ad']) { $checked = ' checked="checked" '; }
 	echo "<input ".$checked." id='show_ad' name='nrelate_related_options[related_display_ad]' type='checkbox' />";
+}
+
+// DROPDOWN - number of ads to show
+function setting_related_ad_number(){
+	$options = get_option('nrelate_related_options');
+	$items = array("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
+	echo "<div id='adnumber'><select id='related_number_of_ads' name='nrelate_related_options[related_number_of_ads]'>";
+	foreach($items as $item) {
+		$selected = ($options['related_number_of_ads']==$item) ? 'selected="selected"' : '';
+		echo "<option value='$item' $selected>$item</option>";
+	}
+	echo "</select></div>";
+}
+
+// DROPDOWN - ad placement
+function setting_related_ad_placement(){	
+	$options = get_option('nrelate_related_options');
+	$items = array("Mixed","First","Last");
+	echo "<div id='adplacement'><select id='related_ad_placement' name='nrelate_related_options[related_ad_placement]'>";
+	foreach($items as $item) {
+		$selected = ($options['related_ad_placement']==$item) ? 'selected="selected"' : '';
+		echo "<option value='$item' $selected>$item</option>";
+	}
+	echo "</select></div>";
 }
 
 ///////////////////////////
@@ -421,14 +453,22 @@ function nrelate_related_do_page() {
 			$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 			$wp_root_nr = urlencode($wp_root_nr);
 		?>
+    <script type="text/javascript">
+		/* <![CDATA[ */
+		var nr_plugin_settings_url = '<?php echo NRELATE_RELATED_SETTINGS_URL; ?>';
+		var nr_plugin_domain = '<?php echo $wp_root_nr ?>';
+		var nr_plugin_version = '<?php echo NRELATE_RELATED_PLUGIN_VERSION ?>';
+		/* ]]> */
+    </script>
 		<form name="settings" action="options.php" method="post" enctype="multipart/form-action">
         <p class="submit">
 			<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes','nrelate'); ?>" />
 		</p>
-        <button type="button" class="button-primary" onClick="return nrelate_related_popup_preview('<?php echo NRELATE_RELATED_SETTINGS_URL ?>','<?php echo $wp_root_nr ?>','<?php echo NRELATE_RELATED_PLUGIN_VERSION ?>');"> <?php _e('Preview','nrelate'); ?> </button>
+        <button type="button" class="nrelate_preview_button button-primary"> <?php _e('Preview','nrelate'); ?> </button>
 		<?php settings_fields('nrelate_related_options'); ?>
 		<?php do_settings_sections(__FILE__);?>
-		<br><button type="button" class="button-primary" onClick="return nrelate_related_popup_preview('<?php echo NRELATE_RELATED_SETTINGS_URL ?>','<?php echo $wp_root_nr ?>','<?php echo NRELATE_RELATED_PLUGIN_VERSION ?>');"> <?php _e('Preview','nrelate'); ?> </button>
+		<br>
+    <button type="button" class="nrelate_preview_button button-primary" onClick="return nrelate_related_popup_preview('<?php echo NRELATE_RELATED_SETTINGS_URL ?>','<?php echo $wp_root_nr ?>','<?php echo NRELATE_RELATED_PLUGIN_VERSION ?>');"> <?php _e('Preview','nrelate'); ?> </button>
 		<p class="submit">
 			<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes','nrelate'); ?>" />
 		</p>
@@ -464,6 +504,8 @@ function update_nrelate_data(){
 	$related_thumbnail_size = $option['related_thumbnail_size'];
 	$related_loc_top = $option['related_loc_top'];
 	$related_loc_bot = $option['related_loc_bottom'];
+	$related_ad_num = $option['related_number_of_ads'];
+	$related_ad_place = $option['related_ad_placement'];
 	
 	$related_layout= '';
 	if($related_loc_top==on){
@@ -533,7 +575,7 @@ function update_nrelate_data(){
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$bloglist = blogroll();
 	// Write the parameters to be sent
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&NUMEXT='.$number_ext.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&LOGO='.$logo.'&IMAGEURL='.$backfill.'&THUMBSIZE='.$related_thumbnail_size.'&LAYOUT='.$related_layout;
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&NUMEXT='.$number_ext.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&LOGO='.$logo.'&IMAGEURL='.$backfill.'&THUMBSIZE='.$related_thumbnail_size.'&ADNUM='.$related_ad_num.'&ADPLACE='.$related_ad_place.'&LAYOUT='.$related_layout;
 	// Curl connection to the nrelate server
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated.php'); 

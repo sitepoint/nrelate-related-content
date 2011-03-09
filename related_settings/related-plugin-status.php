@@ -60,8 +60,11 @@ function add_defaults_nr_rc() {
 		"related_thumbnail_size" => 110,
 		"related_default_image" => NULL,
 		"related_number_of_posts_ext" => 3,
-		"related_validate_ad" => NULL
+		"related_validate_ad" => NULL,
+		"related_number_of_ads" => 1,
+		"related_ad_placement" => "Mixed"
 		);
+		
 		update_option('nrelate_related_options', $arr);
 
 		// Convert some values to send to nrelate server
@@ -80,6 +83,8 @@ function add_defaults_nr_rc() {
 		$backfillimage = NULL;
 		$number_ext = 3;
 		$related_thumbnail_size=110;
+		$r_number_of_ads = 0;
+		$r_ad_placement = "Mixed";
 
 		// Convert max age time frame to minutes
 		switch ($r_max_frame)
@@ -146,7 +151,7 @@ function add_defaults_nr_rc() {
 		$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 		$bloglist = blogroll_1();
 		// Write the parameters to be sent
-		$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&NUMEXT='.$number_ext.'&IMAGEURL='.$backfillimage.'&THUMBSIZE='.$related_thumbnail_size;
+		$curlPost = 'DOMAIN='.$wp_root_nr.'&NUM='.$number.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&MAXCHAR='.$r_max_char_per_line.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&NUMEXT='.$number_ext.'&IMAGEURL='.$backfillimage.'&THUMBSIZE='.$related_thumbnail_size.'&ADNUM='.$r_number_of_ads.'&ADPLACE='.$r_ad_placement;
 		// Curl connection to the nrelate server
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated.php');
