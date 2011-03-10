@@ -26,8 +26,6 @@ And two display styles:<br>
 2. Text<br>
 <a href="http://wordpress.org/extend/plugins/nrelate-related-content/screenshots/">Check out the screenshots.</a>
 
-Advertising is also possible with the plugin. Ads come with the same display options as the related content and are a great way to earn a little extra income from your blog.
-
 Because all of the processing and analyzing runs on our servers and not yours, nrelate doesn't cause any additional load on your hosting account (especially if you're using shared hosting).
 
 <a href="http://www.nrelate.com" title="nrelate home page">You can learn more about nrelate here</a>.
@@ -85,18 +83,6 @@ Absolutely not.  Since the nrelate servers are doing all the hard work, your web
 You can show related content as cool image thumbnails (choose from six image sizes), or simple text with bullets. When choosing thumbnails we will look in your post to find the first image and use that. You can also choose a default image to show when your post contains none.  In the plugin options page you can enter your default image url. If your post has no image, and you have not set a default, we will show a random one from our image library.<br>
 <a href="http://wordpress.org/extend/plugins/nrelate-related-content/screenshots/">Check out the screenshots.</a>
 
-= Is advertising optional? =
-Yes, you always have the option to display or not display ads.
-
-= What ad display options do you offer? =
-If you sign up for advertising, you will be able to display up to ten advertisements within the plugin. If you have selected the thumbnail view, then thumbnails will show up. If you have selected text links, then text ads will show up. You can show ads either at the front, end, or mixed within your content links.
-
-= Does nrelate offer a revenue share on ads? =
-Yes, its your blog, you should be making money on it!
-
-= Where do I sign up for ads? =
-After installing the plugin, you can <a href="http://nrelate.com/partners/content-publishers/sign-up-for-advertising/">sign up for advertising here.</a>
-
 = Will it look like the rest of my site? =
 Many of your website styles will automatically be used by the plugin so it will blend in nicely with your website.  We do need to set some of our own styles to make it work properly. However, you can makes changes to our styles by including your own CSS in your stylesheet.
 
@@ -131,9 +117,11 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 == Screenshots ==
 
-1. Related thumbnails
-2. Hovering on a related thumbnail
-3. Text list
+1. Related thumbnails.
+2. Hovering on a related thumbnail.
+3. Text list.
+4. Related thumbnails with advertisements.
+5. Hovering on an advertisement.
 
 
 == Changelog ==
