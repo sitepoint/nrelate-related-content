@@ -2,7 +2,7 @@
 Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
-Requires at least: 2.9
+Requires at least: 3.0
 Stable tag: 0.45.0
 
 
