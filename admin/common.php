@@ -19,6 +19,7 @@ add_action('admin_init', 'nrelate_system_check', 0);
  */
 		define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
 		define( 'NRELATE_WEBSITE_AD_SIGNUP', 'http://nrelate.com/partners/content-publishers/sign-up-for-advertising/' );
+		define( 'NRELATE_BLOG_ROOT', str_replace(array('http://','https://'), '', get_bloginfo( 'url' )));
 
 		define( 'NRELATE_ADMIN_COMMON_FILE', plugin_basename( __FILE__ ) );
 		define( 'NRELATE_ADMIN_DIR_NAME', trim( dirname( NRELATE_ADMIN_COMMON_FILE ), '/' ) );
@@ -48,9 +49,10 @@ function nrelate_system_check(){
 	}
 }
 
-/********************
+/**************************************
  *  Admin only code
- *******************/
+ *  only load if logged into admin area.
+ ***************************************/
  if (is_admin()) {
  
  
@@ -69,7 +71,7 @@ function nrelate_setup_dashboard() {
 		require_once NRELATE_ADMIN_DIR . '/nrelate-main-menu.php';
 		require_once NRELATE_ADMIN_DIR . '/admin-messages.php';
 		global $dashboardpage;
-		$dashboardpage = add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/menu-logo.gif');
+		$dashboardpage = add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/spacer.gif');
 };
 add_action('admin_menu', 'nrelate_setup_dashboard');
  
@@ -117,20 +119,53 @@ $output = '
 return $output;
 }
 
+
+/**
+ * Re-index function
+ *
+ * Since v0.45.0
+ */
+function nrelate_reindex() {
+	$wp_root_nr = get_bloginfo( 'url' );
+	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
+	$action = "REINDEX";
+	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/reindex.php');
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_exec($ch);
+	curl_close($ch);
+}
+
+/**
+ * Check index status
+ *
+ * Since v0.45.0
+ */
+function nrelate_index_check() {
+	echo '<li class="nolist"><div id="indexcheck" class="info"></div></li>
+		<script type="text/javascript">
+			checkindex(\''.NRELATE_ADMIN_URL.'\',\''.NRELATE_BLOG_ROOT.'\',\''.NRELATE_RELATED_ADMIN_VERSION.'\');
+		</script>';
+}
+
+
 /**
  * Add Dashboard help
  *
  * add contextual help page to dashboard
  * Since v0.44.0
  */
-function nrelate_dasboard_help($contextual_help, $screen_id, $screen) {
+function nrelate_dasboard_help($contextual_help, $screen_id) {
 	global $dashboardpage;
 	if ($screen_id == $dashboardpage) {
 		$contextual_help = nrelate_site_inventory();
 	}
 	return $contextual_help;
 }
-add_action('contextual_help', 'nrelate_dasboard_help', 10, 3);
+add_action('contextual_help', 'nrelate_dasboard_help', 10, 2);
 
 
 /**

@@ -72,19 +72,35 @@ function nrelate_main_section() { ?>
 						</ul>
 					</div><!-- .inside -->
 				</div><!-- #nr_about -->
+				
+				<!-- Re-Index -->
+				<div id="nr_reindex" class="postbox">
+					<h3 class="hndle"><span><?php _e('Re-Index Your Site:')?></span></h3>
+					<div class="inside">
+						<p><?php _e('Use the button below to have nrelate reindex your website.')?></p>
+						<?php if(isset($_POST['reindex'])) { nrelate_reindex(); } ?>
+						<form action="" method="post">
+							<input type="submit" class="reindex" name="reindex" value="Re-Index Website">
+						</form>
+						<p><strong><?php _e('IMPORTANT: It can take up to two hours to reindex your website. During this time new posts may not show related content.<br/><center>Only use when neccessary.<center/>')?></strong></p>
+					</div><!-- .inside -->
+				</div><!-- #nr_reindex -->
 
 			</div><!-- #side-sortables -->
 		</div><!-- #side-info-column -->
 
 		
 		<div id="post-body">
-			<div id="post-body-content">
+			<div id="post-body-content"
 
 				<!-- Message -->
 				<div id="nr-messages" class="postbox">
 					<h3 class="hndle"><span><?php _e('Messages:')?></span></h3>
 					<ul class="inside">
-				
+					
+					<!-- Show index status -->
+					<?php nrelate_index_check();?>			
+					
 					<!-- Hook for admin messages from all nrelate plugins -->
 					<?php do_action('nrelate_admin_messages');?>
 					<li>

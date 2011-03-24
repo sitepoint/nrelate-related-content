@@ -48,7 +48,7 @@ function checkad(NRELATE_ADMIN_URL,nr_domain,nr_adminversion,nr_idname,nr_adcode
 }
 
 //Ajax call to index_transport.php to check the site's indexing status
-function checkindex(nr_settingsurl,nr_domain){
+function checkindex(nr_settingsurl,nr_domain,nr_admin_version){
 	if (nr_domain==""){
 		document.getElementById("indexcheck").innerHTML="";
 		return;
@@ -67,7 +67,7 @@ function checkindex(nr_settingsurl,nr_domain){
 		}
 		xmlHttp.open("POST",nr_settingsurl+"/index_transport.php",true);
 		xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xmlHttp.send("domain="+nr_domain);
+		xmlHttp.send("domain="+nr_domain+"&admin_version="+nr_admin_version);
 	}catch(e){
 		alert("Can't connect to server:\n" + e.toString()); 
 	}

@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.44.1
+Stable tag: 0.45.0
 
 
 The best way to display related content: Thumbnails or Text.
@@ -137,6 +137,16 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 
 == Changelog ==
+
+= 0.45.0 =
+* Allow excluding of categories.
+* Re-index button.
+* Support for Press75 custom thumbnails.
+* We now attempt to find any custom field images even if none are set.
+* Image panel height is now determined by row.
+* Fixed contextual_help function to work in WP 2.9.
+* Added some style to the settings page.
+* Fixed nrelate specific feed pagination bug.
 
 = 0.44.1 =
 * Fix for WordPress pre-3.0

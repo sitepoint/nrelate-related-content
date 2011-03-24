@@ -21,13 +21,13 @@ function logData1($data) {
 	$adcode = $_POST['adcode'];
 	$adminversion = $_POST['adminversion'];
 	logData1($domain);
-	switch ($adcodeopt){
+	/*switch ($adcodeopt){
 	case true:
 		$ad = 1;
 		break;
 	default:
 		$ad = 0;
-	}
+	}*/
 	$curlPost = 'domain='.$domain.'&adcode='.$adcode;
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.$adminversion.'/adcheck.php'); 

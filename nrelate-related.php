@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.44.1
+Version: 0.45.0
 Author URI: http://nrelate.com/
 
 
@@ -27,7 +27,7 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.44.1' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.45.0' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.01.0' );
 
@@ -77,7 +77,7 @@ if (is_admin()) {
 		//load common admin files if not already loaded from another nrelate plugin
 		if ( !function_exists('nrelate_setup_dashboard') ) {
 			require_once ( NRELATE_RELATED_ADMIN_DIR . '/common.php' );
-		}			
+		}
 		//load related menu
 		require_once ( NRELATE_RELATED_SETTINGS_DIR . '/related-menu.php' );
 } else {

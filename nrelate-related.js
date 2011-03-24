@@ -26,7 +26,35 @@ jQuery(document).ready(function(){
 });
 
 function nr_rc_fix_css(){
-  var nr_height=0;
+	var currentTallest = 0,
+		 currentRowStart = 0,
+		 rowDivs = new Array(),
+		 $el,
+		 topPosition = 0;
+	
+	jQuery('a.nr_rc_panel').each(function() {
+		$el = jQuery(this);
+		topPostion = $el.position().top;
+		if (currentRowStart != topPostion) {
+			for (currentDiv = 0 ; currentDiv < rowDivs.length ; currentDiv++) {
+				rowDivs[currentDiv].height(currentTallest);
+			}
+			rowDivs.length = 0;
+			currentRowStart = topPostion;
+			currentTallest = $el.innerHeight();
+			rowDivs.push($el);
+		} else {
+			rowDivs.push($el);
+			currentTallest = (currentTallest < $el.innerHeight()) ? ($el.innerHeight()) : (currentTallest);
+		}
+		for (currentDiv = 0 ; currentDiv < rowDivs.length ; currentDiv++) {
+			rowDivs[currentDiv].height(currentTallest);
+		}
+	});
+ 
+ return;
+ 
+ var nr_height=0;
   jQuery("a.nr_rc_panel").each(function(){
     if(jQuery(this).innerHeight()>nr_height){
       nr_height=jQuery(this).innerHeight();

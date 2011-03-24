@@ -11,6 +11,7 @@
 // Register our settings. Add the settings section, and settings fields
 
 function options_admin_init_nr(){
+	
 	register_setting('nrelate_admin_options', 'nrelate_admin_options', 'admin_options_validate' );
 	
 	// Ad Section
@@ -24,6 +25,10 @@ function options_admin_init_nr(){
 	// Custom Fields
 	add_settings_section('customfield_section', __('Custom Field for Images','nrelate'), 'section_text_nr_customfield', __FILE__);
 	add_settings_field('admin_custom_field', __('Enter your <b>Custom Field</b> for images, here:','nrelate'), 'setting_admin_custom_field',__FILE__,'customfield_section');
+	
+	// Exclude categories
+	add_settings_section('excludecat_section', __('Exclude Categories','nrelate'), 'section_text_nr_excludecat', __FILE__);
+	add_settings_field('admin_exclude_categories', __('Categories:','nrelate'), 'setting_admin_exclude_categories',__FILE__,'excludecat_section');
 	
 }
 add_action('admin_init', 'options_admin_init_nr' );
@@ -80,6 +85,101 @@ function setting_admin_custom_field() {
 	$customfield = $options['admin_custom_field'];
 	echo '<div id="imagecustomfield"><input id="admin_custom_field" name="nrelate_admin_options[admin_custom_field]" size="40" type="text" value="'.$customfield.'" /></div>';
 }
+
+///////////////////////////
+//   Exclude Categories Settings
+//////////////////////////
+
+// Section HTML: customfield
+function section_text_nr_excludecat() {
+	_e('<p>Select the categories you want to <b>exclude</b> from ALL nrelate products.</p>', 'nrelate');
+}
+
+// CHECKBOX LIST - Name: nrelate_admin_options[admin_exclude_categories]
+function setting_admin_exclude_categories() {
+	$options = get_option('nrelate_admin_options');
+	
+	echo '<div id="nrelate-exclude-cats" class="categorydiv"><ul id="categorychecklist" class="list:category categorychecklist form-no-clear">';
+	
+	wp_terms_checklist(0,
+		array(
+			'selected_cats' => $options['admin_exclude_categories'],
+			'walker' => new nrelate_Walker_Category_Checklist(),
+			'checked_ontop' => false,
+			'popular_cats' => array()
+	));
+	
+	echo '</ul></div>';
+	
+	$javascript = <<< JAVA_SCRIPT
+jQuery(document).ready(function(){
+	var nrel_excluded_cats_changed = false;
+	
+	jQuery('#nrelate-exclude-cats :checkbox').change(function(){
+		var me = jQuery(this);
+		
+		if (!nrel_excluded_cats_changed) {		
+			if (confirm("Any changes to this section will cause a site reindex. Are you sure you want to continue?\u000AIf Yes, press OK and then SAVE CHANGES."))
+			{
+				nrel_excluded_cats_changed = true;
+			} 
+			else 
+			{
+				me.attr('checked', !me.is(':checked'));
+			}
+		}
+		
+		if ( nrel_excluded_cats_changed ) {
+			me.parent().siblings('.children').find(':checkbox').attr('checked', me.is(':checked'));
+		}
+	});								
+});
+JAVA_SCRIPT;
+
+	echo "<script type='text/javascript'>{$javascript}</script>";
+}
+
+// Walker class to customize Checkbox List input names
+class nrelate_Walker_Category_Checklist extends Walker_Category_Checklist {
+	function start_el(&$output, $category, $depth, $args) {
+		extract($args);
+		if ( empty($taxonomy) )
+			$taxonomy = 'category';
+
+		$name = 'nrelate_admin_options[admin_exclude_categories]';
+		
+		$css_classes .= !$category->parent ? ' top-level-category' : '';
+		$css_classes .= $has_children ? ' parent-category' : '';
+		$css_classes .= in_array( $category->term_id, $selected_cats ) ? ' excluded-category' : '';
+		
+		$class =  $css_classes ? "class='{$css_classes}'" : '';
+		
+		$output .= "\n<li id='{$taxonomy}-{$category->term_id}'$class>" . '<label class="selectit"><input value="' . $category->term_id . '" type="checkbox" name="'.$name.'[]" id="in-'.$taxonomy.'-' . $category->term_id . '"' . checked( in_array( $category->term_id, $selected_cats ), true, false ) . disabled( empty( $args['disabled'] ), false, false ) . ' /> ' . esc_html( apply_filters('the_category', $category->name )) . '</label>';
+	}
+}
+
+
+/*
+*	Executes when nrelate_admin_options changes so it can call nrelate_reindex()
+*	if one of the changes requires complete site re-indexation
+*/
+function nrelate_check_options_change($new_value) {
+	$old_value = (array) get_option('nrelate_admin_options');
+	$reindex = false;
+	
+	if( $new_value['admin_exclude_categories'] !== $old_value['admin_exclude_categories'] ) {
+		$reindex = true;
+	}
+	
+	
+	if ( $reindex ) {
+		nrelate_reindex();	
+	}
+	
+	return $new_value;
+}
+
+add_filter('pre_update_option_nrelate_admin_options', 'nrelate_check_options_change');
 
 
 /****************************************************************

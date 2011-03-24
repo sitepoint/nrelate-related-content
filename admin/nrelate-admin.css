@@ -65,9 +65,13 @@ border-bottom:1px solid #dfdfdf;
 #nrelate-dashboard .categorydiv {
 display: inline;
 }
-#nrelate-dashboard li.exclude-category {
+#nrelate-dashboard li.top-level-category {
 float:left;
 width:50%;
+}
+
+#nrelate-dashboard li.excluded-category > label {
+color:#999;
 }
 
 #nrelate-dashboard #nr_installed_plugins li.active-plugins { padding-left: 0px;}
@@ -133,4 +137,44 @@ color:#eee;
 }
 .nr_error p{
 	margin:5px 0;
+}
+#adminmenu #toplevel_page_nrelate-main .wp-menu-image a{
+	background:url(images/menu-logo.png) center center no-repeat;
+}
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>> Settings Pages <<<<<*/
+.nrelate-settings li.nolist {
+    list-style: none;
+    background: #E8FFE8;
+	border: 1px solid #00CC00;
+    padding: 5px 10px;
+    width: 94%;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+.nrelate-settings h3 {
+    background: #e4e4e4;
+	border-right: 1px solid #e4e4e4;
+    padding: 1% 1% 3px 1%;
+    width: 94%;
+	margin: 1em 0 0 0;
+	text-shadow: 0 1px 0 #FFFFFF;
+	-moz-border-radius-topleft: 15px;
+	border-top-left-radius: 15px;
+	-moz-border-radius-topright: 15px;
+	border-top-right-radius: 15px;
+}
+.nrelate-settings .section-desc {
+    background: #e4e4e4;
+	border-right: 1px solid #e4e4e4;
+    padding: 0 1% 1% 1%;
+    width: 94%;
+    margin: 0;
+}
+.nrelate-settings .form-table {
+	background: #fff;
+    border: 1px solid #e4e4e4;
+    width: 96%;
+	padding: 1%;
+	margin:0;
 }

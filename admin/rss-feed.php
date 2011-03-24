@@ -6,7 +6,7 @@
  * @subpackage Functions
  */
 
- 
+
  /**
  * Retrieve all of the post categories, formatted for use in feeds.
  *
@@ -30,7 +30,7 @@ function nrelate_get_the_category_rss() {
 	foreach ( $cat_names as $cat_name ) {
 		$the_cats .= "\t\t<category><![CDATA[" . @html_entity_decode( $cat_name, ENT_COMPAT, get_option('blog_charset') ) . "]]></category>\n";
 	}
-	
+
 	return $the_cats;
 }
 
@@ -73,55 +73,80 @@ function nrelate_cats_tags_rss() {
 	echo nrelate_get_the_tags_rss();
 }
 
- /**
+/**
  * Get published post count
  *
- * Since 0.44.0
+ * Updated 0.45.0
  */
 function nrelate_post_count() {
-	$count_posts = wp_count_posts();
-	$published_posts = $count_posts->publish;
-	
-	echo "\t<count>" . $published_posts . "</count>\n";
-
+	global $wp_query;
+	echo "\t<count>" . $wp_query->found_posts . "</count>\n";
 }
 
 /**
- * Get Post thumbnail
+ * Get Custom Images
  *
+ * Attempts to retrieve any custom images
+ * set by user or themes/plugins
  */
-    function nrelate_get_post_thumb($content) {
+    function nrelate_get_custom_images($content) {
         global $post;
-            if (function_exists('has_post_thumbnail')) {
-                if ( has_post_thumbnail( $post->ID ) ){
-                    $content = '<p>' . get_the_post_thumbnail( $post->ID, 'large' ) . '</p>' . $content;
-                }
-            }
-        return $content;
-}
 
-/**
- * Get custom field images
- *
- */
-    function nrelate_get_custom_field_image($content) {
-        global $post;
- 
-        $options = get_option('nrelate_admin_options');
+		// Get custom field images if user set a custom field
+		$options = get_option('nrelate_admin_options');
         $customfield = $options['admin_custom_field'];
-            if ($customfield != null) {  
+            if ($customfield != null) {
                 $customfieldvalue = get_post_meta($post->ID, $customfield, $single = true);
-                    if ($customfieldvalue != null) {        
-                        $content = '<p><img src="' . $customfieldvalue . '" class="custom-field-image"/></p>' . $content;
+                    if ($customfieldvalue != null) {
+                        $content = '<p><img src="' . $customfieldvalue . '" class="nrelate-image custom-field-image"/></p>' . $content;
                     }
             }
-        return $content;    
-    }
+
+		// Simple Post Thumbnails
+		// http://wordpress.org/extend/plugins/simple-post-thumbnails/
+		// Since 0.45.0
+		elseif (function_exists('p75HasThumbnail')){
+			$p75image = p75GetOriginalImage($post->ID);
+			$p75default = get_option('p75_default_thumbnail');
+			$imageurl = get_bloginfo('wpurl') . $p75image;
+
+			if (empty($p75image)) $imageurl = $p75default;
+
+			$content = sprintf("<p><img class=\"nrelate-image p75-thumbnail\" src='%s' /></p>\n%s", $imageurl, $content);
+
+		}
+
+		// WordPress Featured Image (Post Thumbnails)
+		elseif (function_exists('has_post_thumbnail') && has_post_thumbnail( $post->ID )) {
+				$default_attr = array(
+								'class'	=> "nrelate-image featured-image",
+								);
+				$content = '<p>' . get_the_post_thumbnail( $post->ID, 'large', $default_attr ) . '</p>' . $content;
+		} else {
+
+
+			// Last resort, search through all custom fields for image URL and grab the first
+			// url must start with http and file must be a gif, png or jpg.
+			// Since 0.45.0
+			if (!$thumb_found) {
+				foreach ( get_post_custom($post->ID) as $key => $values ) {
+					$imageurl = current((array)$values);
+
+					if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg)$#i', $imageurl) ) {
+						$thumb_found = true;
+						$content = sprintf("<p><img class=\"nrelate-image auto-custom-field-image\" src='%s' alt='post thumbnail' /></p>\n%s", $imageurl, $content);
+						break;
+					}
+				}
+			}
+		}
+		return $content;
+	}
 
 /**
  * Remove Javascript from our feed
  *
- */	
+ */
 function nrelate_remove_script($content) {
 	global $post;
 	$content = preg_replace('#(\n?<script[^>]*?>.*?</script[^>]*?>)|(\n?<script[^>]*?/>)#is', '', $content);
@@ -139,26 +164,48 @@ function nrelate_custom_feed() {
 			set_query_var( 'posts_per_page', $_GET['posts_per_page'] );
 		else
 			set_query_var( 'posts_per_page', 50 );
-		
+
+		// Exclude categories
+		$options = get_option('nrelate_admin_options');
+
+		// Fix for pagination
+		if(isset($_GET['paged'])){
+			$paged = $_GET['paged'];
+		}else{
+			$paged = 1;
+		}
+
 		// Query the posts. Defaults to 50, but we can override
 		query_posts(
 			array(
 				'posts_per_page' => get_query_var( 'posts_per_page' ),
-				'paged' => get_query_var( 'paged' )
+				'paged' => $paged,
+				'category__not_in' => (array) $options['admin_exclude_categories']
 			)
 		);
-		
+
+		// WP Super Cache: disable
+		if ( function_exists('add_cacheaction') ) { define('DONOTCACHEPAGE', true); }
+
+		//W3 Total Cache: disable
+		if ( function_exists('w3tc_add_action') ) {
+			define('DONOTCACHEPAGE', true);
+			define('DONOTCACHEDB', true);
+			define('DONOTMINIFY', true);
+			define('DONOTCACHCEOBJECT', true);
+		}
+
 		// Show full content even if MORE tag is present
 		global $more;
 		$more = 1;
-		
+
 		// Force the feed to return full content
 		add_filter( 'pre_option_rss_use_excerpt', create_function( '', 'return 0;' ), 0 );
-		
+
 		// Remove all filters from RSS functions
 		remove_all_filters ('wp_title');
-		remove_all_filters ('wp_title_rss');	
-		remove_all_filters ('the_title_rss');	
+		remove_all_filters ('wp_title_rss');
+		remove_all_filters ('the_title_rss');
 		remove_all_filters ('the_permalink_rss');
 		remove_all_filters ('the_content_feed');
 		remove_all_filters ('the_content_rss');
@@ -168,7 +215,7 @@ function nrelate_custom_feed() {
 		remove_all_filters ('bloginfo_rss');
 		remove_all_filters ('the_author');
 		remove_all_filters ('the_category_rss');
-		
+
 		// Bring back standard WP RSS filters
 		add_filter( 'the_title_rss',      'strip_tags'      );
 		add_filter( 'the_title_rss',      'ent2ncr',      0 );
@@ -182,25 +229,22 @@ function nrelate_custom_feed() {
 		add_filter( 'comment_text_rss',   'esc_html'        );
 		add_filter( 'bloginfo_rss',       'ent2ncr',      0 );
 		add_filter( 'the_author',         'ent2ncr',      0 );
-		       
-        // Get Post thumbnail
-        add_filter('the_excerpt_rss', 'nrelate_get_post_thumb', 0);
-        add_filter('the_content_feed', 'nrelate_get_post_thumb', 0);
-        
-        // Get custom field images
-        add_filter('the_excerpt_rss', 'nrelate_get_custom_field_image', 0);
-        add_filter('the_content_feed', 'nrelate_get_custom_field_image', 0);
-		
+
+
+        // Get custom images
+        add_filter('the_excerpt_rss', 'nrelate_get_custom_images', 0);
+        add_filter('the_content_feed', 'nrelate_get_custom_images', 0);
+
         // Remove Javascript
 		add_filter('the_excerpt_rss', 'nrelate_remove_script', 0);
         add_filter('the_content_feed', 'nrelate_remove_script', 0);
 
 		// Add post count
 		add_action ('rss2_head', 'nrelate_post_count');
-		
+
 		//Show separate categories and tags in feed
 		add_filter('the_category_rss', 'nrelate_cats_tags_rss', 0);
-		        
+
 
 		// Use WP's feed template
 		do_feed_rss2( false );

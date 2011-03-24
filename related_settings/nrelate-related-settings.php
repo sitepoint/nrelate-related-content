@@ -6,7 +6,6 @@
  * @subpackage Functions
  */
 
-// Register our settings. Add the settings section, and settings fields
 wp_enqueue_script('nrelate_related_js', NRELATE_RELATED_SETTINGS_URL.'/nrelate_related_jsfunctions.js');
 
 // If the widget is active, disable some options
@@ -77,7 +76,7 @@ add_action('admin_init', 'options_init_nr_rc' );
  
 // Section HTML, displayed before the first option
 function section_text_nr_rc() {
-	_e('<p>Main controls for your related content.</p>','nrelate');
+	_e('<p class="section-desc">Main controls for your related content.</p>','nrelate');
 }
 
 
@@ -149,14 +148,12 @@ function setting_reset_nr_rc() {
 //////////////////////////
 
 function section_text_nr_rc_partner(){
-	_e('<p>Related content can be brought in from your blogroll.</p>','nrelate');
+	_e('<p class="section-desc">Related content can be brought in from your blogroll.</p>','nrelate');
 }
 
 // DROP-DOWN-BOX - Name: nrelate_related_options[related_blogoption]
 function setting_blogroll() {
 	$options = get_option('nrelate_related_options');
-	$wp_root_nr=get_bloginfo( 'url' );
-	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$items = array("On", "Off");
 	echo '<select id="related_blogoption" name="nrelate_related_options[related_blogoption]">';
 	foreach($items as $item) {
@@ -171,7 +168,8 @@ function setting_blogroll() {
 	
 	// Ajax calls to contact nrelate servers and update as necessary
 	echo "<div id='bloglinks'></div>";
-	echo '<script type="text/javascript"> checkindex(\''.NRELATE_RELATED_SETTINGS_URL.'\',\''.$wp_root_nr.'\'); checkblog(\''.NRELATE_RELATED_SETTINGS_URL.'\',\''.$wp_root_nr.'\'); </script>';
+	echo '<script type="text/javascript">checkblog(\''.NRELATE_RELATED_SETTINGS_URL.'\',\''.NRELATE_BLOG_ROOT.'\'); </script>';
+
 }
 
 // DROP-DOWN-BOX - Name: nrelate_related_options[related_number_of_posts_ext]
@@ -194,7 +192,7 @@ function setting_related_number_of_posts_nr_rc_ext(){
 // Section HTML, displayed before the first option
 function section_text_nr_rc_layout(){
 	$video = nrelate_thickbox_youtube('2kc32vFYO68','related_automatic_layout');
-	echo '<div><strong>Related posts will only show up once per page.</strong><br/>Where do you want your related content to display?' . $video . '</div>';
+	echo '<div class="section-desc"><strong>Related posts will only show up once per page.</strong><br/>Where do you want your related content to display?' . $video . '</div>';
 }
 
 // CHECKBOX - Location Post Top
@@ -338,7 +336,7 @@ function setting_related_custom_field() {
 
 // Section HTML, displayed before the first option
 function section_text_nr_rc_ad() {
-		_e('<p>nrelate can display ads under your related posts and you can earn money. Make sure you have signed up for an <a href="' . NRELATE_WEBSITE_AD_SIGNUP . '" target="_blank">Advertising ID</a>, and entered it on the <a href="admin.php?page=nrelate-main">nrelate Dashboard page</a>.</p>','nrelate');
+		_e('<p class="section-desc">nrelate can display ads under your related posts and you can earn money. Make sure you have signed up for an <a href="' . NRELATE_WEBSITE_AD_SIGNUP . '" target="_blank">Advertising ID</a>, and entered it on the <a href="admin.php?page=nrelate-main">nrelate Dashboard page</a>.</p>','nrelate');
 		
 		$admin_options = get_option('nrelate_admin_options');
 		
@@ -385,7 +383,7 @@ function setting_related_ad_placement(){
 
 // Section HTML, displayed before the first option
 function section_text_nr_rc_reset() {
-	_e('<p>To reset the plugin to defaults, check the box below, deactivate the plugin, and then reactivate it.</p>','nrelate');
+	_e('<p class="section-desc">To reset the plugin to defaults, check the box below, deactivate the plugin, and then reactivate it.</p>','nrelate');
 }
 
 
@@ -436,23 +434,14 @@ function nrelate_related_do_page() {
 	//echo $tag;
 ?>
 
-	<div class="wrap" style="margin: 10px 0 0 0;">
+	<div class="wrap nrelate-settings" style="margin: 10px 0 0 0;">
 		<?php echo '<img src='. NRELATE_ADMIN_IMAGES .'/nrelate-logo.png alt="nrelate Logo" style="float:left; margin: 0 20px 0 0"; />';
 		
 		_e('<h2>Related Content</h2>
 		The related content plugin allows you to display related posts on your single posts pages.
 		Click <a href="'.NRELATE_WEBSITE_FORUM_URL.'" target="_blank">here</a> to read about each setting.','nrelate'); ?>
 		<br><br>
-		<div id="indexcheck"></div>
-		<?php
-		$connectionstatus = update_nrelate_data();
-		if($connectionstatus !="Success"){
-			echo "<br><br><h1 style='color:red;font-size:16px;'>".$connectionstatus."</h1>";
-		}
-			$wp_root_nr = get_bloginfo( 'url' );
-			$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
-			$wp_root_nr = urlencode($wp_root_nr);
-		?>
+		<?php nrelate_index_check();?>
     <script type="text/javascript">
 		/* <![CDATA[ */
 		var nr_plugin_settings_url = '<?php echo NRELATE_RELATED_SETTINGS_URL; ?>';
