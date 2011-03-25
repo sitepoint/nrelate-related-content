@@ -134,8 +134,9 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 1. Related thumbnails
 2. Hovering on a related thumbnail
 3. Text list
-4. Advertising mixed into related content
-5. Hovering on an advertisement.
+4. Advertising mixed into related content (Ads are optional and can earn you money)
+5. Hovering on an advertisement (Ads are optional and can earn you money)
+
 
 
 == Changelog ==
