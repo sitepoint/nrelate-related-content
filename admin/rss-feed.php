@@ -130,9 +130,10 @@ function nrelate_post_count() {
 			// Since 0.45.0
 			if (!$thumb_found) {
 				foreach ( get_post_custom($post->ID) as $key => $values ) {
-					$imageurl = current((array)$values);
+					$values = (array)$values;
+					$imageurl = current($values);
 
-					if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg)$#i', $imageurl) ) {
+					if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg|jpeg|tif|tiff|bmp)$#i', $imageurl) ) {
 						$thumb_found = true;
 						$content = sprintf("<p><img class=\"nrelate-image auto-custom-field-image\" src='%s' alt='post thumbnail' /></p>\n%s", $imageurl, $content);
 						break;
@@ -153,6 +154,19 @@ function nrelate_remove_script($content) {
 	return $content;
 }
 
+/**
+ * Debug mode
+ * Since v45.1
+ */
+function nrelate_debug() {
+	
+	$options = get_option('nrelate_admin_options');
+	if (function_exists('nrelate_related')) $options += get_option('nrelate_related_options');
+		
+	echo '<pre>';
+	print_r($options);
+	echo '</pre>';
+}
 
 /**
  * MAIN NRELATE FEED
@@ -160,6 +174,11 @@ function nrelate_remove_script($content) {
  */
 function nrelate_custom_feed() {
 	if ( isset( $_GET['nrelate_feed'] ) && $_GET['nrelate_feed'] == get_option( 'nrelate_key' ) ) {
+		if ($_GET['debug']) {
+			nrelate_debug();
+			exit();
+		}
+		
 		if ( isset( $_GET['posts_per_page'] ) )
 			set_query_var( 'posts_per_page', $_GET['posts_per_page'] );
 		else

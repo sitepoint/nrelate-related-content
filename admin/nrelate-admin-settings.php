@@ -101,13 +101,14 @@ function setting_admin_exclude_categories() {
 	
 	echo '<div id="nrelate-exclude-cats" class="categorydiv"><ul id="categorychecklist" class="list:category categorychecklist form-no-clear">';
 	
-	wp_terms_checklist(0,
-		array(
-			'selected_cats' => $options['admin_exclude_categories'],
-			'walker' => new nrelate_Walker_Category_Checklist(),
-			'checked_ontop' => false,
-			'popular_cats' => array()
-	));
+	$taxonomy = 'category';
+	$args = array('taxonomy' => $taxonomy);
+	$tax = get_taxonomy($taxonomy);
+	$args['disabled'] = !current_user_can($tax->cap->assign_terms);
+	$args['selected_cats'] = is_array($options['admin_exclude_categories']) ? $options['admin_exclude_categories'] : array();
+	$categories = (array) get_terms($taxonomy, array('get' => 'all'));
+	$walker = new nrelate_Walker_Category_Checklist();
+	echo call_user_func_array(array(&$walker, 'walk'), array($categories, 0, $args));
 	
 	echo '</ul></div>';
 	
@@ -140,7 +141,24 @@ JAVA_SCRIPT;
 }
 
 // Walker class to customize Checkbox List input names
-class nrelate_Walker_Category_Checklist extends Walker_Category_Checklist {
+class nrelate_Walker_Category_Checklist extends Walker {
+	var $tree_type = 'category';
+	var $db_fields = array ('parent' => 'parent', 'id' => 'term_id');
+
+	function start_lvl(&$output, $depth, $args) {
+		$indent = str_repeat("\t", $depth);
+		$output .= "$indent<ul class='children' style='margin-left:18px;'>\n";
+	}
+
+	function end_lvl(&$output, $depth, $args) {
+		$indent = str_repeat("\t", $depth);
+		$output .= "$indent</ul>\n";
+	}
+
+	function end_el(&$output, $category, $depth, $args) {
+		$output .= "</li>\n";
+	}
+	
 	function start_el(&$output, $category, $depth, $args) {
 		extract($args);
 		if ( empty($taxonomy) )

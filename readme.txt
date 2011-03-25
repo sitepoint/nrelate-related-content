@@ -2,8 +2,8 @@
 Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
-Requires at least: 3.0
-Stable tag: 0.45.0
+Requires at least: 2.9
+Stable tag: 0.45.1
 
 
 The best way to display related content: Thumbnails or Text.
@@ -134,9 +134,16 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 1. Related thumbnails
 2. Hovering on a related thumbnail
 3. Text list
+4. Advertising mixed into related content
+5. Hovering on an advertisement.
 
 
 == Changelog ==
+
+= 0.45.1 =
+* Fixed small bug with nrelate specific feed.
+* Added support for more image types.
+* New debug parameter.
 
 = 0.45.0 =
 * Allow excluding of categories.
