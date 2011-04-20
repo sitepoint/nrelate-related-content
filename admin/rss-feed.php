@@ -160,8 +160,13 @@ function nrelate_remove_script($content) {
  */
 function nrelate_debug() {
 	
-	$options = get_option('nrelate_admin_options');
-	if (function_exists('nrelate_related')) $options += get_option('nrelate_related_options');
+	$options = get_option('nrelate_admin_options', array());
+	
+	//Get related options
+	if (function_exists('nrelate_related')) {
+		$options += get_option('nrelate_related_options', array());
+		$options += get_option('nrelate_related_options_styles', array());
+	}
 		
 	echo '<pre>';
 	print_r($options);
@@ -171,6 +176,8 @@ function nrelate_debug() {
 /**
  * MAIN NRELATE FEED
  * Serve a custom full-text feed. Thwarts FeedBurner plugins
+ *
+ * @credits: Originally written for nrelate by Mark Jaquith http://coveredwebservices.com/
  */
 function nrelate_custom_feed() {
 	if ( isset( $_GET['nrelate_feed'] ) && $_GET['nrelate_feed'] == get_option( 'nrelate_key' ) ) {

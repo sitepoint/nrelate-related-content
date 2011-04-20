@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.45.1
+Stable tag: 0.46.0
 
 
 The best way to display related content: Thumbnails or Text.
@@ -134,9 +134,18 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 1. Related thumbnails
 2. Hovering on a related thumbnail
 3. Text list
+4. Advertising mixed into related content
+5. Hovering on an advertisement
 
 
 == Changelog ==
+
+= 0.46.0 =
+* New Style gallery!
+* No CSS option.
+* Support for Thesis post image.
+* WP 2.9 support: Style gallery tabs.
+* WP 2.9 support: Exclude categories fix.
 
 = 0.45.1 =
 * Fixed small bug with nrelate specific feed.
@@ -151,7 +160,6 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 * Image panel height is now determined by row.
 * Fixed contextual_help function to work in WP 2.9.
 * Added some style to the settings page.
-* Fixed nrelate specific feed pagination bug.
 
 = 0.44.1 =
 * Fix for WordPress pre-3.0
@@ -266,6 +274,9 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 * Initial release.
 
 == Upgrade Notice ==
+
+= 0.46.0 =
+NEW STYLE GALLERY - choose from additional styles.
 
 = 0.42.5 =
 MAJOR SPEED ENHANCEMENT

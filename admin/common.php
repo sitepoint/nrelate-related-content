@@ -19,7 +19,6 @@ add_action('admin_init', 'nrelate_system_check', 0);
  */
 		define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
 		define( 'NRELATE_WEBSITE_AD_SIGNUP', 'http://nrelate.com/partners/content-publishers/sign-up-for-advertising/' );
-		define( 'NRELATE_BLOG_ROOT', str_replace(array('http://','https://'), '', get_bloginfo( 'url' )));
 
 		define( 'NRELATE_ADMIN_COMMON_FILE', plugin_basename( __FILE__ ) );
 		define( 'NRELATE_ADMIN_DIR_NAME', trim( dirname( NRELATE_ADMIN_COMMON_FILE ), '/' ) );
@@ -41,7 +40,7 @@ function nrelate_system_check(){
 		$message .= "<p>".__('This nrelate plugin requires CURL installed on your server. Please contact your web host and ask them to install CURL.','nrelate')."</p>";
 	}
 
-	$closing .= "<p>".__('The nrelate plugin has been deactivated.','nrelate')."<br/><br/>".__('Refresh this page to return to your WordPress dashboard.','nrelate')."</p>";
+	$closing = "<p>".__('The nrelate plugin has been deactivated.','nrelate')."<br/><br/>".__('Refresh this page to return to your WordPress dashboard.','nrelate')."</p>";
 		
 	if (!empty($message)) {
 		deactivate_plugins($plugin);
@@ -66,7 +65,6 @@ function nrelate_system_check(){
  * Setup Dashboard menu and menu page
  */
 function nrelate_setup_dashboard() {
-
 		require_once NRELATE_ADMIN_DIR . '/nrelate-admin-settings.php';
 		require_once NRELATE_ADMIN_DIR . '/nrelate-main-menu.php';
 		require_once NRELATE_ADMIN_DIR . '/admin-messages.php';
@@ -126,10 +124,8 @@ return $output;
  * Since v0.45.0
  */
 function nrelate_reindex() {
-	$wp_root_nr = get_bloginfo( 'url' );
-	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$action = "REINDEX";
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
+	$curlPost = 'DOMAIN='.NRELATE_BLOG_ROOT.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/reindex.php');
 	curl_setopt($ch, CURLOPT_POST, 1);
@@ -151,21 +147,46 @@ function nrelate_index_check() {
 		</script>';
 }
 
+/**
+ * Get blogroll
+ *
+ * Takes user's bookmarks with category name 'blogroll'
+ * Returns a string with all of the blogroll link urls separated by the less than character (<).
+ */
+
+function nrelate_get_blogroll(){
+	$bm = get_bookmarks( array(
+		'category_name'  => 'Blogroll', 
+		'hide_invisible' => 1,
+		'show_updated'   => 0, 
+		'include'        => null,
+		'exclude'        => null,
+		'search'         => '.'));
+	$counter=0;
+	$tmp = '';
+	foreach ($bm as $bookmark){
+		if($counter<25)
+			$tmp.=$bookmark->link_url.'<';
+		$counter+=1;
+	}
+	return $tmp;
+}
 
 /**
- * Add Dashboard help
+ * Add nrelate dropdown help
  *
- * add contextual help page to dashboard
+ * add contextual help page to all nrelate pages
  * Since v0.44.0
+ * Updated v0.46.0 for all pages
  */
-function nrelate_dasboard_help($contextual_help, $screen_id) {
-	global $dashboardpage;
-	if ($screen_id == $dashboardpage) {
+function nrelate_dashboard_help($contextual_help, $screen_id) {
+	$string = "nrelate";
+	if (strstr($screen_id, $string)) {
 		$contextual_help = nrelate_site_inventory();
 	}
 	return $contextual_help;
 }
-add_action('contextual_help', 'nrelate_dasboard_help', 10, 2);
+add_action('contextual_help', 'nrelate_dashboard_help', 10, 2);
 
 
 /**
@@ -177,9 +198,9 @@ add_action('contextual_help', 'nrelate_dasboard_help', 10, 2);
  */
 function nrelate_site_inventory(){
 	$theme = get_theme(get_current_theme());
-		$themename = $theme[Name];
-		$themeversion = $theme[Version];
-		$themeauthor = $theme[Author];
+	$themename = $theme['Name'];
+	$themeversion = $theme['Version'];
+	$themeauthor = strip_tags($theme['Author']);
 	$url = get_option('siteurl');
 	$wp_version = get_bloginfo('version');
 	global $wpmu_version, $wp_version;
@@ -197,8 +218,9 @@ function nrelate_site_inventory(){
 			$inactive_plugins[ $plugin_file ] = $plugin_data;
 		}
 	}
+	$plugins = '';
 	foreach ( (array)$active_plugins as $plugin_file => $plugin_data) {
-		$plugins .= esc_html($plugin_data['Title']). '&nbsp;' . __('version:', 'nrelate').' '.esc_html($plugin_data['Version']). '&nbsp' . __('by:', 'nrelate') . '&nbsp' . esc_html($plugin_data['Author']).'&#10;' ;
+		$plugins .= strip_tags($plugin_data['Title']). " " .strip_tags($plugin_data['Version']). " " . __('by:', 'nrelate') .  " " . strip_tags($plugin_data['Author']).'&#10;' ;
 	}
 
 $message = <<<EOD
@@ -242,11 +264,11 @@ function nrelate_upgrade_option($old_option, $old_option_key, $new_option, $new_
         update_option($new_option, $new_value);
     }
 }
-// move custom field option from related settings to admin settings
-nrelate_upgrade_option('nrelate_related_options', 'related_custom_field', 'nrelate_admin_options', 'admin_custom_field');
 
-// move ad code field option from related settings to admin settings - since 0.42.6
-nrelate_upgrade_option('nrelate_related_options', 'related_validate_ad', 'nrelate_admin_options', 'admin_validate_ad');
+
+
+
+
 };/* end is_admin */
 
 ?>

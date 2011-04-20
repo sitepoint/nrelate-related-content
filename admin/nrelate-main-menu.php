@@ -8,7 +8,7 @@
  
 function nrelate_main_section() { ?>
 
-<div id="nrelate-dashboard" class="wrap" style="margin: 10px 15px 0 5px">
+<div id="nrelate-dashboard" class="wrap nrelate-page" style="margin: 10px 15px 0 5px">
 
 <?php echo '<img src="'. NRELATE_ADMIN_IMAGES .'/nrelate-logo.png" alt="nrelate Logo" style="float:left; margin: 0 20px 0 0"; />'?>
 <h2><?php _e('nrelate Dashboard')?></h2>
@@ -82,7 +82,7 @@ function nrelate_main_section() { ?>
 						<form action="" method="post">
 							<input type="submit" class="reindex" name="reindex" value="Re-Index Website">
 						</form>
-						<p><strong><?php _e('IMPORTANT: It can take up to two hours to reindex your website. During this time new posts may not show related content.<br/><center>Only use when neccessary.<center/>')?></strong></p>
+						<p><strong><?php _e('IMPORTANT: All nrelate content will be temporarily removed from your website while we reindex.<br/><center>Only use when neccessary</center>','nrelate')?></strong></p>
 					</div><!-- .inside -->
 				</div><!-- #nr_reindex -->
 
@@ -91,7 +91,7 @@ function nrelate_main_section() { ?>
 
 		
 		<div id="post-body">
-			<div id="post-body-content"
+			<div id="post-body-content">
 
 				<!-- Message -->
 				<div id="nr-messages" class="postbox">
@@ -107,9 +107,7 @@ function nrelate_main_section() { ?>
 					<div class="info" id="extra_message"><?php 
 						// Call to nrelate server (sends home url)
 						// Nrelate server returns any message to be displayed in the nrelate dashboard
-						$wp_root_nr = get_bloginfo( 'url' );
-						$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
-						$curlPost = 'DOMAIN='.$wp_root_nr;
+						$curlPost = 'DOMAIN='.NRELATE_BLOG_ROOT;
 						$ch = curl_init();
 						curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_adminmessage.php'); 
 						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

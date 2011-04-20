@@ -20,7 +20,7 @@ function options_admin_init_nr(){
 
 	// Communication Section
 	add_settings_section('comm_section', __('Communication','nrelate'), 'section_text_nr_comm', __FILE__);
-	add_settings_field('admin_email_address', __('Send email address','nrelate'), 'setting_admin_email', __FILE__, 'comm_section');	
+	add_settings_field('admin_email_address', '<span id="admin_email_address">'.__('Send email address','nrelate').'</span>', 'setting_admin_email', __FILE__, 'comm_section');	
 	
 	// Custom Fields
 	add_settings_section('customfield_section', __('Custom Field for Images','nrelate'), 'section_text_nr_customfield', __FILE__);
@@ -66,8 +66,8 @@ function section_text_nr_comm() {
 // CHECKBOX - Admin email address
 function setting_admin_email() {
 	$options = get_option('nrelate_admin_options');
-	if($options['admin_email_address']){ $checked = ' checked="checked" '; }
-	echo "<input ".$checked." id='location-top' name='nrelate_admin_options[admin_email_address]' type='checkbox' />";
+	$checked = @$options['admin_email_address']=='on' ? ' checked="checked" ' : '';
+	echo "<input ".$checked." name='nrelate_admin_options[admin_email_address]' type='checkbox' />";
 }
 
 ///////////////////////////
@@ -92,7 +92,7 @@ function setting_admin_custom_field() {
 
 // Section HTML: customfield
 function section_text_nr_excludecat() {
-	_e('<p>Select the categories you want to <b>exclude</b> from ALL nrelate products.</p>', 'nrelate');
+	_e('<p id="exclude-cats">Select the categories you want to <b>exclude</b> from ALL nrelate products.</p>', 'nrelate');
 }
 
 // CHECKBOX LIST - Name: nrelate_admin_options[admin_exclude_categories]
@@ -105,7 +105,7 @@ function setting_admin_exclude_categories() {
 	$args = array('taxonomy' => $taxonomy);
 	$tax = get_taxonomy($taxonomy);
 	$args['disabled'] = !current_user_can($tax->cap->assign_terms);
-	$args['selected_cats'] = is_array($options['admin_exclude_categories']) ? $options['admin_exclude_categories'] : array();
+	$args['selected_cats'] = is_array(@$options['admin_exclude_categories']) ? $options['admin_exclude_categories'] : array();
 	$categories = (array) get_terms($taxonomy, array('get' => 'all'));
 	$walker = new nrelate_Walker_Category_Checklist();
 	echo call_user_func_array(array(&$walker, 'walk'), array($categories, 0, $args));
@@ -132,6 +132,10 @@ jQuery(document).ready(function(){
 		
 		if ( nrel_excluded_cats_changed ) {
 			me.parent().siblings('.children').find(':checkbox').attr('checked', me.is(':checked'));
+			
+			if ( me.closest('#nrelate-exclude-cats').find(':checkbox').size() == me.closest('#nrelate-exclude-cats').find(':checkbox:checked').size() ) {
+				alert("WARNING: You have marked all your categories for exclusion. Nothing will show up in related content. Please uncheck at least one category.");
+			}
 		}
 	});								
 });
@@ -166,13 +170,14 @@ class nrelate_Walker_Category_Checklist extends Walker {
 
 		$name = 'nrelate_admin_options[admin_exclude_categories]';
 		
-		$css_classes .= !$category->parent ? ' top-level-category' : '';
+		$css_classes = !$category->parent ? ' top-level-category' : '';
 		$css_classes .= $has_children ? ' parent-category' : '';
 		$css_classes .= in_array( $category->term_id, $selected_cats ) ? ' excluded-category' : '';
 		
 		$class =  $css_classes ? "class='{$css_classes}'" : '';
 		
-		$output .= "\n<li id='{$taxonomy}-{$category->term_id}'$class>" . '<label class="selectit"><input value="' . $category->term_id . '" type="checkbox" name="'.$name.'[]" id="in-'.$taxonomy.'-' . $category->term_id . '"' . checked( in_array( $category->term_id, $selected_cats ), true, false ) . disabled( empty( $args['disabled'] ), false, false ) . ' /> ' . esc_html( apply_filters('the_category', $category->name )) . '</label>';
+		// Supports WP v2.9
+		$output .= "\n<li id='{$taxonomy}-{$category->term_id}'$class>" . '<label class="selectit"><input value="' . $category->term_id . '" type="checkbox" name="'.$name.'[]" id="in-'.$taxonomy.'-' . $category->term_id . '"' . checked( in_array( $category->term_id, $selected_cats ), true, false ) . ' /> ' . esc_html( apply_filters('the_category', $category->name )) . '</label>';
 	}
 }
 
@@ -185,7 +190,7 @@ function nrelate_check_options_change($new_value) {
 	$old_value = (array) get_option('nrelate_admin_options');
 	$reindex = false;
 	
-	if( $new_value['admin_exclude_categories'] !== $old_value['admin_exclude_categories'] ) {
+	if( @$new_value['admin_exclude_categories'] !== @$old_value['admin_exclude_categories'] ) {
 		$reindex = true;
 	}
 	
@@ -236,7 +241,7 @@ function update_nrelate_admin_data(){
 	$option = get_option('nrelate_admin_options');
 	$r_validate_ad = $option['admin_validate_ad'];
 	$n_user_email = get_option('admin_email');
-	$send_email = $option['admin_email_address'];
+	$send_email = @$option['admin_email_address'];
 	$custom_field = $option['admin_custom_field'];
 
 	switch ($send_email){

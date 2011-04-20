@@ -13,7 +13,6 @@ text-align:center;
 .nrelate-layout-thumbnails-1 label{
 padding:5px 0 0;
 }
-
 /* Help icon */
 .nrelate-help {
 text-align: right;
@@ -25,6 +24,66 @@ width: 100%;
 }
 
 
+
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>> Style Gallery <<<<<*/
+#style-gallery {
+margin-left: -230px;
+padding: 0 5px;
+}
+
+#style-gallery h4 {
+display: inline;
+margin: 0;
+font-size: 14px;
+}
+
+.nrelate-style-images {
+padding: 5px 0;
+text-align: left;
+width: 100%;
+float:left;
+border-bottom: 1px solid #E4E4E4;
+}
+#style-gallery .style-select{
+float: left;
+padding: 0px 10px 10px 0;
+text-align: center;
+width: 100px;
+}
+#style-gallery .style-image{
+float: left;
+width: 380px;
+}
+#style-gallery a:hover img {
+  filter:alpha(opacity=50);
+  opacity: 0.5;
+}
+#style-gallery  .style-features-info {
+float: left;
+width: 35%;
+}
+#style-gallery .style-features {
+width: 30%;
+margin: 0 0 0 15px;
+float: left;
+}
+#style-gallery .style-features ul {
+list-style: disc;
+list-style-position: outside;
+margin-top:0px;
+}
+#style-gallery .style-features ul li {
+margin:0px;
+}
+#style-gallery .style-info {
+float: left;
+margin: 0 0 0 3%;
+width: 62%;
+}
+#style-gallery .style-info p{
+margin-top:0;
+}
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>> Dashboard <<<<<*/
 
@@ -128,21 +187,44 @@ text-align:center;
 border-color:#000000 #C0C0C0 #C0C0C0 #000000;
 color:#eee;
 }
-.nr_error{
-	margin: 5px 0;
-	background-color:#FFEBE8;
-	border:1px solid #CC0000;
-	-moz-border-radius: 3px 3px 3px 3px;
-	padding: 0 0.6em;
-}
-.nr_error p{
-	margin:5px 0;
-}
 #adminmenu #toplevel_page_nrelate-main .wp-menu-image a{
 	background:url(images/menu-logo.png) center center no-repeat;
 }
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>> Settings Pages <<<<<*/
+
+.nrelate-settings .nav-tab { /* needed for WP 2.9 */
+border-style: solid;
+border-color: #CCC #CCC #F9F9F9;
+border-width: 1px 1px 0;
+color: #000;
+text-shadow: rgba(255, 255, 255, 1) 0 1px 0;
+font-size: 12px;
+line-height: 16px;
+display: inline-block;
+padding: 4px 14px 6px;
+text-decoration: none;
+margin: 0 6px -1px 0;
+-moz-border-radius: 5px 5px 0 0;
+-webkit-border-top-left-radius: 5px;
+-webkit-border-top-right-radius: 5px;
+-khtml-border-top-left-radius: 5px;
+-khtml-border-top-right-radius: 5px;
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+}
+.nrelate-settings .nav-tab-active { /* needed for WP 2.9 */
+border-width: 1px;
+background: #E4E4E4;
+border-bottom: none;
+}
+.nrelate-settings h2 .nav-tab { /* needed for WP 2.9 */
+padding: 4px 20px 6px;
+font: italic normal normal 24px/35px Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+}
+.nrelate-settings h2 a.nav-tab:hover { /* needed for WP 2.9 */
+color: #D54E21;
+}
 .nrelate-settings li.nolist {
     list-style: none;
     background: #E8FFE8;
@@ -152,12 +234,15 @@ color:#eee;
     -moz-border-radius: 10px;
     border-radius: 10px;
 }
+.nrelate-settings h2 {
+	padding: 14px 15px 0;
+}
 .nrelate-settings h3 {
     background: #e4e4e4;
 	border-right: 1px solid #e4e4e4;
     padding: 1% 1% 3px 1%;
     width: 94%;
-	margin: 1em 0 0 0;
+	margin: 0;
 	text-shadow: 0 1px 0 #FFFFFF;
 	-moz-border-radius-topleft: 15px;
 	border-top-left-radius: 15px;
@@ -176,5 +261,33 @@ color:#eee;
     border: 1px solid #e4e4e4;
     width: 96%;
 	padding: 1%;
-	margin:0;
+	margin:0 0 10px;
+}
+.nrelate_thumbnail_style{
+	display:none;
+}
+.nrelate-submit-preview {
+clear: left;
+}
+.nr_error{
+float: left;
+margin: 5px 0;
+background-color:#FFEBE8;
+border:1px solid #CC0000;
+-moz-border-radius: 3px 3px 3px 3px;
+padding: 0 0.6em;
+}
+.nr_error p{
+margin:5px 0;
+}
+.nrelate-hidden{
+	display:none;
+}
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>> All Pages <<<<<*/
+.nrelate-page :target,
+.nrelate-page ul:target,
+.nrelate-page input:target  {
+    background: yellow;
+    color: black;
 }

@@ -17,15 +17,12 @@ function nr_rc_message_set(){
 	$admin_options = get_option('nrelate_admin_options');
 	$admin_ad = $admin_options['admin_validate_ad']; // get ad ID
 	
-	$wp_root_nr=get_bloginfo( 'url' );
-	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
-
 	// Related Thumbnail options
 	$show_thumbnails = $related_options['related_thumbnail'];
 	$thumbnailurl = $related_options['related_default_image'];
 	// Related ad options
-	$adcodeopt = $related_options['related_display_ad'];
-	
+	$adcodeopt = @$related_options['related_display_ad'];
+	$msg = '';
 	// Thumbnail
 	if ($show_thumbnails == 'Thumbnails') {
 		// Is there a default thumbnail set?
@@ -50,7 +47,7 @@ function nr_rc_message_set(){
 	
 	$msg=$msg. '<li id="adverify"></li>';
 	// AJAX call to nrelate server to bring back ad code status
-	echo '<script type="text/javascript"> checkad(\''.NRELATE_ADMIN_URL.'\',\''.$wp_root_nr.'\',\''.NRELATE_RELATED_ADMIN_VERSION.'\',\'adverify\',\''.$admin_ad.'\'); </script>';
+	echo '<script type="text/javascript"> checkad(\''.NRELATE_ADMIN_URL.'\',\''.NRELATE_BLOG_ROOT.'\',\''.NRELATE_RELATED_ADMIN_VERSION.'\',\'adverify\',\''.$admin_ad.'\'); </script>';
 	
 	echo $msg;
 };
