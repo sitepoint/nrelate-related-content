@@ -142,7 +142,7 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 = 0.46.0 =
 * New Style gallery!
-* No CSS option.
+* No CSS option - create your own style!
 * Support for Thesis post image.
 * WP 2.9 support: Style gallery tabs.
 * WP 2.9 support: Exclude categories fix.
