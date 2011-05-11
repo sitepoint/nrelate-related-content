@@ -279,6 +279,7 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 = 0.1 =
 * Initial release.
 
+
 == Upgrade Notice ==
 
 = 0.46.0 =
