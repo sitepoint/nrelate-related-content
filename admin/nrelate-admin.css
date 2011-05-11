@@ -187,6 +187,13 @@ text-align:center;
 border-color:#000000 #C0C0C0 #C0C0C0 #000000;
 color:#eee;
 }
+#nrelate-dashboard input.reindex.disabled {
+background-color:#ddd;
+}
+#nrelate-dashboard input.reindex.disabled:hover {
+border-color:#DDDDDD #505050 #505050 #DDDDDD;
+color:#FFF;
+}
 #adminmenu #toplevel_page_nrelate-main .wp-menu-image a{
 	background:url(images/menu-logo.png) center center no-repeat;
 }

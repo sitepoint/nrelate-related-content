@@ -63,6 +63,13 @@ function checkindex(nr_settingsurl,nr_domain,nr_admin_version){
 		xmlHttp.onreadystatechange=function(){
 			if (xmlHttp.readyState==4 && xmlHttp.status==200){
 				document.getElementById("indexcheck").innerHTML=xmlHttp.responseText;
+				
+				// If index process is not done
+				if( jQuery("#indexresponse:contains('Status: The nRelate plugin is ready to go')").size()==0 ) {
+					jQuery("#nr_reindex :submit").attr('disabled', 'disabled').addClass('disabled').click(function(){
+						return false;
+					});
+				}
 			}
 		}
 		xmlHttp.open("POST",nr_settingsurl+"/index_transport.php",true);

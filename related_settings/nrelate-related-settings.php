@@ -728,6 +728,15 @@ function related_options_validate($input) {
 	$input['related_title'] = esc_sql($input['related_title']);
 	
 	$input['related_version'] = NRELATE_RELATED_PLUGIN_VERSION;
+	
+	// Make sure that unchecked checkboxes are stored as empty strings
+	global $nr_rc_std_options;
+	$options = array_keys($nr_rc_std_options);
+	$values = array_fill(0, count($options), '');
+	$empty_settings_array = array_combine($options, $values);
+	
+	$input = wp_parse_args( $input, $empty_settings_array );
+	
 	return $input; // return validated input
 }
 ?>

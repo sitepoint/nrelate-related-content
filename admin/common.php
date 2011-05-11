@@ -10,11 +10,7 @@
  * @subpackage Functions
  */
 
-
-//Check system requirements
-add_action('admin_init', 'nrelate_system_check', 0);
-
-/**
+ /**
  * Define Admin constants
  */
 		define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
@@ -25,6 +21,11 @@ add_action('admin_init', 'nrelate_system_check', 0);
 		define( 'NRELATE_ADMIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_ADMIN_DIR_NAME );
 		define( 'NRELATE_ADMIN_URL', WP_PLUGIN_URL . '/' . NRELATE_ADMIN_DIR_NAME );
 		define( 'NRELATE_ADMIN_IMAGES', NRELATE_ADMIN_URL . '/images' );
+		
+		define( 'NRELATE_MIN_WP', '2.9' );
+		define( 'NRELATE_MIN_PHP', '5.0' );
+		
+		
 
 /**
  * System check
@@ -33,20 +34,31 @@ add_action('admin_init', 'nrelate_system_check', 0);
  */
 function nrelate_system_check(){
 	$plugin = NRELATE_PLUGIN_BASENAME;
-	$warning = "<p><strong>".__('nrelate Warning:', 'nrelate')."</strong></p>";
+	$warning = "<p><strong>".__('nrelate Warning(s):', 'nrelate')."</strong></p>";
 	
-	// is curl installed?
-	if ( !function_exists('curl_init')) {
-		$message .= "<p>".__('This nrelate plugin requires CURL installed on your server. Please contact your web host and ask them to install CURL.','nrelate')."</p>";
+	// WordPress version check
+	if (!version_compare(NRELATE_MIN_WP, get_bloginfo('version'), '<')) {
+		$message .= "<li>".sprintf(__('You\'re running WordPress version %1$s. nrelate requires WordPress version %2$s.<br/>Please upgrade to WordPress version %2$s.', 'nrelate' ), get_bloginfo('version'), NRELATE_MIN_WP ) . "</li>";
 	}
-
-	$closing = "<p>".__('The nrelate plugin has been deactivated.','nrelate')."<br/><br/>".__('Refresh this page to return to your WordPress dashboard.','nrelate')."</p>";
+	
+	// PHP version check
+	if (!version_compare(NRELATE_MIN_PHP, PHP_VERSION, '<')) {
+		$message .= "<li>".sprintf(__('You\'re server is running PHP version %1$s. nrelate requires PHP version %2$s.<br/>Please contact your web host and request PHP version %2$s.', 'nrelate' ), PHP_VERSION, NRELATE_MIN_PHP ) . "</li>";
+	}
+	
+	// Check for CURL
+	if ( !function_exists('curl_init')) {
+		$message .= "<li>".__('This nrelate plugin requires CURL installed on your server. Please contact your web host and ask them to install CURL.','nrelate')."</li>";
+	}
+	
+	$closing = "<p>".__('The nrelate plugin has been deactivated.','nrelate')."<br/><br/><a href=\"/wp-admin\">".__('Click here to return to your WordPress dashboard.','nrelate')."</a></p>";
 		
 	if (!empty($message)) {
 		deactivate_plugins($plugin);
-		wp_die( $warning . $message . $closing );
+		wp_die( $warning . "<ol>" . $message . "<ol>" . $closing );
 	}
 }
+
 
 /**************************************
  *  Admin only code

@@ -9,8 +9,11 @@
  */
  
  
+
+global $nr_rc_std_options, $nr_rc_layout_options, $nr_rc_old_checkbox_options;
+
 // Default Options
-global $nr_rc_std_options, $nr_rc_layout_options;
+// ALL options must be listed
 $nr_rc_std_options = array(
 		"related_version" => NRELATE_RELATED_PLUGIN_VERSION,
 		"related_number_of_posts"=> 3,
@@ -20,12 +23,14 @@ $nr_rc_std_options = array(
 		"related_max_age_frame" => "Year(s)",
 		"related_display_ad" => false,
 		"related_ad_animation" => "on",
+		"related_loc_top" => "",
 		"related_loc_bottom" => "on",
 		"related_display_logo" => true,
 		"related_reset" => "",
 		"related_blogoption" => "Off",
 		"related_show_post_title" => 'on',
 		"related_max_chars_per_line" => 100,
+		"related_show_post_excerpt" => "",
 		"related_max_chars_post_excerpt" => 25,		
 		"related_thumbnail" => "Thumbnails",
 		"related_thumbnail_size" => 110,
@@ -40,8 +45,26 @@ $nr_rc_layout_options = array(
 		"related_thumbnails_style" => "default",
 		"related_text_style" => "default"
 );
-       
- 
+
+
+/**
+ * Backwards compatibility
+ * Stores all checkbox options for versions <= 0.46.0
+ * This should never have to be changed.
+ */ 
+$nr_rc_old_checkbox_options = array(
+		"related_show_post_title" => "",	// Since 0.46.0 default on
+		"related_ad_animation" => "",		// Since 0.46.0 default on
+		"related_show_post_excerpt" => "",
+		"related_reset" => "",
+		"related_loc_top" => "",
+		"related_loc_bottom" => "",
+		"related_display_logo" => "",
+		"related_display_ad" => ""
+);
+
+
+
 /**
  * Upgrade function
  *
@@ -55,9 +78,12 @@ function nr_rc_upgrade() {
 	
 	// If settings exist and we're running on old version (or version doesn't exist), then this is an upgrade
 	if ( ( !empty( $related_settings ) ) && ( $current_version < NRELATE_RELATED_PLUGIN_VERSION ) )  {
-		global $nr_rc_std_options, $nr_rc_layout_options;
-
-			// move custom field option from related settings to admin settings
+	
+		nrelate_system_check(); // run system check
+		
+		global $nr_rc_std_options, $nr_rc_layout_options, $nr_rc_old_checkbox_options;
+			
+			// move custom field option from related settings to admin settings: v.0.42.2
 			nrelate_upgrade_option('nrelate_related_options', 'related_custom_field', 'nrelate_admin_options', 'admin_custom_field');
 
 			// move ad code field option from related settings to admin settings: v0.42.6
@@ -65,28 +91,32 @@ function nr_rc_upgrade() {
 
 			// re-get the latest since we just made changes
 			$related_settings = get_option('nrelate_related_options');
+			
+			// Sanitize settings for versions <= 0.46.0
+			if ( $current_version <= '0.46.0' ) {
+				
+				// User is upgrading from version < 0.46.0
+				if ( $current_version < '0.46.0' ) {
+					// Apply 0.46.0 defaults before running standard upgrade
+					$nr_rc_old_checkbox_options["related_show_post_title"] = 'on';
+					$nr_rc_old_checkbox_options["related_ad_animation"] = 'on';
+				}
+				
+				$related_settings = wp_parse_args( $related_settings, $nr_rc_old_checkbox_options );
+			}
 
 			// STD OPTIONS: Update new options if they don't exist
-			foreach($nr_rc_std_options as $nr_rc_std_option => $nr_rc_std_value) {
-				if (!array_key_exists($nr_rc_std_option, $related_settings)) {
-					// if not in the array add the option into the array
-					$related_settings[$nr_rc_std_option] = $nr_rc_std_value;
-				}
-			}
+			$related_settings = wp_parse_args( $related_settings, $nr_rc_std_options );
+			
 			// now update again
 			update_option('nrelate_related_options', $related_settings);
-
 			
-			// LAYOUT OPTIONS: Update new options if they don't exist
+			// LAYOUT OPTIONS
 			if ( ( empty( $related_layout_settings ) ) ) {
 				add_option('nrelate_related_options_styles', $nr_rc_layout_options);
 			} else {
-				foreach($nr_rc_layout_options as $nr_rc_layout_option => $nr_rc_layout_value) {
-					if (!array_key_exists($nr_rc_layout_option, $related_layout_settings)) {
-						// if not in the array add the option into the array
-						$related_layout_settings[$nr_rc_layout_option] = $nr_rc_layout_value;
-					}
-				}
+				$related_layout_settings = wp_parse_args( $related_layout_settings, $nr_rc_layout_options );
+				
 				update_option('nrelate_related_options_styles', $related_layout_settings);
 			}
 			
@@ -112,6 +142,9 @@ function nr_rc_upgrade() {
 // UPDATE (v.0.2.2): notify nrelate server when this plugin is activated
 // UPDATE (v.0.3): send the plugin version info to nrelate server
 function nr_rc_add_defaults() {
+
+	nrelate_system_check(); // run system check
+	
 	global $nr_rc_std_options, $nr_rc_layout_options;
 
 	$tmp = get_option('nrelate_related_options');

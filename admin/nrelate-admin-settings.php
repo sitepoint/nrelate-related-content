@@ -299,7 +299,20 @@ function admin_options_validate($input) {
 	$input['admin_validate_ad'] = like_escape($input['admin_validate_ad']);
 	// Add slashes to all text fields
 	$input['admin_validate_ad'] = esc_sql($input['admin_validate_ad']);
-
+	
+	/**
+	 * Make sure that unchecked checkboxes are stored as empty strings
+	 *
+	 * nrelate_admin_options doesn't have a "defaults" global array
+	 * so let's keep an array of checkbox settings here, the only place
+	 * it's required now
+	 */
+	$empty_settings_array = array( 
+		'admin_email_address' => ''
+	);
+	
+	$input = wp_parse_args( $input, $empty_settings_array );
+	
 	return $input; // return validated input
 }
 ?>
