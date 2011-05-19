@@ -7,11 +7,6 @@
  */
 
 
-// If the widget is active, disable some options
-if ( is_active_widget(false, false, 'nrelate-related', true) ) {
-	$fieldstatus = 'DISABLED';
-}
-
 function options_init_nr_rc(){
 	register_setting('nrelate_related_options', 'nrelate_related_options', 'related_options_validate' );
 	
@@ -51,6 +46,7 @@ function options_init_nr_rc(){
 	
 	// Layout Section
 	add_settings_section('layout_section',__('Layout Settings','nrelate'), 'section_text_nr_rc_layout', __FILE__);
+	add_settings_field('related_where_to_show',__('Which pages should display related content?','nrelate'), 'setting_related_where_to_show', __FILE__, 'layout_section');
 	add_settings_field('related_loc_top',__('Top of post <em>(Automatic)</em>','nrelate'), 'setting_related_loc_top', __FILE__, 'layout_section');
 	add_settings_field('related_loc_bottom',__('Bottom of post <em>(Automatic)</em>','nrelate'), 'setting_related_loc_bottom', __FILE__, 'layout_section');
     add_settings_field('related_loc_widget',__('Widget area or Sidebar <em>(Automatic)</em>','nrelate'), 'setting_related_widget', __FILE__, 'layout_section');
@@ -228,8 +224,124 @@ function setting_related_number_of_posts_nr_rc_ext(){
 
 // Section HTML, displayed before the first option
 function section_text_nr_rc_layout(){
-	$video = nrelate_thickbox_youtube('2kc32vFYO68','related_automatic_layout');
-	echo '<div class="section-desc"><strong>Related posts will only show up once per page.</strong><br/>Where do you want your related content to display?' . $video . '</div>';
+	echo '<div class="section-desc">Where do you want your related content to display?</div>';
+}
+
+// CHECKBOX LIST - Where to show related content
+function setting_related_where_to_show(){
+	$options = get_option('nrelate_related_options');
+
+	// Define conditional tags tree	
+	$cond_tags = array(
+		(object) array(
+			"term_id" => 1,
+			"check_val" => "is_front_page",
+            "name" => "Front Page", 
+            "parent" => 0
+		),
+		(object) array(
+			"term_id" => 2,
+			"check_val" => "is_single",
+            "name" => "Single Posts", 
+            "parent" => 0
+		),
+		(object) array(
+			"term_id" => 3,
+			"check_val" => "is_page",
+            "name" => "Pages", 
+            "parent" => 0
+		),
+		(object) array(
+			"term_id" => 4,
+			"check_val" => "is_archive",
+            "name" => "All Archives", 
+            "parent" => 0
+		),
+				(object) array(
+					"term_id" => 6,
+					"check_val" => "is_category",
+					"name" => "Category Archives", 
+					"parent" => 4
+				),
+				(object) array(
+					"term_id" => 7,
+					"check_val" => "is_tag",
+					"name" => "Tag Archives", 
+					"parent" => 4
+				),
+				(object) array(
+					"term_id" => 8,
+					"check_val" => "is_author",
+					"name" => "Author Archives", 
+					"parent" => 4
+				),
+				(object) array(
+					"term_id" => 9,
+					"check_val" => "is_date",
+					"name" => "Date Archives", 
+					"parent" => 4
+				),
+		(object) array(
+			"term_id" => 5,
+			"check_val" => "is_search",
+            "name" => "Search Results", 
+            "parent" => 0
+		),
+		(object) array(
+			"term_id" => 11,
+			"check_val" => "is_attachment",
+            "name" => "Attachment Pages", 
+            "parent" => 0
+		)
+	);
+	
+	$args = array('taxonomy' => 'category', 'value_field' => 'check_val');
+	$args['selected_cats'] = is_array(@$options['related_where_to_show']) ? $options['related_where_to_show'] : array();
+	$args['name'] = 'nrelate_related_options[related_where_to_show]';
+	
+	echo '<div id="nrelate-where-to-show" class="categorydiv"><ul id="categorychecklist" class="list:category categorychecklist form-no-clear">';
+	$walker = new nrelate_Walker_Category_Checklist();
+	echo call_user_func_array(array(&$walker, 'walk'), array($cond_tags, 0, $args));
+	
+	echo '</ul></div>';
+	
+	$javascript = <<< JAVA_SCRIPT
+jQuery(document).ready(function(){
+	var nrelate_where_to_show_check = jQuery('#nrelate-where-to-show :checkbox');
+	
+	nrelate_where_to_show_check.change(function(){
+		var me = jQuery(this);
+		
+		if ( !me.is(':checked') && me.val() == 'is_single' ) {
+			if ( !confirm("Are you sure you do not want to show related content on single posts?") ) {
+				me.attr('checked', true );
+			}
+		}
+		
+		if ( nrelate_where_to_show_check.filter(':checked').size() == 0 ) {
+			if ( !confirm("Related content will not be shown anywhere. Please confirm.") ) {
+				me.attr('checked', true );
+			}
+		}
+		
+		// Check children
+		me.parent().siblings('.children').find(':checkbox').attr('checked', me.is(':checked'));
+		
+		// If a child, check/uncheck parent according to group
+		var siblings = me.closest('.children').find(':checkbox');
+		if ( siblings.size() ) {
+			if ( siblings.size() == siblings.filter(':checked').size() ) {
+				me.closest('.parent-category').children('.selectit').find(':checkbox').attr('checked', true);	
+			} else {
+				me.closest('.parent-category').children('.selectit').find(':checkbox').attr('checked', false);
+			}
+		}
+		
+	});								
+});
+JAVA_SCRIPT;
+
+	echo "<script type='text/javascript'>{$javascript}</script>";
 }
 
 // CHECKBOX - Location Post Top
@@ -241,10 +353,9 @@ function setting_related_loc_top(){
 
 // CHECKBOX - Location Post Bottom
 function setting_related_loc_bottom(){
-	global $fieldstatus;
 	$options = get_option('nrelate_related_options');
 	$checked = @$options['related_loc_bottom']=='on' ? ' checked="checked" ' : '';
-	echo "<input ".$checked." id='related_loc_bottom' name='nrelate_related_options[related_loc_bottom]' type='checkbox' " . $fieldstatus . "/>";
+	echo "<input ".$checked." id='related_loc_bottom' name='nrelate_related_options[related_loc_bottom]' type='checkbox' />";
 }
 
 
@@ -255,7 +366,7 @@ function setting_related_widget(){
 
 // TEXT ONLY - no options
 function setting_related_manual(){
-	_e("Add this code anywhere in your theme to show related content.<br>A good place is either Single.php or Sidebar.php:","nrelate"); echo"<br><b>&lt;?php if (function_exists('nrelate_related')) nrelate_related(); ?&gt;</b>";
+	_e("Add this code anywhere in your theme to show related content:","nrelate"); echo"<br><b>&lt;?php if (function_exists('nrelate_related')) nrelate_related(); ?&gt;</b>";
 }
 
 // TEXT ONLY - no options
@@ -551,7 +662,7 @@ function nrelate_related_do_page() {
 				$(this).parents('form:first').find('.nrelate_disabled_preview span').hide();
 			});
 			
-			$('input.button-primary[name=Submit]').click(function(event){
+			$('input.button-primary[name="Submit"]').click(function(event){
 				$(this).parents('form:first').find('.nrelate_disabled_preview span').hide();
 				
 				if ($('#related_thumbnail').val()=='Thumbnails') return;

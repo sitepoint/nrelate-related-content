@@ -9,7 +9,7 @@
  */
 
 
-wp_enqueue_script('nrelate_related_js', NRELATE_RELATED_SETTINGS_URL.'/nrelate_related_jsfunctions.js');
+wp_enqueue_script('nrelate_related_js', NRELATE_RELATED_SETTINGS_URL.'/nrelate_related_admin.min.js');
  
 /**
  * Add sub menu
@@ -161,7 +161,7 @@ function nrelate_related_settings_header() { ?>
 		<?php echo '<img src='. NRELATE_ADMIN_IMAGES .'/nrelate-logo.png alt="nrelate Logo" style="float:left; margin: 0 20px 0 0"; />';
 		
 		_e('<h2>Related Content</h2>
-		The related content plugin allows you to display related posts on your single posts pages.
+		The related content plugin allows you to display related posts on your website.
 		Click <a href="'.NRELATE_WEBSITE_FORUM_URL.'" target="_blank">here</a> to read about each setting.','nrelate'); ?>
 		<br><br>
 		

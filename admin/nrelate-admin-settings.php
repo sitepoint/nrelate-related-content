@@ -167,17 +167,18 @@ class nrelate_Walker_Category_Checklist extends Walker {
 		extract($args);
 		if ( empty($taxonomy) )
 			$taxonomy = 'category';
-
-		$name = 'nrelate_admin_options[admin_exclude_categories]';
+		
+		$name = isset($name) ? $name : 'nrelate_admin_options[admin_exclude_categories]';
+		$value_field = isset($value_field) ? $value_field : 'term_id';
 		
 		$css_classes = !$category->parent ? ' top-level-category' : '';
 		$css_classes .= $has_children ? ' parent-category' : '';
-		$css_classes .= in_array( $category->term_id, $selected_cats ) ? ' excluded-category' : '';
+		$css_classes .= in_array( $category->$value_field, $selected_cats ) ? ' excluded-category' : '';
 		
 		$class =  $css_classes ? "class='{$css_classes}'" : '';
 		
 		// Supports WP v2.9
-		$output .= "\n<li id='{$taxonomy}-{$category->term_id}'$class>" . '<label class="selectit"><input value="' . $category->term_id . '" type="checkbox" name="'.$name.'[]" id="in-'.$taxonomy.'-' . $category->term_id . '"' . checked( in_array( $category->term_id, $selected_cats ), true, false ) . ' /> ' . esc_html( apply_filters('the_category', $category->name )) . '</label>';
+		$output .= "\n<li id='{$taxonomy}-{$category->term_id}'$class>" . '<label class="selectit"><input value="' . $category->$value_field . '" type="checkbox" name="'.$name.'[]" id="in-'.$taxonomy.'-' . $category->term_id . '"' . checked( in_array( $category->$value_field, $selected_cats ), true, false ) . ' /> ' . esc_html( apply_filters('the_category', $category->name )) . '</label>';
 	}
 }
 
@@ -305,7 +306,7 @@ function admin_options_validate($input) {
 	 *
 	 * nrelate_admin_options doesn't have a "defaults" global array
 	 * so let's keep an array of checkbox settings here, the only place
-	 * it's required now
+	 * it's required by now
 	 */
 	$empty_settings_array = array( 
 		'admin_email_address' => ''

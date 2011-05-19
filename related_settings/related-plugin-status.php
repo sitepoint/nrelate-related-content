@@ -38,7 +38,8 @@ $nr_rc_std_options = array(
 		"related_number_of_posts_ext" => 3,
 		"related_validate_ad" => NULL,
 		"related_number_of_ads" => 1,
-		"related_ad_placement" => "Mixed"
+		"related_ad_placement" => "Mixed",
+		"related_where_to_show" => array( "is_single" )
 	);
 		
 $nr_rc_layout_options = array(		
@@ -112,13 +113,8 @@ function nr_rc_upgrade() {
 			update_option('nrelate_related_options', $related_settings);
 			
 			// LAYOUT OPTIONS
-			if ( ( empty( $related_layout_settings ) ) ) {
-				add_option('nrelate_related_options_styles', $nr_rc_layout_options);
-			} else {
-				$related_layout_settings = wp_parse_args( $related_layout_settings, $nr_rc_layout_options );
-				
-				update_option('nrelate_related_options_styles', $related_layout_settings);
-			}
+			$related_layout_settings = wp_parse_args( $related_layout_settings, $nr_rc_layout_options );
+			update_option('nrelate_related_options_styles', $related_layout_settings);
 			
 			// Update version number in DB
 			$related_settings = get_option('nrelate_related_options');
@@ -151,8 +147,8 @@ function nr_rc_add_defaults() {
 	// If related_reset value is on or if nrelate_related_options was never created, insert default values
     if(($tmp['related_reset']=='on')||(!is_array($tmp))) {
 		
-		add_option('nrelate_related_options', $nr_rc_std_options);
-		add_option('nrelate_related_options_styles', $nr_rc_layout_options);
+		update_option('nrelate_related_options', $nr_rc_std_options);
+		update_option('nrelate_related_options_styles', $nr_rc_layout_options);
 
 		// Convert some values to send to nrelate server
 		$number = 3;

@@ -91,7 +91,8 @@ function nrelate_post_count() {
  */
     function nrelate_get_custom_images($content) {
         global $post;
-
+		$thumb_found = false;
+		
 		// Get custom field images if user set a custom field
 		$options = get_option('nrelate_admin_options');
         $customfield = $options['admin_custom_field'];
@@ -181,7 +182,7 @@ function nrelate_debug() {
  */
 function nrelate_custom_feed() {
 	if ( isset( $_GET['nrelate_feed'] ) && $_GET['nrelate_feed'] == get_option( 'nrelate_key' ) ) {
-		if ($_GET['debug']) {
+		if (isset($_GET['debug'])) {
 			nrelate_debug();
 			exit();
 		}
@@ -228,14 +229,16 @@ function nrelate_custom_feed() {
 		// Force the feed to return full content
 		add_filter( 'pre_option_rss_use_excerpt', create_function( '', 'return 0;' ), 0 );
 
-		// Remove all filters from RSS functions
+		// Remove all filters that might effect feed
 		remove_all_filters ('wp_title');
 		remove_all_filters ('wp_title_rss');
 		remove_all_filters ('the_title_rss');
 		remove_all_filters ('the_permalink_rss');
 		remove_all_filters ('the_content_feed');
+		remove_all_filters ('the_content');
 		remove_all_filters ('the_content_rss');
 		remove_all_filters ('the_excerpt_rss');
+		remove_all_filters ('the_excerpt');
 		remove_all_filters ('comment_author_rss');
 		remove_all_filters ('comment_text_rss');
 		remove_all_filters ('bloginfo_rss');

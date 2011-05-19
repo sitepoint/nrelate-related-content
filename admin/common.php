@@ -37,7 +37,7 @@ function nrelate_system_check(){
 	$warning = "<p><strong>".__('nrelate Warning(s):', 'nrelate')."</strong></p>";
 	
 	// WordPress version check
-	if (!version_compare(NRELATE_MIN_WP, get_bloginfo('version'), '<')) {
+	if (!version_compare(NRELATE_MIN_WP, get_bloginfo('version'), '<=')) {
 		$message .= "<li>".sprintf(__('You\'re running WordPress version %1$s. nrelate requires WordPress version %2$s.<br/>Please upgrade to WordPress version %2$s.', 'nrelate' ), get_bloginfo('version'), NRELATE_MIN_WP ) . "</li>";
 	}
 	
@@ -70,7 +70,7 @@ function nrelate_system_check(){
 /**
  * load javascript
  */
- wp_enqueue_script('nrelate_admin_js', NRELATE_ADMIN_URL.'/nrelate_admin_jsfunctions.js');
+ wp_enqueue_script('nrelate_admin_js', NRELATE_ADMIN_URL.'/nrelate_admin_jsfunctions.min.js');
  
  
 /**

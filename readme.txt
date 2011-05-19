@@ -3,10 +3,10 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.46.1
+Stable tag: 0.47.0
 
 
-The best way to display related content: Thumbnails or Text.
+The best way to display related content: Thumbnails or Text, on all your pages.
 
 == Description ==
 The best way to display related content from your site, and/or your blogroll.
@@ -139,6 +139,11 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 
 == Changelog ==
+
+= 0.47.0 =
+* Now you can show related content on your Home Page, Single Post, Search and any Archive page!
+* Updated some of our Javascript to work in WordPress 3.2.
+* Bug fixes.
 
 = 0.46.1 =
 * Fixed upgrade function to keep old settings.
@@ -279,8 +284,10 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 = 0.1 =
 * Initial release.
 
-
 == Upgrade Notice ==
+
+= 0.47.0 =
+You can now show related content on ALL PAGES!
 
 = 0.46.0 =
 NEW STYLE GALLERY - choose from additional styles.
