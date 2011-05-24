@@ -109,7 +109,7 @@ function nrelate_related_tabs($current = 0) {
 function nrelate_related_settings_header() { ?>
 	
 	<script type="text/javascript">
-		/* <![CDATA[ */
+		//<![CDATA[
 		/*
 		* User warning if switching tabs without saving
 		*/
@@ -155,7 +155,7 @@ function nrelate_related_settings_header() { ?>
 				}
 			});
 		});
-		/* ]]> */
+		//]]>
     </script>
 	<div class="wrap nrelate-settings nrelate-page" style="margin: 10px 0 0 0;">
 		<?php echo '<img src='. NRELATE_ADMIN_IMAGES .'/nrelate-logo.png alt="nrelate Logo" style="float:left; margin: 0 20px 0 0"; />';

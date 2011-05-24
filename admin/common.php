@@ -137,6 +137,9 @@ return $output;
  */
 function nrelate_reindex() {
 	$action = "REINDEX";
+	$rss_mode = isset($rss_mode) ? $rss_mode : '';
+	$rssurl = isset($rssurl) ? $rssurl : '';
+	
 	$curlPost = 'DOMAIN='.NRELATE_BLOG_ROOT.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/reindex.php');

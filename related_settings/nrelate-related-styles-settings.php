@@ -149,11 +149,11 @@ function nrelate_related_styles_do_page() { ?>
 
 	<?php nrelate_related_settings_header(); ?>
     <script type="text/javascript">
-		/* <![CDATA[ */
+		//<![CDATA[
 		var nr_plugin_settings_url = '<?php echo NRELATE_RELATED_SETTINGS_URL; ?>';
 		var nr_plugin_domain = '<?php echo NRELATE_BLOG_ROOT; ?>';
 		var nr_plugin_version = '<?php echo NRELATE_RELATED_PLUGIN_VERSION ?>';
-		/* ]]> */
+		//]]>
     </script>
 		<form name="settings" action="options.php" method="post" enctype="multipart/form-action">
     <?php
