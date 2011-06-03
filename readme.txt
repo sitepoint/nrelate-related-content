@@ -5,7 +5,6 @@ Tested up to: 3.1
 Requires at least: 2.9
 Stable tag: 0.47.3
 
-
 The best way to display related content: Thumbnails or Text, on all your pages.
 
 == Description ==
