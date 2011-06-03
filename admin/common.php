@@ -66,12 +66,7 @@ function nrelate_system_check(){
  ***************************************/
  if (is_admin()) {
  
- 
-/**
- * load javascript
- */
- wp_enqueue_script('nrelate_admin_js', NRELATE_ADMIN_URL.'/nrelate_admin_jsfunctions.min.js');
- 
+  
  
 /**
  * Setup Dashboard menu and menu page
@@ -85,24 +80,30 @@ function nrelate_setup_dashboard() {
 };
 add_action('admin_menu', 'nrelate_setup_dashboard');
  
- /**
- * Add CSS for admin pages
- */
- function nrelate_admin_css() {
-    echo '<link rel="stylesheet" type="text/css" href="' . NRELATE_ADMIN_URL . '/nrelate-admin.css" media="screen" />';
-}
-add_action('admin_head', 'nrelate_admin_css');
 
 /**
- * Load thickbox
+ * Load Admin Scripts
  *
- * used for help videos
+ * @since 0.47.3
  */
-function nrelate_load_thickbox() {
-	wp_enqueue_script('thickbox');
+function nrelate_load_admin_scripts() {
+	wp_enqueue_script('nrelate_admin_js', NRELATE_ADMIN_URL.'/nrelate_admin_jsfunctions'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js');
+	wp_enqueue_script('thickbox'); //used for help videos
+}
+add_action('admin_enqueue_scripts','nrelate_load_admin_scripts');
+
+
+/**
+ * Load Admin Styles
+ *
+ * @since 0.47.3
+ */
+function nrelate_load_admin_styles() {
+	wp_register_style( 'nrelate-admin', NRELATE_ADMIN_URL . '/nrelate-admin.css' );
+	wp_enqueue_style('nrelate-admin');
 	wp_enqueue_style('thickbox');
 }
-add_action('admin_print_styles','nrelate_load_thickbox');
+add_action('admin_print_styles','nrelate_load_admin_styles');
 
 /**
  * Common function to load YouTube videos into our admin

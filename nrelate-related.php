@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.47.2
+Version: 0.47.3
 Author URI: http://nrelate.com/
 
 
@@ -27,11 +27,12 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.47.2' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.47.3' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.01.0' );
 define( 'NRELATE_CSS_URL', 'http://static.nrelate.com/common_wp/' . NRELATE_RELATED_ADMIN_VERSION . '/' );
 define( 'NRELATE_BLOG_ROOT', urlencode(str_replace(array('http://','https://'), '', get_bloginfo( 'url' ))));
+define( 'NRELATE_JS_DEBUG', $_REQUEST['nrelate_debug'] ? true : false );
 
 /**
  * Define Path constants
@@ -90,13 +91,10 @@ if (is_admin()) {
 		require_once ( NRELATE_RELATED_SETTINGS_DIR . '/related-menu.php' );
 }
 
-/**
- * Load jquery
- */
-function nrelate_related_jquery() {
-	wp_enqueue_script('jquery');
-	}
-add_action ('template_redirect', 'nrelate_related_jquery');
+
+
+/** Load common frontend functions **/
+require_once ( NRELATE_RELATED_ADMIN_DIR . '/common-frontend.php' );
 
 
 /*
@@ -146,7 +144,7 @@ add_action('wp_print_styles', 'nrelate_related_styles');
  */
 function nrelate_related_javascript() {
 	if ( nrelate_related_is_loading() ) {
-		wp_register_script( 'nrelate_js', NRELATE_RELATED_SETTINGS_URL . '/nrelate_related_frontend.min.js', array(), null, false);
+		wp_register_script( 'nrelate_js', NRELATE_RELATED_SETTINGS_URL . '/nrelate_related_frontend'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js', array(), null, false);
 		wp_enqueue_script('nrelate_js');
 	}
 }
@@ -180,16 +178,6 @@ function nrelate_related_is_loading() {
 }
 
 
-
-/**
- * Load feed only when called
- * and if another nrelate plugin has not loaded it yet.
- *
- * @since 0.42.7
- */
-if(isset($_GET['nrelate_feed'])&& !function_exists('nrelate_custom_feed')) { require_once NRELATE_RELATED_ADMIN_DIR . '/rss-feed.php'; }
-
-
 /**
  * Inject related posts into the content
  *
@@ -198,25 +186,9 @@ if(isset($_GET['nrelate_feed'])&& !function_exists('nrelate_custom_feed')) { req
  * @since 0.1
  */
 function nrelate_related_inject($content) {
-	global $post, $wp_current_filter;
+	global $post;
 	
-	if ( !in_array( 'get_the_excerpt', $wp_current_filter ) ) {
-		
-		// Thesis theme
-		if(function_exists('thesis_html_framework') && has_filter('excerpt_length')){
-			// if thesis and has the filter for excerpt length,  exit without inserting
-			return $content;
-		}
-		
-		// Third party widgets
-		// For php 5.25 support: debug_backtrace(false);
-		$call_stack = debug_backtrace();
-		foreach ( $call_stack as $call ) {
-			if ( $call['function'] == 'widget' ) {
-				return $content;
-			}
-		}
-		
+	if ( nrelate_related_should_inject() ) {
 		$nrelate_related_options = get_option( 'nrelate_related_options' );
 
 		$related_loc_top = $nrelate_related_options['related_loc_top'];
@@ -246,6 +218,49 @@ function nrelate_related_inject($content) {
 }
 add_filter( 'the_content', 'nrelate_related_inject', 10 );
 add_filter( 'the_excerpt', 'nrelate_related_inject', 10 );
+
+
+/**
+ * Returns true if currently the_content or the_excerpt
+ * filter should be injected with nrelate code
+ *
+ * @since 0.47.3
+ */
+function nrelate_related_should_inject() {
+	global $wp_current_filter;
+	
+	if ( !nrelate_is_main_loop() ) {
+		// Don't inject if out of main loop
+		return false;
+	}
+	
+	if ( in_array( 'get_the_excerpt', $wp_current_filter ) ) {
+		// Don't inject if calling get_the_excerpt
+		return false;
+	}
+	
+	if ( is_single() && in_array( 'the_excerpt', $wp_current_filter ) ) {
+		// Don't inject the_excerpt on single post pages
+		return false;
+	}
+	
+	if ( function_exists('thesis_html_framework') && has_filter('excerpt_length') ) {
+		// Don't inject if thesis and has the filter for excerpt length
+		return false;
+	}
+	
+	// Third party widgets
+	// For php 5.25 support: debug_backtrace(false);
+	$call_stack = debug_backtrace();
+	foreach ( $call_stack as $call ) {
+		if ( $call['function'] == 'widget' ) {
+			return false;
+		}
+	}
+	
+	return true;
+}
+
 
 
 /**

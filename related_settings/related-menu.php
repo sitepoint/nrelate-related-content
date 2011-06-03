@@ -9,7 +9,7 @@
  */
 
 
-wp_enqueue_script('nrelate_related_js', NRELATE_RELATED_SETTINGS_URL.'/nrelate_related_admin.min.js');
+wp_enqueue_script('nrelate_related_js', NRELATE_RELATED_SETTINGS_URL.'/nrelate_related_admin'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js');
  
 /**
  * Add sub menu

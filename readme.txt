@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.1
 Requires at least: 2.9
-Stable tag: 0.47.2
+Stable tag: 0.47.3
 
 
 The best way to display related content: Thumbnails or Text, on all your pages.
@@ -124,7 +124,7 @@ Yes. Just go to our settings page, and fill in the name of the custom field you 
 Our plugin creates an additional nrelate specific RSS feed.  We use this feed so that we don't run into issues if your regular RSS feed is set to "Summary" or if you use a service like Feedburner.
 
 = What is in the nrelate specific RSS feed and how is it used? =
-The nrelate specific RSS feed is exactly the same content that is in your RSS feed if you set it to full feed.  Since we had some users that had their feed to just show a summary and others that used Feedburner, we set this up.  The nrelate specific feed can only be accessed by using a random key that is generated upon install.  To make sure this feed is not used for other purposes, we hired WordPress lead developer and security expert, Mark Jaquith, to build it for us.
+The nrelate specific RSS feed is very similar to your standard RSS feed if you set it to full feed.  Since we had some users that had their feed to just show a summary and others that used Feedburner, we set this up.  The nrelate specific feed can only be accessed by using a random key that is generated upon install.  To make sure this feed is not used for other purposes, we hired WordPress lead developer and security expert, Mark Jaquith, to build it for us.
 
 = My website is not in English, will nrelate work? =
 Our plugin will work on websites in the following languages: Dutch, English, French, German, Indonesian, Italian, Polish, Portuguese, Russian, Spanish, Swedish and Turkish.  If you do not see your language on the list or you think that we could improve the relevancy of our plugin in your language, please <a href="http://nrelate.com/forum/">contact us</a> and we will work with you to configure the plugin accordingly.
@@ -139,6 +139,11 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 
 == Changelog ==
+
+= 0.47.3 =
+* Better handling of scripts and stylesheets.
+* Fixed issue with the_excerpt()
+* Solved clickthrough error.
 
 = 0.47.2 =
 * Bug fixes.
