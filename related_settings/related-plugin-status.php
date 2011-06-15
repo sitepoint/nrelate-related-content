@@ -140,6 +140,7 @@ function nr_rc_upgrade() {
 function nr_rc_add_defaults() {
 
 	nrelate_system_check(); // run system check
+	nrelate_products("related",NRELATE_RELATED_PLUGIN_VERSION,NRELATE_RELATED_ADMIN_VERSION,1); // add this product to the nrelate_products array
 	
 	global $nr_rc_std_options, $nr_rc_layout_options;
 
@@ -322,15 +323,15 @@ EOD;
 // Deactivation hook callback
 function nr_rc_deactivate(){
 
-	if(function_exists('nrelate_popular')){
-    	//popular plugin is activated, don't delete xmlrpc pinghost
-	}
-	else{
+	$nrelate_active=nrelate_products("related",NRELATE_RELATED_PLUGIN_VERSION,NRELATE_RELATED_ADMIN_VERSION,0);
+	
+	if($nrelate_active==0){
 		// Remove our ping link from ping_sites
 		$current_ping_sites = get_option('ping_sites');
 		$new_ping_sites = str_replace("\nhttp://api.nrelate.com/rpcpinghost/", "", $current_ping_sites);
 		update_option('ping_sites',$new_ping_sites);
 	}
+	
 	// RSS mode is sent again just incase if the user already had nrelate_related_options in their wordpress db
 	// and doesn't get sent above
 	$excerptset = get_option('rss_use_excerpt');
@@ -352,5 +353,53 @@ function nr_rc_deactivate(){
 	curl_exec($ch);
 	curl_close($ch);
 }
+
+// Uninstallation hook callback
+function nr_rc_uninstall(){
+	
+	// Delete nrelate popular options from user's wordpress db
+	delete_option('nrelate_related_options');
+	delete_option('nrelate_related_options_styles');
+	
+	$nrelate_active=nrelate_products("related",NRELATE_RELATED_PLUGIN_VERSION,NRELATE_RELATED_ADMIN_VERSION,-1);
+	
+	if ($nrelate_active<0){
+		// This occurs if the user is deleting all of nrelate's products
 		
+		// Remove our ping link from ping_sites
+		$current_ping_sites = get_option('ping_sites');
+		$new_ping_sites = str_replace(array("\nhttp://api.nrelate.com/rpcpinghost/","http://api.nrelate.com/rpcpinghost/"), "", $current_ping_sites);
+		update_option('ping_sites',$new_ping_sites);
+		
+		// Delete nrelate admin options from users wordpress db
+		delete_option('nrelate_products');
+		delete_option('nrelate_admin_msg');
+		delete_option('nrelate_admin_options');
+		$current_ping_sites = get_option('ping_sites');
+		$new_ping_sites = str_replace("\nhttp://api.nrelate.com/rpcpinghost/", "", $current_ping_sites);
+		update_option('ping_sites',$new_ping_sites);
+	}
+	
+	// RSS mode is sent again just incase if the user already had nrelate_popular_options in their wordpress db
+	// and doesn't get sent above
+	$excerptset = get_option('rss_use_excerpt');
+	$rss_mode = "FULL";
+	if ($excerptset != '0') { // are RSS feeds set to excerpt
+		update_option('nrelate_admin_msg', 'yes');
+		$rss_mode = "SUMMARY";
+	}
+	
+	$rssurl = get_bloginfo('rss2_url');
+	
+	// Send notification to nrelate server of uninstallation
+	$action = "UNINSTALL";
+	$curlPost = 'DOMAIN='.NRELATE_BLOG_ROOT.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php');
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
+	curl_exec($ch);
+	curl_close($ch);
+}
+
 ?>

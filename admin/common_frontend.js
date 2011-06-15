@@ -7,18 +7,18 @@ if (typeof(nRelate)=='undefined') {
 		//flag to redirect the page when click on a related post
 		load_link : false,
 		//flag that indicates if tracking function has been enabled. Since it uses jQuery.live function it can be called only once
-		track_enabled : false,
+		//YK 060911: track_enabled is now an array where [0] is rc and [1] is mp
+		track_enabled : [false,false],
 		//flag to redirect the page when click on a related post
-		load_link : false,
-		//flag that indicates DOMReady event has been reached
 		domready : false,
 		//flag used in bindDomReady function
 		domready_bound : false,
 		//array of functions to be called on DOMReady event
 		domready_list : [],
+		//var that holds whether or not mp should increment
+		increment : 0,
 		//flag that indicates the current browser is IE
 		ie_browser : navigator.appName=='Microsoft Internet Explorer',
-
 		//redirects the page when click on a related post (old function nr_loadframe)
 		loadFrame : function() {
 			if (nRelate.load_link) {
@@ -27,20 +27,26 @@ if (typeof(nRelate)=='undefined') {
 			}
 		},
 		
-		//Sets the click tracking function
-		tracking : function () {
+		//Sets the click tracking function:
+		//YK: var plugin holds either mp or rc
+		tracking : function (plugin) {
 			if (typeof(jQuery)=='undefined') { setTimeout(arguments.callee,0); return; }
 			
 			var nr = nRelate;
 			
-			if (nr.track_enabled) return;
+			// YK 060911: track_enabled now checks rc and mp
+			if(plugin=="rc" && nr.track_enabled[0]) return;
+			if(plugin=="mp" && nr.track_enabled[1]) return;
 			
-			nr.track_enabled = true;
+			if(plugin=="rc")
+				nr.track_enabled[0]=true;
+			else
+				nr.track_enabled[1]=true;
 			
-			jQuery('.nr_rc_link').live('click', function(event){
+			jQuery('.nr_'+plugin+'_link').live('click', function(event){
 				event.preventDefault();
 				var src_url = window.location.href;
-				var iframe_src = "http://api.nrelate.com/rcw_wp/track.html";
+				var iframe_src = "http://api.nrelate.com/"+plugin+"w_wp/track.html";
 				var ifr = document.getElementById('nr_clickthrough_frame');
 				if (jQuery(this).hasClass('nr_ad')) {
 					nr_type = 'ad';
@@ -242,12 +248,12 @@ if (typeof(nRelate)=='undefined') {
 		},
 		
 		//Get related posts using JS Iframe method
-		getRelatedPosts : function (url) {
+		getNrelatePosts : function (url) {
 			var nr = nRelate;
 			
 			if (nr.ie_browser && !nr.domready) {
 				nr.bindDomReady(function(){
-					nr.getRelatedPosts( url );
+					nr.getNrelatePosts( url );
 				});
 				return;
 			}
@@ -264,12 +270,17 @@ if (typeof(nRelate)=='undefined') {
 			
 			
 			var nr = nRelate;
+			var plugin='';
 			
+			if(id.match('popular'))
+				plugin='mp';
+			if(id.match('related'))
+				plugin='rc';
 			if (document.getElementById(id)) {
 				document.getElementById(id).innerHTML = content;
 				nr.fixHeight(id);
 				nr.adAnimation(id);
-				nr.tracking();
+				nr.tracking(plugin);
 			}
 		},
 		/**
@@ -312,6 +323,33 @@ if (typeof(nRelate)=='undefined') {
 			} catch(e) {
 				ifr.src = domainSrc + 'd.write("' + iframe_html.replace(/"/g, '\\"') + '");d.close();';
 			}
+		},
+		/**
+		 * Function to get url cookie to check if this browser was refreshed
+		 * 
+		 */
+		get_url_cookie : function (){
+			var result = null;
+			var urlcookie = " " + document.cookie + ";";
+			var searchName = " urlprev=";
+			var startOfCookie = urlcookie.indexOf
+
+			(searchName);
+			var endOfCookie;
+				if (startOfCookie != -1){
+				  startOfCookie += searchName.length;
+				  // skip past cookie name
+				  endOfCookie = urlcookie.indexOf(";", 
+
+			startOfCookie);
+				  result = urlcookie.substring
+
+			(startOfCookie,endOfCookie);
+				}
+			return result;
+		},
+		set_url_cookie : function (url){
+			  document.cookie = "urlprev=" + url+";";
 		}
 	};
 }

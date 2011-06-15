@@ -1,9 +1,10 @@
 === nrelate Related Content ===
 Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
-Tested up to: 3.1
+Tested up to: 3.2
 Requires at least: 2.9
-Stable tag: 0.47.3
+Stable tag: 0.47.4
+
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -138,6 +139,14 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 
 == Changelog ==
+
+= 0.47.4 =
+* Remove shortcodes from our custom feed.
+* Remove html entities from our js.
+* Compatibility check and fixes for Wordpress 3.2.
+* Safe loader to be sure we have the required resources to execute (jQuery and nRelate javascripts).
+* New nrelate_products array.
+* You can now filter nrelate_related_is_loading().
 
 = 0.47.3 =
 * Better handling of scripts and stylesheets.

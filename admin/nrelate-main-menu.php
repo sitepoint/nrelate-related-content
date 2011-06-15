@@ -10,7 +10,7 @@ function nrelate_main_section() { ?>
 
 <div id="nrelate-dashboard" class="wrap nrelate-page" style="margin: 10px 15px 0 5px">
 
-<?php echo '<img src="'. NRELATE_ADMIN_IMAGES .'/nrelate-logo.png" alt="nrelate Logo" style="float:left; margin: 0 20px 0 0"; />'?>
+<?php echo '<img src="'. NRELATE_ADMIN_IMAGES .'/nrelate-logo.png" alt="nrelate Logo" style="float:left; margin: 0 20px 0 0;" />'?>
 <h2><?php _e('nrelate Dashboard')?></h2>
 
 <div class="metabox-holder has-right-sidebar" id="poststuff">
@@ -23,8 +23,10 @@ function nrelate_main_section() { ?>
 				<div id="nr_installed_plugins" class="postbox sidebar-list">
 					<h3 class="hndle"><span><?php _e('Configure Installed Plugins:')?></span></h3>
 					<div class="inside">
-						<!-- Hook to let us know which plugins are active -->
-						<?php do_action('nrelate_active_plugin_notice');?>
+						<ul>
+							<!-- Hook to let us know which plugins are active -->
+							<?php do_action('nrelate_active_plugin_notice');?>
+						</ul>
 					</div><!-- .inside -->
 				</div><!-- #nr_installed_plugins -->
 
@@ -80,7 +82,7 @@ function nrelate_main_section() { ?>
 						<p><?php _e('Use the button below to have nrelate reindex your website.')?></p>
 						<?php if(isset($_POST['reindex'])) { nrelate_reindex(); } ?>
 						<form action="" method="post">
-							<input type="submit" class="reindex" name="reindex" value="Re-Index Website">
+							<input type="submit" class="reindex" name="reindex" value="Re-Index Website" />
 						</form>
 						<p><strong><?php _e('IMPORTANT: All nrelate content will be temporarily removed from your website while we reindex.<br/><center>Only use when neccessary</center>','nrelate')?></strong></p>
 					</div><!-- .inside -->
@@ -135,14 +137,6 @@ function nrelate_main_section() { ?>
 
 	</div><!-- #side-info-column -->
 
-
-</div><!-- #poststuff -->
-
-
-
-<div class="clear"></div>
-
-</div><!-- .wrap -->
 
 <?php }
 ?>

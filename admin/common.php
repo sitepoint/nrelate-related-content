@@ -13,19 +13,45 @@
  /**
  * Define Admin constants
  */
+		define( 'NRELATE_COMMON_LOADED', true );
 		define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
 		define( 'NRELATE_WEBSITE_AD_SIGNUP', 'http://nrelate.com/partners/content-publishers/sign-up-for-advertising/' );
-
-		define( 'NRELATE_ADMIN_COMMON_FILE', plugin_basename( __FILE__ ) );
-		define( 'NRELATE_ADMIN_DIR_NAME', trim( dirname( NRELATE_ADMIN_COMMON_FILE ), '/' ) );
-		define( 'NRELATE_ADMIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_ADMIN_DIR_NAME );
-		define( 'NRELATE_ADMIN_URL', WP_PLUGIN_URL . '/' . NRELATE_ADMIN_DIR_NAME );
 		define( 'NRELATE_ADMIN_IMAGES', NRELATE_ADMIN_URL . '/images' );
 		
 		define( 'NRELATE_MIN_WP', '2.9' );
 		define( 'NRELATE_MIN_PHP', '5.0' );
 		
-		
+/**
+ * Nrelate Products Array
+ * 
+ * Holds information about all of nrelate products that are installed
+ * 
+ * $status = 
+ * 		-1: uninstalled, 0:deactivated, 1:activated
+ * 
+ * return values = 
+ * 		<0: all are uninstalled 0: all deactivated, 1: at least one activated
+ */
+function nrelate_products($product,$version,$admin_version,$status){
+	$nrelate_products = get_option('nrelate_products');
+	if($status==-1){
+		unset($nrelate_products[$product]);
+	}
+	else{
+		$nrelate_products[$product]["status"]=$status;
+		$nrelate_products[$product]["version"]=$version;
+		$nrelate_products[$product]["admin_version"]=$admin_version;
+	}
+	update_option('nrelate_products', $nrelate_products);
+	if(count($nrelate_products)==0)
+		return -1;
+	foreach($nrelate_products as $productname => $productinfo){
+		if($productinfo["status"]==1)
+			return 1;
+	}
+	return 0;
+}
+			
 
 /**
  * System check

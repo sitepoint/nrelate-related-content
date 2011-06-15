@@ -156,6 +156,15 @@ function nrelate_remove_script($content) {
 }
 
 /**
+ * Remove Shortcodes from our feed
+ *
+ */
+function nrelate_remove_shortcode($content) {
+	$content = strip_shortcodes($content);
+	return $content;
+}
+
+/**
  * Debug mode
  * Since v45.1
  */
@@ -233,7 +242,9 @@ function nrelate_custom_feed() {
 		remove_all_filters ('wp_title');
 		remove_all_filters ('wp_title_rss');
 		remove_all_filters ('the_title_rss');
+		remove_all_filters ('the_title');
 		remove_all_filters ('the_permalink_rss');
+		remove_all_filters ('the_permalink');
 		remove_all_filters ('the_content_feed');
 		remove_all_filters ('the_content');
 		remove_all_filters ('the_content_rss');
@@ -267,6 +278,10 @@ function nrelate_custom_feed() {
         // Remove Javascript
 		add_filter('the_excerpt_rss', 'nrelate_remove_script', 0);
         add_filter('the_content_feed', 'nrelate_remove_script', 0);
+		
+		// Remove Shortcode
+		add_filter('the_excerpt_rss', 'nrelate_remove_shortcode', 0);
+        add_filter('the_content_feed', 'nrelate_remove_shortcode', 0);
 
 		// Add post count
 		add_action ('rss2_head', 'nrelate_post_count');

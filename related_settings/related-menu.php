@@ -180,7 +180,7 @@ require_once NRELATE_RELATED_SETTINGS_DIR . '/related-messages.php';
  */
 function nr_rc_plugin_active(){ ?>
 	<li class="active-plugins">
-		<?php echo '<img src='. NRELATE_RELATED_IMAGE_DIR .'/relatedcontent.png style="float:left"; />'?>
+		<?php echo '<img src="'. NRELATE_RELATED_IMAGE_DIR .'/relatedcontent.png" style="float:left;" alt="" />'?>
 		<a href="admin.php?page=<?php echo NRELATE_RELATED_ADMIN_SETTINGS_PAGE ?>">
 		<?php _e('Related Content')?> &raquo;</a>
 	</li>

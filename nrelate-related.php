@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.47.3
+Version: 0.47.4
 Author URI: http://nrelate.com/
 
 
@@ -27,12 +27,17 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.47.3' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.47.4' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.01.0' );
 define( 'NRELATE_CSS_URL', 'http://static.nrelate.com/common_wp/' . NRELATE_RELATED_ADMIN_VERSION . '/' );
 define( 'NRELATE_BLOG_ROOT', urlencode(str_replace(array('http://','https://'), '', get_bloginfo( 'url' ))));
 define( 'NRELATE_JS_DEBUG', $_REQUEST['nrelate_debug'] ? true : false );
+
+define( 'NRELATE_ADMIN_COMMON_FILE', plugin_basename( __FILE__ ) );
+define( 'NRELATE_ADMIN_DIR_NAME', trim( dirname( NRELATE_ADMIN_COMMON_FILE ), '/' ) );
+define( 'NRELATE_ADMIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_ADMIN_DIR_NAME.'/admin');
+define( 'NRELATE_ADMIN_URL', WP_PLUGIN_URL . '/' . NRELATE_ADMIN_DIR_NAME.'/admin');
 
 /**
  * Define Path constants
@@ -82,7 +87,7 @@ if (!isset($nrelate_thumbnail_styles)) { require_once ( NRELATE_RELATED_ADMIN_DI
 if (is_admin()) {
 
 		//load common admin files if not already loaded from another nrelate plugin
-		if ( !function_exists('nrelate_setup_dashboard') ) { require_once ( NRELATE_RELATED_ADMIN_DIR . '/common.php' ); }
+		if ( ! defined( 'NRELATE_COMMON_LOADED' ) ) { require_once ( NRELATE_RELATED_ADMIN_DIR . '/common.php' ); }
 		
 		//load plugin status
 		require_once ( NRELATE_RELATED_SETTINGS_DIR . '/related-plugin-status.php' );
@@ -94,7 +99,7 @@ if (is_admin()) {
 
 
 /** Load common frontend functions **/
-require_once ( NRELATE_RELATED_ADMIN_DIR . '/common-frontend.php' );
+if ( ! defined( 'NRELATE_COMMON_FRONTEND_LOADED' ) ) { require_once ( NRELATE_RELATED_ADMIN_DIR . '/common-frontend.php' ); }
 
 
 /*
@@ -135,47 +140,30 @@ function nrelate_related_styles() {
 }
 add_action('wp_print_styles', 'nrelate_related_styles');
 
-
-/*
- * Load common related Javascript
- *
- * since v.44.0
- * updated v46.0
- */
-function nrelate_related_javascript() {
-	if ( nrelate_related_is_loading() ) {
-		wp_register_script( 'nrelate_js', NRELATE_RELATED_SETTINGS_URL . '/nrelate_related_frontend'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js', array(), null, false);
-		wp_enqueue_script('nrelate_js');
-	}
-}
-add_action('wp_print_scripts', 'nrelate_related_javascript');
-
-
-
 /*
  * Check if nrelate is loading (frontend only)
  *
  * @since 0.47.0
  */
 function nrelate_related_is_loading() {
-	if ( is_admin() ) {
-		return false;
-	}
-	
-	$options = get_option('nrelate_related_options');
-	
-	if ( !isset($options['related_where_to_show']) ) {
-		return false;
-	}
-	
-	foreach ( (array)$options['related_where_to_show'] as $cond_tag ) {
-		if ( function_exists( $cond_tag ) && call_user_func( $cond_tag ) ) {
-			return true;
-		}
-	}
-	
-	return false;
+    $is_loading = false;
+   
+    if ( !is_admin() ) {   
+        $options = get_option('nrelate_related_options');
+       
+        if ( isset($options['related_where_to_show']) ) {
+            foreach ( (array)$options['related_where_to_show'] as $cond_tag ) {
+                if ( function_exists( $cond_tag ) && call_user_func( $cond_tag ) ) {
+                    $is_loading = true;
+                    break;
+                }
+            }
+        }
+    }
+   
+    return apply_filters( 'nrelate_related_is_loading', $is_loading);
 }
+
 
 
 /**
@@ -229,24 +217,20 @@ add_filter( 'the_excerpt', 'nrelate_related_inject', 10 );
 function nrelate_related_should_inject() {
 	global $wp_current_filter;
 	
+	$should_inject = true;
+	
 	if ( !nrelate_is_main_loop() ) {
 		// Don't inject if out of main loop
-		return false;
-	}
-	
-	if ( in_array( 'get_the_excerpt', $wp_current_filter ) ) {
+		$should_inject = false;
+	} elseif ( in_array( 'get_the_excerpt', $wp_current_filter ) ) {
 		// Don't inject if calling get_the_excerpt
-		return false;
-	}
-	
-	if ( is_single() && in_array( 'the_excerpt', $wp_current_filter ) ) {
+		$should_inject = false;
+	} elseif ( is_single() && in_array( 'the_excerpt', $wp_current_filter ) ) {
 		// Don't inject the_excerpt on single post pages
-		return false;
-	}
-	
-	if ( function_exists('thesis_html_framework') && has_filter('excerpt_length') ) {
+		$should_inject = false;
+	} elseif ( function_exists('thesis_html_framework') && has_filter('excerpt_length') ) {
 		// Don't inject if thesis and has the filter for excerpt length
-		return false;
+		$should_inject = false;
 	}
 	
 	// Third party widgets
@@ -254,11 +238,12 @@ function nrelate_related_should_inject() {
 	$call_stack = debug_backtrace();
 	foreach ( $call_stack as $call ) {
 		if ( $call['function'] == 'widget' ) {
-			return false;
+			$should_inject = false;
+			break;
 		}
 	}
 	
-	return true;
+	return apply_filters( 'nrelate_related_should_inject', $should_inject );
 }
 
 
@@ -308,7 +293,7 @@ add_action( 'widgets_init', 'nrelate_related_load_widget' );
 $nr_counter = 0;
 
 function nrelate_related($opt=false) {
-	global $post, $nr_counter;
+	global $post, $nr_counter, $wp_scripts;
 	
 	$animation_fix = '';
 	
@@ -342,8 +327,42 @@ function nrelate_related($opt=false) {
 				$animation_fix
 				<script type="text/javascript">
 				//<![CDATA[
-					document.write('<iframe id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nRelate.loadFrame();"></iframe>');
-					nRelate.domain = "{$domain}";
+					if (typeof nrelate_async_exec == 'undefined') {
+						var nrelate_async_exec = new Array();
+						function nrelate_safe_load( callback ) {
+							var async = false, script;
+							if ( typeof jQuery == 'undefined' ) {
+								async = true;
+								if ( !document.getElementById('nrelate_async_jquery') ) {
+									script = document.createElement('script');
+									script.setAttribute("type", "text/javascript");
+									script.setAttribute("id", "nrelate_async_jquery");
+									script.setAttribute("src", "https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js");
+									document.getElementsByTagName('head')[0].appendChild(script);
+								}
+							}
+							if ( typeof nRelate == 'undefined' ) {
+								async = true;
+								if ( !document.getElementById('nrelate_async_nrelate') ) {
+									script = document.createElement('script');
+									script.setAttribute("type", "text/javascript");
+									script.setAttribute("id", "nrelate_async_nrelate");
+									script.setAttribute("src", "{$wp_scripts->registered[nrelate_js]->src}");
+									document.getElementsByTagName('head')[0].appendChild(script);
+								}
+							}
+							if ( async ) {
+								nrelate_async_exec.push( callback );
+							} else {
+								callback();
+							}
+						}
+					}
+					
+					nrelate_safe_load( function() {
+						document.write('<iframe id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nRelate.loadFrame();"></iframe>');
+						nRelate.domain = "{$domain}";
+					});
 				//]]>
 				</script>
 EOD;
@@ -360,7 +379,10 @@ $animation_fix
 	<![endif]-->
 	<script type="text/javascript">
 	//<![CDATA[
-		nRelate.getRelatedPosts("$nr_url");
+		nrelate_safe_load( function(){
+			var entity_decoded_nr_url = jQuery('<div/>').html("$nr_url").text();
+			nRelate.getNrelatePosts(entity_decoded_nr_url);
+		});
 	//]]>
 	</script>
 <div class="nr_clear"></div>
@@ -376,6 +398,8 @@ EOD;
 
 
 //Activation and Deactivation functions
+//Since 0.47.4, added uninstall hook
 register_activation_hook(__FILE__, 'nr_rc_add_defaults');
 register_deactivation_hook(__FILE__, 'nr_rc_deactivate');
+register_uninstall_hook(__FILE__, 'nr_rc_uninstall');
 ?>

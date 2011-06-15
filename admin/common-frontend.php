@@ -11,13 +11,24 @@
  */
 
  
+define( 'NRELATE_COMMON_FRONTEND_LOADED', true );
+ 
 /**
  * Load jquery
  */
-function nrelate_related_jquery() {
+function nrelate_jquery() {
 	wp_enqueue_script('jquery');
+	if (function_exists("nrelate_popular_is_loading"))
+		$popular_load=(nrelate_popular_is_loading()? 1:0);
+	if (function_exists("nrelate_related_is_loading"))	
+		$related_load=(nrelate_related_is_loading()? 1:0);
+		
+	if ($related_load || $popular_load) {
+		wp_register_script( 'nrelate_js', NRELATE_ADMIN_URL . '/common_frontend'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js', array(), null, false);
+		wp_enqueue_script('nrelate_js');
 	}
-add_action ('template_redirect', 'nrelate_related_jquery');
+}
+add_action ('template_redirect', 'nrelate_jquery');
 
 
 /**
