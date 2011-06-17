@@ -1,0 +1,1 @@
+This Admin folder is a common folder for all nrelate plugins.  
