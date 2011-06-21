@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.47.5
+Version: 0.47.6
 Author URI: http://nrelate.com/
 
 
@@ -27,7 +27,7 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.47.4' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.47.6' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.01.0' );
 define( 'NRELATE_CSS_URL', 'http://static.nrelate.com/common_wp/' . NRELATE_RELATED_ADMIN_VERSION . '/' );
@@ -293,7 +293,7 @@ add_action( 'widgets_init', 'nrelate_related_load_widget' );
 $nr_counter = 0;
 
 function nrelate_related($opt=false) {
-	global $post, $nr_counter, $wp_scripts;
+	global $post, $nr_counter;
 	
 	$animation_fix = '';
 	
@@ -327,42 +327,8 @@ function nrelate_related($opt=false) {
 				$animation_fix
 				<script type="text/javascript">
 				//<![CDATA[
-					if (typeof nrelate_async_exec == 'undefined') {
-						var nrelate_async_exec = new Array();
-						function nrelate_safe_load( callback ) {
-							var async = false, script;
-							if ( typeof jQuery == 'undefined' ) {
-								async = true;
-								if ( !document.getElementById('nrelate_async_jquery') ) {
-									script = document.createElement('script');
-									script.setAttribute("type", "text/javascript");
-									script.setAttribute("id", "nrelate_async_jquery");
-									script.setAttribute("src", "https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js");
-									document.getElementsByTagName('head')[0].appendChild(script);
-								}
-							}
-							if ( typeof nRelate == 'undefined' ) {
-								async = true;
-								if ( !document.getElementById('nrelate_async_nrelate') ) {
-									script = document.createElement('script');
-									script.setAttribute("type", "text/javascript");
-									script.setAttribute("id", "nrelate_async_nrelate");
-									script.setAttribute("src", "{$wp_scripts->registered[nrelate_js]->src}");
-									document.getElementsByTagName('head')[0].appendChild(script);
-								}
-							}
-							if ( async ) {
-								nrelate_async_exec.push( callback );
-							} else {
-								callback();
-							}
-						}
-					}
-					
-					nrelate_safe_load( function() {
-						document.write('<iframe id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nRelate.loadFrame();"></iframe>');
-						nRelate.domain = "{$domain}";
-					});
+					document.write('<iframe id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nRelate.loadFrame();"></iframe>');
+					nRelate.domain = "{$domain}";
 				//]]>
 				</script>
 EOD;
@@ -379,10 +345,8 @@ $animation_fix
 	<![endif]-->
 	<script type="text/javascript">
 	//<![CDATA[
-		nrelate_safe_load( function(){
-			var entity_decoded_nr_url = jQuery('<div/>').html("$nr_url").text();
-			nRelate.getNrelatePosts(entity_decoded_nr_url);
-		});
+		var entity_decoded_nr_url = jQuery('<div/>').html("$nr_url").text();
+		nRelate.getNrelatePosts(entity_decoded_nr_url);
 	//]]>
 	</script>
 <div class="nr_clear"></div>

@@ -353,12 +353,3 @@ if (typeof(nRelate)=='undefined') {
 		}
 	};
 }
-
-if (typeof nrelate_async_exec != 'undefined') {
-	var i;
-	for (i=0; i<nrelate_async_exec.length; i++){
-		if (typeof nrelate_async_exec[i] == 'function') {
-			nrelate_async_exec[i]();
-		}
-	}
-}
