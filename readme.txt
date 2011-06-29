@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.2
 Requires at least: 2.9
-Stable tag: 0.47.6
+Stable tag: 0.47.7
 
 
 The best way to display related content: Thumbnails or Text, on all your pages.
@@ -139,6 +139,10 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 
 == Changelog ==
+
+= 0.47.7 =
+* Fixed bug where we didn't show up on some Thesis installs
+* Fixed preview bug
 
 = 0.47.6 =
 * Changes to nrelate safe loader

@@ -113,7 +113,7 @@ add_action('admin_menu', 'nrelate_setup_dashboard');
  * @since 0.47.3
  */
 function nrelate_load_admin_scripts() {
-	wp_enqueue_script('nrelate_admin_js', NRELATE_ADMIN_URL.'/nrelate_admin_jsfunctions'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js');
+	wp_enqueue_script('nrelate_admin_js', NRELATE_ADMIN_URL.'/nrelate_admin_jsfunctions'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js', array('jquery'));
 	wp_enqueue_script('thickbox'); //used for help videos
 }
 add_action('admin_enqueue_scripts','nrelate_load_admin_scripts');

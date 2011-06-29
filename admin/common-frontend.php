@@ -25,7 +25,7 @@ function nrelate_jquery() {
 		
 	if ($related_load || $popular_load) {
 		wp_register_script( 'nrelate_js', NRELATE_ADMIN_URL . '/common_frontend'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js', array(), null, false);
-		wp_enqueue_script('nrelate_js');
+		wp_enqueue_script('nrelate_js', array('jquery'));
 	}
 }
 add_action ('template_redirect', 'nrelate_jquery');
