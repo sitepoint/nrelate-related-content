@@ -88,6 +88,9 @@ function nrelate_post_count() {
  *
  * Attempts to retrieve any custom images
  * set by user or themes/plugins
+ *
+ * If no custom image is found, grab the first image in the post
+ * @updated 0.47.8
  */
     function nrelate_get_custom_images($content) {
         global $post;
@@ -96,52 +99,63 @@ function nrelate_post_count() {
 		// Get custom field images if user set a custom field
 		$options = get_option('nrelate_admin_options');
         $customfield = $options['admin_custom_field'];
-            if ($customfield != null) {
-                $customfieldvalue = get_post_meta($post->ID, $customfield, $single = true);
-                    if ($customfieldvalue != null) {
-                        $content = '<p><img src="' . $customfieldvalue . '" class="nrelate-image custom-field-image"/></p>' . $content;
-                    }
-            }
+		if ($customfield != null) {
+			$customfieldvalue = get_post_meta($post->ID, $customfield, $single = true);
+			if ($customfieldvalue != null) {
+				$content = '<p><img class="nrelate-image custom-field-image" src="' . $customfieldvalue . '" /></p>' . $content;
+				$thumb_found = true;
+			}
+		}
 
 		// Simple Post Thumbnails
 		// http://wordpress.org/extend/plugins/simple-post-thumbnails/
 		// Since 0.45.0
-		elseif (function_exists('p75HasThumbnail')){
+		// Updated 0.47.8
+		if (!$thumb_found && function_exists('p75HasThumbnail')){
 			$p75image = p75GetOriginalImage($post->ID);
 			$p75default = get_option('p75_default_thumbnail');
 			$imageurl = get_bloginfo('wpurl') . $p75image;
 
 			if (empty($p75image)) $imageurl = $p75default;
-
-			$content = sprintf("<p><img class=\"nrelate-image p75-thumbnail\" src='%s' /></p>\n%s", $imageurl, $content);
-
+			
+			if ($imageurl) {
+				$content = sprintf('<p><img class="nrelate-image p75-thumbnail" src="%s" /></p>\n%s', $imageurl, $content);
+				$thumb_found = true;
+			}
 		}
 
 		// WordPress Featured Image (Post Thumbnails)
-		elseif (function_exists('has_post_thumbnail') && has_post_thumbnail( $post->ID )) {
-				$default_attr = array(
-								'class'	=> "nrelate-image featured-image",
-								);
-				$content = '<p>' . get_the_post_thumbnail( $post->ID, 'large', $default_attr ) . '</p>' . $content;
-		} else {
-
-
-			// Last resort, search through all custom fields for image URL and grab the first
-			// url must start with http and file must be a gif, png or jpg.
-			// Since 0.45.0
-			if (!$thumb_found) {
-				foreach ( get_post_custom($post->ID) as $key => $values ) {
-					$values = (array)$values;
-					$imageurl = current($values);
-
-					if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg|jpeg|tif|tiff|bmp)$#i', $imageurl) ) {
-						$thumb_found = true;
-						$content = sprintf("<p><img class=\"nrelate-image auto-custom-field-image\" src='%s' alt='post thumbnail' /></p>\n%s", $imageurl, $content);
-						break;
-					}
+		if (!$thumb_found && function_exists('has_post_thumbnail') && has_post_thumbnail( $post->ID )) {
+			$default_attr = array( 'class' => "nrelate-image featured-image" );
+			$content = '<p>' . get_the_post_thumbnail( $post->ID, 'large', $default_attr ) . '</p>' . $content;
+			$thumb_found = true;
+		} 
+		
+		// Last resort for custom images, search through all custom fields for image URL and grab the first
+		// url must start with http and file must be a gif, png or jpg.
+		// Since 0.45.0
+		if (!$thumb_found) {
+			foreach ( get_post_custom($post->ID) as $key => $values ) {
+				$values = (array)$values;
+				$imageurl = current($values);
+	
+				if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg|jpeg|tif|tiff|bmp)$#i', $imageurl) ) {
+					$content = sprintf('<p><img class="nrelate-image auto-custom-field-image" src="%s" alt="post thumbnail" /></p>\n%s', $imageurl, $content);
+					$thumb_found = true;
+					break;
 				}
 			}
 		}
+		// If no images are found yet, grab the first image in the post.
+		if (!$thumb_found) {
+			preg_match('#<img[^>]+src=[\"\']{1}(http:\/\/.*\.(gif|png|jpg|jpeg|tif|tiff|bmp){1})[\"\']{1}[^>]+\/>#i', $content, $images);
+			@$imageurl = $images[1];
+			if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg|jpeg|tif|tiff|bmp)$#i', $imageurl) ) {
+				$content = sprintf('<p><img class="nrelate-image auto-content-image" src="%s" alt="post thumbnail" /></p>\n%s', $imageurl, $content);
+				$thumb_found = true;
+			}
+		}
+		
 		return $content;
 	}
 
@@ -150,18 +164,16 @@ function nrelate_post_count() {
  *
  */
 function nrelate_remove_script($content) {
-	global $post;
 	$content = preg_replace('#(\n?<script[^>]*?>.*?</script[^>]*?>)|(\n?<script[^>]*?/>)#is', '', $content);
 	return $content;
 }
 
 /**
- * Remove Shortcodes from our feed
+ * Execute Shortcodes in our feed
  *
  */
-function nrelate_remove_shortcode($content) {
-	$content = strip_shortcodes($content);
-	return $content;
+function nrelate_execute_shortcode($content) {
+	return do_shortcode( $content );
 }
 
 /**
@@ -257,38 +269,48 @@ function nrelate_custom_feed() {
 		remove_all_filters ('the_category_rss');
 
 		// Bring back standard WP RSS filters
-		add_filter( 'the_title_rss',      'strip_tags'      );
-		add_filter( 'the_title_rss',      'ent2ncr',      0 );
-		add_filter( 'the_title_rss',      'esc_html'        );
-		add_filter( 'the_content_rss',    'ent2ncr',      0 );
-		add_filter( 'the_content_feed',   'ent2ncr',      0 );
-		add_filter( 'the_excerpt_rss',    'convert_chars'   );
-		add_filter( 'the_excerpt_rss',    'ent2ncr',      0 );
-		add_filter( 'comment_author_rss', 'ent2ncr',      0 );
-		add_filter( 'comment_text_rss',   'ent2ncr',      0 );
-		add_filter( 'comment_text_rss',   'esc_html'        );
-		add_filter( 'bloginfo_rss',       'ent2ncr',      0 );
-		add_filter( 'the_author',         'ent2ncr',      0 );
+		add_filter( 'the_title_rss',      'strip_tags',		0 );
+		add_filter( 'the_title_rss',      'ent2ncr',      	0 );
+		add_filter( 'the_title_rss',      'esc_html',		0 );
+		add_filter( 'the_content_rss',    'ent2ncr',      	0 );
+		add_filter( 'the_content_feed',   'ent2ncr',		0 );
+		add_filter( 'the_excerpt_rss',    'convert_chars',	0 );
+		add_filter( 'the_excerpt_rss',    'ent2ncr',      	0 );
+		add_filter( 'comment_author_rss', 'ent2ncr',      	0 );
+		add_filter( 'comment_text_rss',   'ent2ncr',      	0 );
+		add_filter( 'comment_text_rss',   'esc_html',		0 );
+		add_filter( 'bloginfo_rss',       'ent2ncr',      	0 );
+		add_filter( 'the_author',         'ent2ncr',      	0 );
 
-
-        // Get custom images
-        add_filter('the_excerpt_rss', 'nrelate_get_custom_images', 0);
-        add_filter('the_content_feed', 'nrelate_get_custom_images', 0);
+		// Execute Shortcodes
+		add_filter('the_excerpt_rss', 'nrelate_execute_shortcode', 5);
+        add_filter('the_content_feed', 'nrelate_execute_shortcode', 5);
 
         // Remove Javascript
-		add_filter('the_excerpt_rss', 'nrelate_remove_script', 0);
-        add_filter('the_content_feed', 'nrelate_remove_script', 0);
+		add_filter('the_excerpt_rss', 'nrelate_remove_script', 10);
+        add_filter('the_content_feed', 'nrelate_remove_script', 10);
 		
-		// Remove Shortcode
-		add_filter('the_excerpt_rss', 'nrelate_remove_shortcode', 0);
-        add_filter('the_content_feed', 'nrelate_remove_shortcode', 0);
-
+		// Get custom images
+        add_filter('the_excerpt_rss', 'nrelate_get_custom_images', 20);
+        add_filter('the_content_feed', 'nrelate_get_custom_images', 20);
+		
+		
+		/**
+		 * Support for other plugins
+		 */
+		
+		// Smart YouTube
+		if ( class_exists('SmartYouTube') ) {
+			$smrtYtb = new SmartYouTube();
+			add_filter('the_content_feed', array($smrtYtb, 'check'), 30);
+		}
+		
+		
 		// Add post count
 		add_action ('rss2_head', 'nrelate_post_count');
 
 		//Show separate categories and tags in feed
 		add_filter('the_category_rss', 'nrelate_cats_tags_rss', 0);
-
 
 		// Use WP's feed template
 		do_feed_rss2( false );
