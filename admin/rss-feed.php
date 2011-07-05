@@ -119,7 +119,7 @@ function nrelate_post_count() {
 			if (empty($p75image)) $imageurl = $p75default;
 			
 			if ($imageurl) {
-				$content = sprintf('<p><img class="nrelate-image p75-thumbnail" src="%s" /></p>\n%s', $imageurl, $content);
+				$content = sprintf('<p><img class="nrelate-image p75-thumbnail" src="%s" /></p>%s', $imageurl, $content);
 				$thumb_found = true;
 			}
 		}
@@ -140,7 +140,7 @@ function nrelate_post_count() {
 				$imageurl = current($values);
 	
 				if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg|jpeg|tif|tiff|bmp)$#i', $imageurl) ) {
-					$content = sprintf('<p><img class="nrelate-image auto-custom-field-image" src="%s" alt="post thumbnail" /></p>\n%s', $imageurl, $content);
+					$content = sprintf('<p><img class="nrelate-image auto-custom-field-image" src="%s" alt="post thumbnail" /></p>%s', $imageurl, $content);
 					$thumb_found = true;
 					break;
 				}
@@ -151,7 +151,7 @@ function nrelate_post_count() {
 			preg_match('#<img[^>]+src=[\"\']{1}(http:\/\/.*\.(gif|png|jpg|jpeg|tif|tiff|bmp){1})[\"\']{1}[^>]+\/>#i', $content, $images);
 			@$imageurl = $images[1];
 			if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg|jpeg|tif|tiff|bmp)$#i', $imageurl) ) {
-				$content = sprintf('<p><img class="nrelate-image auto-content-image" src="%s" alt="post thumbnail" /></p>\n%s', $imageurl, $content);
+				$content = sprintf('<p><img class="nrelate-image auto-content-image" src="%s" alt="post thumbnail" /></p>%s', $imageurl, $content);
 				$thumb_found = true;
 			}
 		}
