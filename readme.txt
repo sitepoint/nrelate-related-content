@@ -326,7 +326,7 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 == Upgrade Notice ==
 
 = 0.49.0 =
-IMPORTANT: If you have made changes to nrelate's CSS, please <a href="http://nrelate.com/theblog/2011/07/04/less-css-styles-coming-to-related-plugin/">read this</a> before upgrading.
+IMPORTANT: If you have made changes to nrelate's CSS, please visit http://nrelate.com/theblog/ and read the blog post "If you customize nrelate CSS, please read" before upgrading.
 
 = 0.47.0 =
 You can now show related content on ALL PAGES!
