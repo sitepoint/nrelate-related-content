@@ -2,13 +2,13 @@ if (typeof(nRelate)=='undefined') {
 	var nRelate = window.nRelate = {
 		//domain where the plugin is installed
 		domain : '',
-		//holds the URL of the related post clicked
+		//holds the URL of the nrelate post clicked
 		clicked_link : null,
-		//flag to redirect the page when click on a related post
+		//flag to redirect the page when click on a nrelate post
 		load_link : false,
 		//flag that indicates if tracking function has been enabled. Since it uses jQuery.live function it can be called only once
 		//YK 060911: track_enabled is now an array where [0] is rc and [1] is mp
-		track_enabled : [false,false],
+		track_enabled : [false,false,false],
 		//flag to redirect the page when click on a related post
 		domready : false,
 		//flag used in bindDomReady function
@@ -19,7 +19,7 @@ if (typeof(nRelate)=='undefined') {
 		increment : 0,
 		//flag that indicates the current browser is IE
 		ie_browser : navigator.appName=='Microsoft Internet Explorer',
-		//redirects the page when click on a related post (old function nr_loadframe)
+		//redirects the page when click on a nrelate post (old function nr_loadframe)
 		loadFrame : function() {
 			if (nRelate.load_link) {
 				nRelate.load_link = false;
@@ -29,6 +29,7 @@ if (typeof(nRelate)=='undefined') {
 		
 		//Sets the click tracking function:
 		//YK: var plugin holds either mp or rc
+		//YK: var plugin can also be fo
 		tracking : function (plugin) {
 			if (typeof(jQuery)=='undefined') { setTimeout(arguments.callee,0); return; }
 			
@@ -37,32 +38,39 @@ if (typeof(nRelate)=='undefined') {
 			// YK 060911: track_enabled now checks rc and mp
 			if(plugin=="rc" && nr.track_enabled[0]) return;
 			if(plugin=="mp" && nr.track_enabled[1]) return;
+			if(plugin=="fo" && nr.track_enabled[2]) return;
 			
 			if(plugin=="rc")
 				nr.track_enabled[0]=true;
-			else
+			else if(plugin=="mp")
 				nr.track_enabled[1]=true;
+			else
+				nr.track_enabled[2]=true;
 			
 			jQuery('.nr_'+plugin+'_link').live('click', function(event){
 				event.preventDefault();
 				var src_url = window.location.href;
-				var iframe_src = "http://api.nrelate.com/"+plugin+"w_wp/track.html";
+				var iframe_src = "http://track.nrelate.com/tracking/";
 				var ifr = document.getElementById('nr_clickthrough_frame');
-				if (jQuery(this).hasClass('nr_ad')) {
+				if (jQuery(this).hasClass('nr_partner')) {
 					nr_type = 'ad';
+				} else if (jQuery(this).hasClass('nr_avid')) {
+					nr_type = 'avid';
 				} else if (jQuery(this).hasClass('nr_external')) {
 					nr_type = 'external';
 				} else {
 					nr_type = 'internal';
 				}
-				iframe_src += "?type=" + nr_type + "&domain=" + escape(nr.domain) + "&src_url=" + escape(src_url) + "&dest_url=" + escape(jQuery(this).attr('href'));
-				nr.load_link = true;
-				nr.clicked_link = jQuery(this).attr('href');
+				iframe_src += "?plugin="+escape(plugin)+"&type=" + escape(nr_type) + "&domain=" + nr.domain + "&src_url=" + escape(src_url) + "&dest_url=" + escape(jQuery(this).attr('href'));
+				if(nr_type != 'avid'){
+					nr.load_link = true;
+					nr.clicked_link = jQuery(this).attr('href');
+				}
 				ifr.src = iframe_src;
 			});
 		},
 
-		//Fix for height in related posts (old function nr_rc_fix_css)
+		//Fix for height in nrelate posts (old function nr_rc_fix_css)
 		fixHeight : function (id) {
 			if (typeof(jQuery)=='undefined') {
 				var r = arguments.callee;
@@ -247,7 +255,7 @@ if (typeof(nRelate)=='undefined') {
 			nr.domready_list = [];
 		},
 		
-		//Get related posts using JS Iframe method
+		//Get nrelate posts using JS Iframe method
 		getNrelatePosts : function (url) {
 			var nr = nRelate;
 			
@@ -276,6 +284,8 @@ if (typeof(nRelate)=='undefined') {
 				plugin='mp';
 			if(id.match('related'))
 				plugin='rc';
+			if(id.match('flyout'))
+				plugin='fo';
 			if (document.getElementById(id)) {
 				document.getElementById(id).innerHTML = content;
 				nr.fixHeight(id);
@@ -323,33 +333,6 @@ if (typeof(nRelate)=='undefined') {
 			} catch(e) {
 				ifr.src = domainSrc + 'd.write("' + iframe_html.replace(/"/g, '\\"') + '");d.close();';
 			}
-		},
-		/**
-		 * Function to get url cookie to check if this browser was refreshed
-		 * 
-		 */
-		get_url_cookie : function (){
-			var result = null;
-			var urlcookie = " " + document.cookie + ";";
-			var searchName = " urlprev=";
-			var startOfCookie = urlcookie.indexOf
-
-			(searchName);
-			var endOfCookie;
-				if (startOfCookie != -1){
-				  startOfCookie += searchName.length;
-				  // skip past cookie name
-				  endOfCookie = urlcookie.indexOf(";", 
-
-			startOfCookie);
-				  result = urlcookie.substring
-
-			(startOfCookie,endOfCookie);
-				}
-			return result;
-		},
-		set_url_cookie : function (url){
-			  document.cookie = "urlprev=" + url+";";
 		}
 	};
 }

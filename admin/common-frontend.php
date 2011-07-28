@@ -17,13 +17,33 @@ define( 'NRELATE_COMMON_FRONTEND_LOADED', true );
  * Load jquery
  */
 function nrelate_jquery() {
+	$options=get_option('nrelate_products');
+	if(isset($options["related"]["status"]) && $options["related"]["status"]){
+		$rc_options=get_option('nrelate_related_options');
+		if($rc_options['related_display_ad']==true && $rc_options['related_number_of_ads']>0){
+			wp_enqueue_script('thickbox');
+			wp_enqueue_style('thickbox');
+		}
+	}
+	if(isset($options["popular"]["status"]) && $options["popular"]["status"]){
+		$mp_options=get_option('nrelate_popular_options');
+		if($mp_options['popular_display_ad']==true && $mp_options['popular_number_of_ads']>0){
+			wp_enqueue_script('thickbox');
+			wp_enqueue_style('thickbox');
+		}
+	}
 	wp_enqueue_script('jquery');
+	$popular_load=0;
+	$related_load=0;
+	$flyout_load=0;
 	if (function_exists("nrelate_popular_is_loading"))
 		$popular_load=(nrelate_popular_is_loading()? 1:0);
 	if (function_exists("nrelate_related_is_loading"))	
 		$related_load=(nrelate_related_is_loading()? 1:0);
+	if (function_exists("nrelate_flyout_is_loading"))	
+		$flyout_load=(nrelate_flyout_is_loading()? 1:0);
 		
-	if ($related_load || $popular_load) {
+	if ($related_load || $popular_load || $flyout_load) {
 		wp_register_script( 'nrelate_js', NRELATE_ADMIN_URL . '/common_frontend'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js', array(), null, false);
 		wp_enqueue_script('nrelate_js', array('jquery'));
 	}
@@ -37,7 +57,7 @@ add_action ('template_redirect', 'nrelate_jquery');
  *
  * @since 0.42.7
  */
-if(isset($_GET['nrelate_feed'])&& !function_exists('nrelate_custom_feed')) { require_once NRELATE_RELATED_ADMIN_DIR . '/rss-feed.php'; }
+if(isset($_GET['nrelate_feed'])&& !function_exists('nrelate_custom_feed')) { require_once 'rss-feed.php'; }
  
 
 /**

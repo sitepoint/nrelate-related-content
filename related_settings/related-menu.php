@@ -85,7 +85,8 @@ function nrelate_related_tabs($current = 0) {
 			$current = 'general';
 		}
 	}
-		
+	
+	echo '<div id="nav">'; 
     foreach( $tabs as $tab => $name ) : 
         if ( $tab == $current ) : 
             $links[] = "<a class='nav-tab nav-tab-active' href='?page=nrelate-related&tab=$tab'>$name</a>"; 
@@ -97,6 +98,7 @@ function nrelate_related_tabs($current = 0) {
     foreach ( $links as $link ) 
         echo $link; 
     echo '</h2>'; 
+    echo '</div>'; 
 }
 	
 
@@ -160,8 +162,13 @@ function nrelate_related_settings_header() { ?>
 	<div class="wrap nrelate-settings nrelate-page" style="margin: 10px 0 0 0;">
 		<?php echo '<img src='. NRELATE_ADMIN_IMAGES .'/nrelate-logo.png alt="nrelate Logo" style="float:left; margin: 0 20px 0 0"; />';
 		
-		_e('<h2>Related Content</h2>
-		The related content plugin allows you to display related posts on your website.
+		
+		echo '<h2 class="nrelate-title">';
+		_e('Related Content','nrelate' );
+		nrelate_tos( NRELATE_RELATED_PLUGIN_DIR );
+		echo '</h2>';
+		
+		_e('The related content plugin allows you to display related posts on your website.
 		Click <a href="'.NRELATE_WEBSITE_FORUM_URL.'" target="_blank">here</a> to read about each setting.','nrelate'); ?>
 		<br><br>
 		

@@ -96,6 +96,9 @@ line-height:130%;
 #nrelate-dashboard .postbox {
 float:left;
 }
+#nrelate-dashboard .postbox {
+width: 100%;
+}
 #nrelate-dashboard #nr-messages div.green {
 padding-left: 25px;
 background-image: url( 'images/yes.gif');
@@ -114,6 +117,12 @@ background-image: url( 'images/information.png');
 background-repeat: no-repeat;
 color:blue;
 font-weight:bold;
+}
+#nrelate-dashboard #nr-messages div.warning {
+padding-left: 25px;
+background-image: url( 'images/warning.png');
+background-repeat: no-repeat;
+color:black;
 }
 #nrelate-dashboard #nr-admin-settings .inside h3 {
 background:none;
@@ -136,7 +145,6 @@ color:#999;
 #nrelate-dashboard #nr_installed_plugins li.active-plugins { padding-left: 0px;}
 #nrelate-dashboard #nr_installed_plugins li.active-plugins a { padding-left: 5px; text-decoration:none;}
 #nrelate-dashboard #nr_about li.twitter { background-image: url( 'images/twitter.png');}
-#nrelate-dashboard #nr_about li.facebook { background-image: url( 'images/facebook.png');}
 #nrelate-dashboard #nr_about li.nrelate { background-image: url( 'images/nrelate-n.png');}
 #nrelate-dashboard #nr_about li.forums { background-image: url( 'images/forums.png');}
 #nrelate-dashboard #nr_about li {
@@ -166,7 +174,6 @@ text-decoration:none;
 font-size:12px;
 list-style:outside;
 padding:0 0 10px 0;
-height:100%;
 }
 #nrelate-dashboard #nr_rss_feeds ul {
 margin:0 0 0 15px;
@@ -205,9 +212,6 @@ border-style: solid;
 border-color: #CCC #CCC #F9F9F9;
 border-width: 1px 1px 0;
 color: #000;
-text-shadow: rgba(255, 255, 255, 1) 0 1px 0;
-font-size: 12px;
-line-height: 16px;
 display: inline-block;
 padding: 4px 14px 6px;
 text-decoration: none;
@@ -227,7 +231,6 @@ border-bottom: none;
 }
 .nrelate-settings h2 .nav-tab { /* needed for WP 2.9 */
 padding: 4px 20px 6px;
-font: italic normal normal 24px/35px Georgia,"Times New Roman","Bitstream Charter",Times,serif;
 }
 .nrelate-settings h2 a.nav-tab:hover { /* needed for WP 2.9 */
 color: #D54E21;
@@ -247,8 +250,8 @@ color: #D54E21;
 .nrelate-settings h3 {
     background: #e4e4e4;
 	border-right: 1px solid #e4e4e4;
-    padding: 1% 1% 3px 1%;
-    width: 94%;
+    padding: 1% 1% 3px 2%;
+    width: 93%;
 	margin: 0;
 	text-shadow: 0 1px 0 #FFFFFF;
 	-moz-border-radius-topleft: 15px;
@@ -259,8 +262,8 @@ color: #D54E21;
 .nrelate-settings .section-desc {
     background: #e4e4e4;
 	border-right: 1px solid #e4e4e4;
-    padding: 0 1% 1% 1%;
-    width: 94%;
+    padding: 0 1% 1% 2%;
+    width: 93%;
     margin: 0;
 }
 .nrelate-settings .form-table {
@@ -275,6 +278,7 @@ color: #D54E21;
 }
 .nrelate-submit-preview {
 clear: left;
+float: left;
 }
 .nr_error{
 float: left;
@@ -298,3 +302,7 @@ margin:5px 0;
     background: yellow;
     color: black;
 }
+
+h2.nrelate-title {
+	height: 50px;
+	}

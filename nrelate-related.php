@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.47.9
+Version: 0.49.0
 Author URI: http://nrelate.com/
 
 
@@ -27,12 +27,12 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.47.9' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.49.0' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
-define( 'NRELATE_RELATED_ADMIN_VERSION', '0.01.0' );
+define( 'NRELATE_RELATED_ADMIN_VERSION', '0.02.0' );
 define( 'NRELATE_CSS_URL', 'http://static.nrelate.com/common_wp/' . NRELATE_RELATED_ADMIN_VERSION . '/' );
 define( 'NRELATE_BLOG_ROOT', urlencode(str_replace(array('http://','https://'), '', get_bloginfo( 'url' ))));
-define( 'NRELATE_JS_DEBUG', $_REQUEST['nrelate_debug'] ? true : false );
+define( 'NRELATE_JS_DEBUG', isset($_REQUEST['nrelate_debug']) ? true : false );
 
 define( 'NRELATE_ADMIN_COMMON_FILE', plugin_basename( __FILE__ ) );
 define( 'NRELATE_ADMIN_DIR_NAME', trim( dirname( NRELATE_ADMIN_COMMON_FILE ), '/' ) );
@@ -42,35 +42,34 @@ define( 'NRELATE_ADMIN_URL', WP_PLUGIN_URL . '/' . NRELATE_ADMIN_DIR_NAME.'/admi
 /**
  * Define Path constants
  */
-if ( ! defined( 'NRELATE_PLUGIN_BASENAME' ) )
-	define( 'NRELATE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+// Generic: will be assigned to the last nrelate plugin that loads
+define( 'NRELATE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+define( 'NRELATE_PLUGIN_NAME', trim( dirname( NRELATE_PLUGIN_BASENAME ), '/' ) );
+define( 'NRELATE_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_PLUGIN_NAME );
+	
+// Plugin specific
+define( 'NRELATE_RELATED_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+define( 'NRELATE_RELATED_PLUGIN_NAME', trim( dirname( NRELATE_RELATED_PLUGIN_BASENAME ), '/' ) );
+define( 'NRELATE_RELATED_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_RELATED_PLUGIN_NAME );
+define( 'NRELATE_RELATED_PLUGIN_URL', WP_PLUGIN_URL . '/' . NRELATE_RELATED_PLUGIN_NAME );
+define( 'NRELATE_RELATED_SETTINGS_DIR', NRELATE_RELATED_PLUGIN_DIR . '/related_settings' );
+define( 'NRELATE_RELATED_SETTINGS_URL', NRELATE_RELATED_PLUGIN_URL . '/related_settings' );
+define( 'NRELATE_RELATED_ADMIN_DIR', NRELATE_RELATED_PLUGIN_DIR . '/admin' );
+define( 'NRELATE_RELATED_IMAGE_DIR', NRELATE_RELATED_PLUGIN_URL . '/images' );
 
-if ( ! defined( 'NRELATE_RELATED_PLUGIN_BASENAME' ) )
-	define( 'NRELATE_RELATED_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-
-if ( ! defined( 'NRELATE_RELATED_PLUGIN_NAME' ) )
-	define( 'NRELATE_RELATED_PLUGIN_NAME', trim( dirname( NRELATE_RELATED_PLUGIN_BASENAME ), '/' ) );
-
-if ( ! defined( 'NRELATE_RELATED_PLUGIN_DIR' ) )
-	define( 'NRELATE_RELATED_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_RELATED_PLUGIN_NAME );
-
-if ( ! defined( 'NRELATE_RELATED_PLUGIN_URL' ) )
-	define( 'NRELATE_RELATED_PLUGIN_URL', WP_PLUGIN_URL . '/' . NRELATE_RELATED_PLUGIN_NAME );
-
-if ( ! defined( 'NRELATE_RELATED_SETTINGS_DIR' ) )
-	define( 'NRELATE_RELATED_SETTINGS_DIR', NRELATE_RELATED_PLUGIN_DIR . '/related_settings' );
-
-if ( ! defined( 'NRELATE_RELATED_SETTINGS_URL' ) )
-	define( 'NRELATE_RELATED_SETTINGS_URL', NRELATE_RELATED_PLUGIN_URL . '/related_settings' );
-
-if ( ! defined( 'NRELATE_RELATED_ADMIN_DIR' ) )
-	define( 'NRELATE_RELATED_ADMIN_DIR', NRELATE_RELATED_PLUGIN_DIR . '/admin' );
-
-if ( ! defined( 'NRELATE_RELATED_IMAGE_DIR' ) )
-	define( 'NRELATE_RELATED_IMAGE_DIR', NRELATE_RELATED_PLUGIN_URL . '/images' );
-
+// Load WP_Http
+if( !class_exists( 'WP_Http' ) )
+	include_once( ABSPATH . WPINC. '/class-http.php' );
+	
 // Load Language
 load_plugin_textdomain('nrelate-related', false, NRELATE_RELATED_PLUGIN_DIR . '/language');
+
+/**
+ * Get the product status of all nrelate products.
+ *
+ * @since 0.49.0
+ */
+if ( ! defined( 'NRELATE_PRODUCT_STATUS' ) ) { require_once ( NRELATE_RELATED_ADMIN_DIR . '/product-status.php' ); }
 
 /**
  * Load plugin styles if another nrelate plugin has not loaded it yet.
@@ -127,7 +126,7 @@ function nrelate_related_styles() {
 		} else {
 		//Text mode
 			if ('none'==$style_options['related_text_style']) return;
-			$style_type = $style_options['related_text_style'];
+			$style_type = 'text' . $style_options['related_text_style'];
 			$stylesheet = 'nrelate-text-'.$style_options['related_text_style'].'.min.css';
 		}
 		
@@ -292,7 +291,7 @@ $nr_counter = 0;
 function nrelate_related($opt=false) {
 	global $post, $nr_counter;
 	
-	$animation_fix = '';
+	$animation_fix = $nr_rc_nonjsbody = $nr_rc_nonjsfix = $nr_rc_js_str = '';
 	
 	if ( nrelate_related_is_loading() )  {	
 		$nr_counter++;
@@ -304,11 +303,13 @@ function nrelate_related($opt=false) {
 		$post_title = urlencode(get_the_title($post->ID));
 		$post_urlencoded = urlencode(get_permalink($post->ID));
 		
+		$nonjs=$nrelate_related_options['related_nonjs'];
+		
 		$nr_url = "http://api.nrelate.com/rcw_wp/" . NRELATE_RELATED_PLUGIN_VERSION . "/?tag=nrelate_related";
 		$nr_url .= "&keywords=$post_title&domain=" . NRELATE_BLOG_ROOT . "&url=$post_urlencoded&nr_div_number=".$nr_counter;
 		$nr_url .= is_home() ? '&source=hp' : '';
 		
-		//is loaded only once per page
+		//is loaded only once per page for related
 		if (!defined('NRELATE_RELATED_HOME')) {
 			define('NRELATE_RELATED_HOME', true);
 			
@@ -317,35 +318,61 @@ function nrelate_related($opt=false) {
 			if (!empty($nrelate_related_options['related_ad_animation'])) {
 				$animation_fix = '';
 			}
-			
-			$domain = addslashes(NRELATE_BLOG_ROOT);
-			
-			$script = <<< EOD
-				$animation_fix
-				<script type="text/javascript">
-				//<![CDATA[
-					document.write('<iframe id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nRelate.loadFrame();"></iframe>');
-					nRelate.domain = "{$domain}";
-				//]]>
-				</script>
-EOD;
-			
-			echo $script;
 		}
-		 
-		$markup = <<<EOD
-$animation_fix
-<div class="nr_clear"></div>	
-	<div id="nrelate_related_{$nr_counter}" class="nrelate nrelate_related $style_code $nr_width_class"></div>
-	<!--[if IE 6]>
-		<script type="text/javascript">jQuery('.$style_code').removeClass('$style_code');</script>
-	<![endif]-->
-	<script type="text/javascript">
+		//is loaded only once per page for nrelate
+		if (!defined('NRELATE_HOME')) {
+			define('NRELATE_HOME', true);
+			$domain = addslashes(NRELATE_BLOG_ROOT);
+			$script= <<< EOD
+					$animation_fix
+					<script type="text/javascript">
+					//<![CDATA[
+					document.write('<iframe id="nr_clickthrough_frame" height="0" width="0" style="border-width: 0px; display:none;" onload="javascript:nRelate.loadFrame();"></iframe>');
+					document.getElementById("nr_clickthrough_frame").src = 'about:blank';
+					nRelate.domain = "{$domain}";
+					//]]>
+					</script>
+EOD;
+			echo $script;
+		} 
+		
+	if($nonjs){
+			$request = new WP_Http;
+		    $args=array("timeout"=>5);
+		    $response = $request->request( $nr_url."&nonjs=1",$args);
+		    if( !is_wp_error( $response ) ){
+			    if($response['response']['code']==200 && $response['response']['message']=='OK'){
+				    $nr_rc_nonjsbody=$response['body'];
+			   		$nr_rc_nonjsfix='<script type="text/javascript">nRelate.fixHeight("nrelate_related_'.$nr_counter.'");';
+			   		$nr_rc_nonjsfix.='nRelate.adAnimation("nrelate_related_'.$nr_counter.'");';
+					$nr_rc_nonjsfix.='nRelate.tracking("rc");</script>';
+			    }else{
+			    	$nr_rc_nonjsbody="<!-- nrelate server not 200. -->";
+			    }
+		    }else{
+		    	$nr_rc_nonjsbody="<!-- WP-request to nrelate server failed. -->";
+		    }
+		}
+		else{
+			$nr_rc_js_str= <<<EOD
+<script type="text/javascript">
 	//<![CDATA[
-		var entity_decoded_nr_url = jQuery('<div/>').html("$nr_url").text();
+		var entity_decoded_nr_url = jQuery('<span/>').html("$nr_url").text();
 		nRelate.getNrelatePosts(entity_decoded_nr_url);
 	//]]>
 	</script>
+EOD;
+		}
+		
+		$markup = <<<EOD
+$animation_fix
+<div class="nr_clear"></div>	
+	<div id="nrelate_related_{$nr_counter}" class="nrelate nrelate_related $style_code $nr_width_class">$nr_rc_nonjsbody</div>
+	<!--[if IE 6]>
+		<script type="text/javascript">jQuery('.$style_code').removeClass('$style_code');</script>
+	<![endif]-->
+	$nr_rc_nonjsfix
+	$nr_rc_js_str
 <div class="nr_clear"></div>
 EOD;
 

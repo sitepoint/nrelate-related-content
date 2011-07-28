@@ -10,8 +10,11 @@ function nrelate_main_section() { ?>
 
 <div id="nrelate-dashboard" class="wrap nrelate-page" style="margin: 10px 15px 0 5px">
 
-<?php echo '<img src="'. NRELATE_ADMIN_IMAGES .'/nrelate-logo.png" alt="nrelate Logo" style="float:left; margin: 0 20px 0 0;" />'?>
-<h2><?php _e('nrelate Dashboard')?></h2>
+<?php echo '<img src="'. NRELATE_ADMIN_IMAGES .'/nrelate-logo.png" alt="nrelate Logo" style="float:left; margin: 0 20px 0 0;" />';
+		echo '<h2 class="nrelate-title">';
+		_e('nrelate Dashboard','nrelate' );
+		nrelate_tos( NRELATE_PLUGIN_DIR );
+		echo '</h2>';?>
 
 <div class="metabox-holder has-right-sidebar" id="poststuff">
 
@@ -49,7 +52,7 @@ function nrelate_main_section() { ?>
 						?>
 
 					<ul>
-						<?php if ($maxitems == 0) echo '<li>No items.</li>';
+						<?php if ($maxitems == 0) printf('%s Sorry, there seems to be an issue with our blog. We\'re hard at working getting it fixed. %s','<p>','</p>');
 								else
 								// Loop through each feed item and display each item as a hyperlink.
 								foreach ( $rss_items as $item ) : ?>
@@ -70,7 +73,9 @@ function nrelate_main_section() { ?>
 							<li class="nrelate"><a href="http://www.nrelate.com"><?php _e('Visit us')?></a></li>
 							<li class="forums"><a href="http://www.nrelate.com/forum"><?php _e('Ask us')?></a></li>
 							<li class="twitter"><a href="http://www.twitter.com/nrelate"><?php _e('Follow us')?></a></li>
-							<li class="facebook"><a href="http://www.facebook.com/nrelatecommunity"><?php _e('Like us')?></a></li>
+							<li class="facebook">
+								<iframe src="http://www.facebook.com/plugins/like.php?app_id=124076657681566&amp;href=http%3A%2F%2Fnrelate.com&amp;send=false&amp;layout=button_count&amp;width=110&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:110px; height:21px;" allowTransparency="true"></iframe>
+							</li>
 						</ul>
 					</div><!-- .inside -->
 				</div><!-- #nr_about -->
@@ -109,16 +114,15 @@ function nrelate_main_section() { ?>
 					<div class="info" id="extra_message"><?php 
 						// Call to nrelate server (sends home url)
 						// Nrelate server returns any message to be displayed in the nrelate dashboard
-						$curlPost = 'DOMAIN='.NRELATE_BLOG_ROOT;
-						$ch = curl_init();
-						curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_adminmessage.php'); 
-						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-						curl_setopt($ch, CURLOPT_POST, 1);
-						curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
-						$data = curl_exec($ch);
-						$info = curl_getinfo($ch);
-						curl_close($ch);
-						echo $data;?>
+						$body=array(
+							'DOMAIN'=>NRELATE_BLOG_ROOT
+						);
+						$url = 'http://api.nrelate.com/common_wp/'.NRELATE_LATEST_ADMIN_VERSION.'/wordpressnotify_adminmessage.php';
+						
+						$request=new WP_Http;
+						$result=$request->request($url,array('method'=>'POST','body'=>$body));
+						
+						echo !is_wp_error($result) ? $result['body'] : null ;?>
 					</div><!-- #extra_message -->
 					</li>
 					</ul><!-- .inside -->

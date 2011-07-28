@@ -22,15 +22,19 @@ function nrelate_related_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr, 
 	nr_imageurl = document.getElementById("related_default_image").value;
 	nr_age_num = document.getElementById("related_max_age_num").value;
 	nr_age_frame = document.getElementById("related_max_age_frame").value;
-	nr_ext_opt = document.getElementById("related_blogoption").value;
 	nr_r_title = escape(nr_r_title);
-	// Convert max age time frame to minutes
+	
+	nr_ext_opt=0;
+	if(jQuery("#blogroll-categorychecklist li label input:checked").length > 0){
+		nr_ext_opt=1;
+	}
 	
 	if(jQuery('.nrelate-thumb-size:checked').length>0)
 		nr_thumbsize = jQuery('.nrelate-thumb-size:checked').val();
 	else
 		nr_thumbsize  = 80;
 	
+	// Convert max age time frame to minutes
 	switch (nr_age_frame){
 		case 'Hour(s)':
 			nr_maxageposts = nr_age_num * 60;
@@ -93,17 +97,7 @@ function nrelate_related_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr, 
 		break;
 	default:
 		nr_thumb = 0;
-	}
-	
-	// Convert external option parameter
-	switch (nr_ext_opt){
-	case 'On':
-		nr_ext_opt = 1;
-		break;
-	default:
-		nr_ext_opt = 0;
-	}
-																														 
+	}																													 
 	nr_tag = "?NUM="+nr_numberrelated+"&DOMAIN="+wp_root_nr+"&IMAGEURL="+escape(nr_imageurl)+"&NUMEXT="+nr_num_ext+"&TITLE="+escape(nr_r_title)+"&SHOWPOSTTITLE="+nr_r_show_post_title+"&MAXCHAR="+nr_r_max_char_perline+"&SHOWEXCERPT="+nr_r_show_post_excerpt+"&MAXCHAREXCERPT="+nr_r_max_char_post_excerpt+"&AD="+nr_ad+"&LOGO="+nr_logo+"&THUMB="+nr_thumb+"&MAXAGE="+nr_maxageposts+"&EXTOPT="+nr_ext_opt+"&THUMBSIZE="+nr_thumbsize+"&RELATED_VERSION="+NRELATE_RELATED_PLUGIN_VERSION;
 	nr_tag += '&NUMADS=' + nr_num_ads + '&ADSPLACE=' + nr_ads_placement + '&THUMBSTYLE=' + nr_thumbstyle + '&TEXTSTYLE=' + nr_textstyle;
 	
@@ -116,30 +110,8 @@ function nrelate_related_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr, 
 }
 
 // Ajax call to blog_transport.php to check the site status from blogroll
-function checkblog(NRELATE_RELATED_SETTINGS_URL,nr_domain){
-	if (nr_domain==""){
-		document.getElementById("bloglinks").innerHTML="";
-		return;
-	}
-	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
-		var xmlHttp =new XMLHttpRequest();
-	}
-	else{// code for IE6, IE5
-		var xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	try{
-		xmlHttp.onreadystatechange=function(){
-			if (xmlHttp.readyState==4 && xmlHttp.status==200){
-				document.getElementById("bloglinks").innerHTML=xmlHttp.responseText;
-			}
-		}
-		var nr_params = nr_domain;
-		xmlHttp.open("POST",NRELATE_RELATED_SETTINGS_URL+"/blog_transport.php",true);
-		xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xmlHttp.send("domain="+nr_params);
-	}catch(e){
-		alert("Can't connect to server:\n" + e.toString()); 
-	}
+function checkblog(NRELATE_RELATED_SETTINGS_URL,nr_domain,nr_admin_version){	
+	jQuery.getScript("http://api.nrelate.com/common_wp/"+nr_admin_version+"/blogcheck.php?domain="+nr_domain+"&getrequest=1", function(data) { jQuery('#bloglinks').html(data);});
 }
 
 function nr_iframe_reload(){

@@ -3,7 +3,8 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.2
 Requires at least: 2.9
-Stable tag: 0.47.9
+Stable tag: 0.49.0
+
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -20,9 +21,7 @@ There are four ways to display related content:<br>
 3. Use our widget in any widget area in your theme<br>
 4. Place the nrelate_related() function in your theme files.<br>
 
-And two display styles:<br>
-1. Thumbnails<br>
-2. Text<br>
+nrelate's style gallery allows you to customize the look of our plugin by choosing one of our set styles, or designing your own.<br>
 <a href="http://wordpress.org/extend/plugins/nrelate-related-content/screenshots/">Check out the screenshots.</a>
 
 Advertising is also possible with the plugin. Ads come with the same display options as the related content and are a great way to earn a little extra income from your blog.
@@ -105,11 +104,6 @@ Once you activate the plugin, the nrelate server will start analyzing your websi
 = Can I use your plugin with WordPress Multisite? =
 Absolutely. You must activate our plugin on each individual website in your Multi-site install. You cannot use "Network Activate".
 
-= Does nrelate work with caching plugins like WP-Super-Cache and W3-Total-Cache? =
-Caching plugins create static html files from each of your pages... like a moment-in-time snapshot. If a static page was already created before you installed the nrelate plugin then that page will not contain the necessary nrelate code.  There are two ways to fix this:<br>
-1. Delete your cache: Both WP-Super-Cache and W3-Total-Cache have a button that allows you to delete your cache. Once deleted our code will show up, while your caching plugins rebuild their static files.<br>
-2. Wait until your cache expires: Both plugins expire your static pages after a designated time. Once that page expires, our code will show up.<br>
-
 = Does plugin support external images, e.g. uploaded on Flickr? =
 Absolutely! If you have images in your post, nrelate will find them and auto-create thumbnails.
 
@@ -139,8 +133,16 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 == Changelog ==
 
-= 0.47.9 =
-* Bug fix for nrelate custom feed.
+= 0.49.0 =
+* Switched from CURL to WP_Http.
+* New non-javascript option.
+* nrelate custom feed now checks for images in custom field arrays and post attachments.
+* Two new hooks: nrelate_admin_page and nrelate_settings_updated.
+* Flush W3 Total Cache and WP Super Cache when settings are saved. (Thanks, WordPress SEO by Yoast)
+* Tabbed options look better in WordPress 3.2
+* Fixed Dashboard CSS issues.
+* Theme and Plugin compatibility information in Message area.
+* nrelate Terms Of Service now viewable from WordPress admin.
 
 = 0.47.8 =
 * Fixed bug where nrelate wasn't getting all images.
@@ -322,6 +324,9 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 * Initial release.
 
 == Upgrade Notice ==
+
+= 0.49.0 =
+IMPORTANT: If you have made changes to nrelate's CSS, please <a href="http://nrelate.com/theblog/2011/07/04/less-css-styles-coming-to-related-plugin/">read this</a> before upgrading.
 
 = 0.47.0 =
 You can now show related content on ALL PAGES!

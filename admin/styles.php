@@ -21,7 +21,7 @@ $nrelate_thumbnail_styles = array(
 										<li>Border</li>
 										<li>Left aligned text</li>
 									</ul>','nrelate'),
-					"info"=>__('We developed this style as a simple way to place related content on any site. We wanted to keep everything simple, so that the focusis on your site\'s content.','nrelate'),
+					"info"=>__('We developed this style as a simple way to place nrelate content on any site. We wanted to keep everything simple, so that the focus is on your site\'s content.','nrelate'),
 				),
 'bty' => array(
 					"stylesheet" => "nrelate-panels-bty.css",
@@ -41,7 +41,7 @@ $nrelate_thumbnail_styles = array(
 										<li>Hover Effects</li>
 										<li>Stylized thumbnail dividing line</li>
 									</ul>', 'nrelate'),
-					"info"=>__('This style is based upon the popular thumbnail widget from <a href="http://linkwithin.com" target="_blank">Linkwithin.com</a>. LinkWithin is a blog widget that appears under each post','nrelate'),
+					"info"=>__('This style is based upon the related thumbnail widget from <a href="http://linkwithin.com" target="_blank">Linkwithin.com</a>. LinkWithin is a blog widget that appears under each post','nrelate'),
 				
 				
 				),
@@ -87,7 +87,7 @@ $nrelate_text_styles = array(
 										<li>Simple</li>
 										<li>Left aligned text</li>
 									</ul>','nrelate'),
-					"info"=>__('We developed this style as a simple way to place related content on any site. We wanted to keep everything simple, so that the focusis on your site\'s content.','nrelate'),
+					"info"=>__('We developed this style as a simple way to place nrelate content on any site. We wanted to keep everything simple, so that the focus is on your site\'s content.','nrelate'),
 				),
 'none' => array(
 					"name"=>__('none'),

@@ -13,10 +13,6 @@ function nr_rc_message_set(){
 	 // Get related options
 	$related_options = get_option('nrelate_related_options');
 	
-	 // Get admin options
-	$admin_options = get_option('nrelate_admin_options');
-	$admin_ad = $admin_options['admin_validate_ad']; // get ad ID
-	
 	// Related Thumbnail options
 	$show_thumbnails = $related_options['related_thumbnail'];
 	$thumbnailurl = $related_options['related_default_image'];
@@ -32,23 +28,6 @@ function nr_rc_message_set(){
 				$msg = $msg . '<li><div class="green">Related Content will show thumbnails, and default thumbnail is set.</div></li>';
 		}
 	};
-	
-	// Ad ID
-	// Is ad ID entered?
-	if ($admin_ad == null) {
-			// Is ad option turned on for this plugin?
-		if ($adcodeopt == 'on') {
-			$msg = $msg . '<li><div class="red">Related content is set to show ads, but <b>your AD ID is blank</b>. Enter your Ad ID below, or <a href="http://www.nrelate.com/advalidate.php" target="_blank">sign up for an Ad ID here.</a></div></li>';
-		}
-		else{
-			
-		}
-	};
-	
-	$msg=$msg. '<li id="adverify"></li>';
-	// AJAX call to nrelate server to bring back ad code status
-	echo '<script type="text/javascript"> checkad(\''.NRELATE_ADMIN_URL.'\',\''.NRELATE_BLOG_ROOT.'\',\''.NRELATE_RELATED_ADMIN_VERSION.'\',\'adverify\',\''.$admin_ad.'\'); </script>';
-	
 	echo $msg;
 };
 add_action ('nrelate_admin_messages','nr_rc_message_set');

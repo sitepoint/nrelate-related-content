@@ -181,7 +181,7 @@ function nrelate_related_styles_do_page() { ?>
       <input type="hidden" id="related_default_image" value="<?php echo $options['related_default_image']; ?>" />
       <input type="hidden" id="related_max_age_num" value="<?php echo $options['related_max_age_num']; ?>" />
       <input type="hidden" id="related_max_age_frame" value="<?php echo $options['related_max_age_frame']; ?>" />
-      <input type="hidden" id="related_blogoption" value="<?php echo $options['related_blogoption']; ?>" />
+      <input type="hidden" id="related_blogoption" value="<?php echo ( is_array($options['related_blogoption']) && count($options['related_blogoption'] > 0) ) ? 1 : 0; ?>" />
       <input type="checkbox" class="nrelate-thumb-size" value="<?php echo $options['related_thumbnail_size']; ?>" checked="checked" />
       <input type="checkbox" id="ad_animation" value="on" <?php echo empty($options['related_ad_animation']) ? '' : ' checked="checked" '; ?> />
     </div>

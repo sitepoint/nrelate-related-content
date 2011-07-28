@@ -16,7 +16,7 @@ function options_admin_init_nr(){
 	
 	// Ad Section
 	add_settings_section('ad_section', __('Advertising','nrelate'), 'section_text_nr_ad', __FILE__);
-	add_settings_field('admin_validate_ad', __('Please Enter your ad ID','nrelate').'<br>(<a href="' . NRELATE_WEBSITE_AD_SIGNUP . '" target="_blank">'.__('Get Your ID','nrelate') . '</a>)', 'setting_admin_validate_ad', __FILE__, 'ad_section');	
+	add_settings_field('admin_validate_ad', __('This is your ad ID.','nrelate').'<br>(<a href="' . NRELATE_WEBSITE_AD_SIGNUP .'" target="_blank">'.__('Sign up to earn money.','nrelate') . '</a>)', 'setting_admin_validate_ad', __FILE__, 'ad_section');	
 
 	// Communication Section
 	add_settings_section('comm_section', __('Communication','nrelate'), 'section_text_nr_comm', __FILE__);
@@ -29,7 +29,7 @@ function options_admin_init_nr(){
 	// Exclude categories
 	add_settings_section('excludecat_section', __('Exclude Categories','nrelate'), 'section_text_nr_excludecat', __FILE__);
 	add_settings_field('admin_exclude_categories', __('Categories:','nrelate'), 'setting_admin_exclude_categories',__FILE__,'excludecat_section');
-	
+
 }
 add_action('admin_init', 'options_admin_init_nr' );
 
@@ -50,7 +50,8 @@ function section_text_nr_ad() {
 // TEXTBOX - Validate ads
 function setting_admin_validate_ad() {
 	$options = get_option('nrelate_admin_options');
-	echo '<input id="admin_validate_ad" name="nrelate_admin_options[admin_validate_ad]" size="10" type="text" value="'.htmlspecialchars(stripslashes($options['admin_validate_ad'])).'" />';
+	echo '<div id="getnrcode"></div>';
+	echo '<input id="admin_validate_ad" name="nrelate_admin_options[admin_validate_ad]" size="10" type="hidden" value="" />';
 }
 
 
@@ -105,7 +106,7 @@ function setting_admin_exclude_categories() {
 	$args = array('taxonomy' => $taxonomy);
 	$tax = get_taxonomy($taxonomy);
 	$args['disabled'] = !current_user_can($tax->cap->assign_terms);
-	$args['selected_cats'] = is_array(@$options['admin_exclude_categories']) ? $options['admin_exclude_categories'] : array();
+	$args['selected_cats'] = (isset($options['admin_exclude_categories']) && is_array($options['admin_exclude_categories'])) ? $options['admin_exclude_categories'] : array();
 	$categories = (array) get_terms($taxonomy, array('get' => 'all'));
 	$walker = new nrelate_Walker_Category_Checklist();
 	echo call_user_func_array(array(&$walker, 'walk'), array($categories, 0, $args));
@@ -117,9 +118,8 @@ jQuery(document).ready(function(){
 	var nrel_excluded_cats_changed = false;
 	
 	jQuery('#nrelate-exclude-cats :checkbox').change(function(){
-		var me = jQuery(this);
-		
-		if (!nrel_excluded_cats_changed) {		
+		var me= jQuery(this);
+		if (!nrel_excluded_cats_changed) {
 			if (confirm("Any changes to this section will cause a site reindex. Are you sure you want to continue?\u000AIf Yes, press OK and then SAVE CHANGES."))
 			{
 				nrel_excluded_cats_changed = true;
@@ -134,7 +134,7 @@ jQuery(document).ready(function(){
 			me.parent().siblings('.children').find(':checkbox').attr('checked', me.is(':checked'));
 			
 			if ( me.closest('#nrelate-exclude-cats').find(':checkbox').size() == me.closest('#nrelate-exclude-cats').find(':checkbox:checked').size() ) {
-				alert("WARNING: You have marked all your categories for exclusion. Nothing will show up in related content. Please uncheck at least one category.");
+				alert("WARNING: You have marked all your categories for exclusion. Nothing will show up in nrelate. Please uncheck at least one category.");
 			}
 		}
 	});								
@@ -167,10 +167,10 @@ class nrelate_Walker_Category_Checklist extends Walker {
 		extract($args);
 		if ( empty($taxonomy) )
 			$taxonomy = 'category';
-		
+
 		$name = isset($name) ? $name : 'nrelate_admin_options[admin_exclude_categories]';
 		$value_field = isset($value_field) ? $value_field : 'term_id';
-		
+
 		$css_classes = !$category->parent ? ' top-level-category' : '';
 		$css_classes .= $has_children ? ' parent-category' : '';
 		$css_classes .= in_array( $category->$value_field, $selected_cats ) ? ' excluded-category' : '';
@@ -179,6 +179,7 @@ class nrelate_Walker_Category_Checklist extends Walker {
 		
 		// Supports WP v2.9
 		$output .= "\n<li id='{$taxonomy}-{$category->term_id}'$class>" . '<label class="selectit"><input value="' . $category->$value_field . '" type="checkbox" name="'.$name.'[]" id="in-'.$taxonomy.'-' . $category->term_id . '"' . checked( in_array( $category->$value_field, $selected_cats ), true, false ) . ' /> ' . esc_html( apply_filters('the_category', $category->name )) . '</label>';
+	
 	}
 }
 
@@ -195,6 +196,9 @@ function nrelate_check_options_change($new_value) {
 		$reindex = true;
 	}
 	
+	if( @$new_value['admin_custom_field'] !== @$old_value['admin_custom_field'] ) {
+		$reindex = true;
+	}	
 	
 	if ( $reindex ) {
 		nrelate_reindex();	
@@ -227,6 +231,7 @@ function nrelate_admin_do_page() { ?>
 					</form>
 				</ul><!-- .inside -->
 		</div><!-- #nr-admin-settings -->
+		<script type="text/javascript">getnrcode("<?php echo NRELATE_BLOG_ROOT; ?>","<?php echo NRELATE_LATEST_ADMIN_VERSION; ?>","<?php echo get_option('nrelate_key');?>");</script>
 <?php
 	
 	update_nrelate_admin_data();
@@ -240,15 +245,14 @@ function update_nrelate_admin_data(){
 	
 	// Get nrelate_admin options from wordpress database
 	$option = get_option('nrelate_admin_options');
-	$r_validate_ad = $option['admin_validate_ad'];
-	$n_user_email = get_option('admin_email');
+	$nr_user_email = get_option('admin_email');
 	$send_email = @$option['admin_email_address'];
 	$custom_field = $option['admin_custom_field'];
 
 	switch ($send_email){
 	case true:
 		$send_email = 1;
-		$user_email = $n_user_email;
+		$user_email = $nr_user_email;
 		break;
 	default:
 		$send_email = 0;
@@ -270,26 +274,19 @@ function update_nrelate_admin_data(){
 	$wp_root_nr = str_replace(array('http://','https://'), '', $wp_root_nr);
 	$rssurl = get_bloginfo('rss2_url');
 	// Write the parameters to be sent
-	$curlPost = 'DOMAIN='.$wp_root_nr.'&ADCODE='.$r_validate_ad.'&EMAIL='.$user_email.'&EMAILOPT='.$send_email.'&CUSTOM='.$custom_field.'&RSSMODE='.$rss_mode.'&RSSURL='.$rssurl.'&KEY='.get_option('nrelate_key');
-	// Curl connection to the nrelate server
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/processWPadmin.php'); 
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-	curl_setopt($ch, CURLOPT_POST, 1); 
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost); 
-	$data = curl_exec($ch);
-	$info = curl_getinfo($ch);
-	switch ($info['http_code']){
-		case 200:
-			return "Success";
-			break;
-		default:
-			return "Error accessing the nrelate server.";
-			break;
-	}
-	curl_close($ch);
-
-	echo $data; // Returns any errors sent back from the nrelate server
+	$body=array(
+		'DOMAIN'=>$wp_root_nr,
+		'EMAIL'=>$nr_user_email,
+		'RSSMODE'=>$rss_mode,
+		'RSSURL'=>$rssurl,
+		'KEY'=>get_option('nrelate_key'),
+		'CUSTOM'=>$custom_field,
+		'EMAILOPT'=>$send_email
+	);
+	$url = 'http://api.nrelate.com/common_wp/'.NRELATE_LATEST_ADMIN_VERSION.'/processWPadmin.php';
+	
+	$request=new WP_Http;
+	$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
 }
 
 
@@ -300,7 +297,7 @@ function admin_options_validate($input) {
 	$input['admin_validate_ad'] = like_escape($input['admin_validate_ad']);
 	// Add slashes to all text fields
 	$input['admin_validate_ad'] = esc_sql($input['admin_validate_ad']);
-	
+
 	/**
 	 * Make sure that unchecked checkboxes are stored as empty strings
 	 *
@@ -313,6 +310,7 @@ function admin_options_validate($input) {
 	);
 	
 	$input = wp_parse_args( $input, $empty_settings_array );
+	
 	
 	return $input; // return validated input
 }

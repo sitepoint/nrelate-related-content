@@ -21,61 +21,17 @@ function nrelate_showhide_thumbnail(idname){
 	}
 }
 
-//Ajax call to a_transport.php to check ad validation
-function checkad(NRELATE_ADMIN_URL,nr_domain,nr_adminversion,nr_idname,nr_adcode){
-	if (nr_domain==""){
-		document.getElementById(nr_idname).innerHTML="";
-		return;
-	}
-	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
-		var xmlHttp =new XMLHttpRequest();
-	}
-	else{// code for IE6, IE5
-		var xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	try{
-		xmlHttp.onreadystatechange=function(){
-			if (xmlHttp.readyState==4 && xmlHttp.status==200){
-				document.getElementById(nr_idname).innerHTML=xmlHttp.responseText;
-			}
-		}
-		xmlHttp.open("POST",NRELATE_ADMIN_URL+"/a_transport.php",true);
-		xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xmlHttp.send("domain="+nr_domain+"&adcode="+nr_adcode+"&adminversion="+nr_adminversion);
-	}catch(e){
-		alert("Can't connect to server:\n" + e.toString()); 
-	}
+//Ajax call to checkad.php to check ad validation
+function checkad(nr_domain,nr_admin_version,nr_key){
+	jQuery.getScript("http://api.nrelate.com/common_wp/"+nr_admin_version+"/adcheck.php?domain="+nr_domain+"&nr_key="+nr_key+"&getrequest=1");
 }
 
-//Ajax call to index_transport.php to check the site's indexing status
+//Ajax call to checkindex.php to check the site's indexing status
 function checkindex(nr_settingsurl,nr_domain,nr_admin_version){
-	if (nr_domain==""){
-		document.getElementById("indexcheck").innerHTML="";
-		return;
-	}
-	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
-		var xmlHttp =new XMLHttpRequest();
-	}
-	else{// code for IE6, IE5
-		var xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	try{
-		xmlHttp.onreadystatechange=function(){
-			if (xmlHttp.readyState==4 && xmlHttp.status==200){
-				document.getElementById("indexcheck").innerHTML=xmlHttp.responseText;
-				
-				// If index process is not done
-				if( jQuery("#indexresponse:contains('Status: The nRelate plugin is ready to go')").size()==0 ) {
-					jQuery("#nr_reindex :submit").attr('disabled', 'disabled').addClass('disabled').click(function(){
-						return false;
-					});
-				}
-			}
-		}
-		xmlHttp.open("POST",nr_settingsurl+"/index_transport.php",true);
-		xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xmlHttp.send("domain="+nr_domain+"&admin_version="+nr_admin_version);
-	}catch(e){
-		alert("Can't connect to server:\n" + e.toString()); 
-	}
+	jQuery.getScript("http://api.nrelate.com/common_wp/"+nr_admin_version+"/indexcheck.php?domain="+nr_domain+"&getrequest=1");
+}
+
+//Ajax call to getnrcode.php to get the adcode for signing up in partners.nrelate.com
+function getnrcode(nr_domain,nr_admin_version,nr_key){
+	jQuery.getScript("http://api.nrelate.com/common_wp/"+nr_admin_version+"/getnrcode.php?domain="+nr_domain+"&nr_key="+nr_key);
 }

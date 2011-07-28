@@ -8,7 +8,6 @@
  * @subpackage Functions
  */
  
- 
 
 global $nr_rc_std_options, $nr_rc_layout_options, $nr_rc_old_checkbox_options;
 
@@ -25,9 +24,9 @@ $nr_rc_std_options = array(
 		"related_ad_animation" => "on",
 		"related_loc_top" => "",
 		"related_loc_bottom" => "on",
-		"related_display_logo" => true,
+		"related_display_logo" => false,
 		"related_reset" => "",
-		"related_blogoption" => "Off",
+		"related_blogoption" => array(),
 		"related_show_post_title" => 'on',
 		"related_max_chars_per_line" => 100,
 		"related_show_post_excerpt" => "",
@@ -38,8 +37,9 @@ $nr_rc_std_options = array(
 		"related_number_of_posts_ext" => 3,
 		"related_validate_ad" => NULL,
 		"related_number_of_ads" => 1,
-		"related_ad_placement" => "Mixed",
-		"related_where_to_show" => array( "is_single" )
+		"related_ad_placement" => "Last",
+		"related_where_to_show" => array( "is_single" ),
+		"related_nonjs" => 0
 	);
 		
 $nr_rc_layout_options = array(		
@@ -109,6 +109,30 @@ function nr_rc_upgrade() {
 			// STD OPTIONS: Update new options if they don't exist
 			$related_settings = wp_parse_args( $related_settings, $nr_rc_std_options );
 			
+			/**
+			* Backwards compatibility
+			* Transforms related_blogoption setting from On|Off to 
+			* an array of link category ids
+			*
+			* @since 0.49.0
+			*/
+			if (isset($related_settings['related_blogoption']) && !is_array($related_settings['related_blogoption'])) 
+			{
+				if ( $related_settings['related_blogoption'] == 'On' ) {
+					$taxonomy = 'link_category';
+					$tax = get_taxonomy($taxonomy);
+					$link_categories = (array) get_terms($taxonomy, array('get' => 'all'));
+					foreach ( $link_categories as $category ) {
+						if ( $category->name == 'Blogroll' ) {
+							$related_settings['related_blogoption'] = array($category->term_id);
+							break;
+						}
+					}
+				} else {
+					$related_settings['related_blogoption'] = array();
+				}
+			}
+			
 			// now update again
 			update_option('nrelate_related_options', $related_settings);
 			
@@ -160,18 +184,17 @@ function nr_rc_add_defaults() {
 		$r_display_post_title = true;
 		$r_max_char_per_line = 100;
 		$r_max_char_post_excerpt = 100;
-		$r_display_ad = false;
-		$r_display_logo = true;
+		$r_display_ad = "";
+		$r_display_logo = "";
 		$r_related_reset = "";
-		$related_blogoption = "Off";
+		$related_blogoption = array();
 		$related_thumbnail = "Thumbnails";
-		$r_validate_ad = NULL;
 		$backfillimage = NULL;
 		$number_ext = 3;
 		$related_thumbnail_size=110;
 		$r_number_of_ads = 0;
-		$r_ad_placement = "Mixed";
-
+		$r_ad_placement = "Last";
+		$r_nonjs = 0;
 		// Convert max age time frame to minutes
 		switch ($r_max_frame)
 		{
@@ -223,13 +246,10 @@ function nr_rc_add_defaults() {
 		}
 
 		// Convert blogroll option parameter
-		switch ($related_blogoption)
-		{
-		case 'Off':
-		  $blogroll = 0;
-		  break;
-		default:
-		 $blogroll = 1;
+		if ( is_array($related_blogoption) && count($related_blogoption) > 0 ) {
+			$blogroll = 1;
+		} else {
+			$blogroll = 0;
 		}
 
 		// Convert thumbnail option parameter
@@ -245,32 +265,37 @@ function nr_rc_add_defaults() {
 		// Get the wordpress root url and the rss url
 		$bloglist = nrelate_get_blogroll();
 		// Write the parameters to be sent
-		$curlPost = 'DOMAIN='.NRELATE_BLOG_ROOT.'&NUM='.$number.'&HDR='.$r_title.'&R_BAR='.$r_bar.'&BLOGOPT='.$blogroll.'&BLOGLI='.$bloglist.'&MAXPOST='.$maxageposts.'&SHOWPOSTTITLE='.$r_display_post_title.'&MAXCHAR='.$r_max_char_per_line.'&MAXCHAREXCERPT='.$r_max_char_post_excerpt.'&ADOPT='.$ad.'&THUMB='.$thumb.'&ADCODE='.$r_validate_ad.'&LOGO='.$logo.'&NUMEXT='.$number_ext.'&IMAGEURL='.$backfillimage.'&THUMBSIZE='.$related_thumbnail_size.'&ADNUM='.$r_number_of_ads.'&ADPLACE='.$r_ad_placement;
-		// Curl connection to the nrelate server
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated.php');
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
-		$data = curl_exec($ch);
-		$info = curl_getinfo($ch);
-		switch ($info['http_code']){
-			case 200:
-				$connection = 1;
-				break;
-			default:
-				$connection = 0;
-				break;
-		}
-		curl_close($ch);
 
-		if($connection==0){
-			//bad connection
-		}
-
-		//bad database response
-		//echo $data;
-
+		$r_show_post_title = isset($r_show_post_title) ? $r_show_post_title : null;
+		$r_show_post_excerpt = isset($r_show_post_excerpt) ? $r_show_post_excerpt : null;
+		$backfill = isset($backfill) ? $backfill : null;
+		
+		$body=array(
+			'DOMAIN'=>NRELATE_BLOG_ROOT,
+			'NUM'=>$number,
+			'NUMEXT'=>$number_ext,
+			'R_BAR'=>$r_bar,
+			'HDR'=>$r_title,
+			'BLOGOPT'=>$blogroll,
+			'BLOGLI'=>$bloglist,
+			'MAXPOST'=>$maxageposts,
+			'SHOWPOSTTITLE'=>$r_show_post_title,
+			'MAXCHAR'=>$r_max_char_per_line,
+			'SHOWEXCERPT'=>$r_show_post_excerpt,
+			'MAXCHAREXCERPT'=>$r_max_char_post_excerpt,
+			'ADOPT'=>$ad,
+			'THUMB'=>$thumb,
+			'LOGO'=>$logo,
+			'IMAGEURL'=>$backfill,
+			'THUMBSIZE'=>$related_thumbnail_size,
+			'ADNUM'=>$r_number_of_ads,
+			'ADPLACE'=>$r_ad_placement,
+			'NONJS'=>$r_nonjs
+		);
+		$url = 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated.php';
+		
+		$request=new WP_Http;
+		$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
 	}
 
 	// RSS mode is sent again just incase if the user already had nrelate_related_options in their wordpress db
@@ -309,14 +334,20 @@ EOD;
 
 	// Send notification to nrelate server of activation and send us rss feed mode information
 	$action = "ACTIVATE";
-	$curlPost = 'DOMAIN='.NRELATE_BLOG_ROOT.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php');
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
-	curl_exec($ch);
-	curl_close($ch);
-
+	$body=array(
+		'DOMAIN'=>NRELATE_BLOG_ROOT,
+		'ACTION'=>$action,
+		'RSSMODE'=>$rss_mode,
+		'VERSION'=>NRELATE_RELATED_PLUGIN_VERSION,
+		'KEY'=>get_option('nrelate_key'),
+		'ADMINVERSION'=>NRELATE_RELATED_ADMIN_VERSION,
+		'PLUGIN'=>'related',
+		'RSSURL'=>$rssurl
+	);
+	$url = 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php';
+	
+	$request=new WP_Http;
+	$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));	
 }
  
  
@@ -345,19 +376,27 @@ function nr_rc_deactivate(){
 
 	// Send notification to nrelate server of deactivation
 	$action = "DEACTIVATE";
-	$curlPost = 'DOMAIN='.NRELATE_BLOG_ROOT.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php');
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
-	curl_exec($ch);
-	curl_close($ch);
+
+	$body=array(
+		'DOMAIN'=>NRELATE_BLOG_ROOT,
+		'ACTION'=>$action,
+		'RSSMODE'=>$rss_mode,
+		'VERSION'=>NRELATE_RELATED_PLUGIN_VERSION,
+		'KEY'=>get_option('nrelate_key'),
+		'ADMINVERSION'=>NRELATE_RELATED_ADMIN_VERSION,
+		'PLUGIN'=>'related',
+		'RSSURL'=>$rssurl
+	);
+	$url = 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php';
+	
+	$request=new WP_Http;
+	$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
 }
 
 // Uninstallation hook callback
 function nr_rc_uninstall(){
 	
-	// Delete nrelate popular options from user's wordpress db
+	// Delete nrelate related options from user's wordpress db
 	delete_option('nrelate_related_options');
 	delete_option('nrelate_related_options_styles');
 	
@@ -393,13 +432,20 @@ function nr_rc_uninstall(){
 	
 	// Send notification to nrelate server of uninstallation
 	$action = "UNINSTALL";
-	$curlPost = 'DOMAIN='.NRELATE_BLOG_ROOT.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php');
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
-	curl_exec($ch);
-	curl_close($ch);
+	$body=array(
+		'DOMAIN'=>NRELATE_BLOG_ROOT,
+		'ACTION'=>$action,
+		'RSSMODE'=>$rss_mode,
+		'VERSION'=>NRELATE_RELATED_PLUGIN_VERSION,
+		'KEY'=>get_option('nrelate_key'),
+		'ADMINVERSION'=>NRELATE_RELATED_ADMIN_VERSION,
+		'PLUGIN'=>'related',
+		'RSSURL'=>$rssurl
+	);
+	$url = 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php';
+	
+	$request=new WP_Http;
+	$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
 }
 
 ?>

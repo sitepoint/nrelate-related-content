@@ -14,13 +14,62 @@
  * Define Admin constants
  */
 		define( 'NRELATE_COMMON_LOADED', true );
+		define( 'NRELATE_LATEST_ADMIN_VERSION', '0.02.0' );
 		define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
-		define( 'NRELATE_WEBSITE_AD_SIGNUP', 'http://nrelate.com/partners/content-publishers/sign-up-for-advertising/' );
+		define( 'NRELATE_WEBSITE_AD_SIGNUP', 'https://partners.nrelate.com/register/');
 		define( 'NRELATE_ADMIN_IMAGES', NRELATE_ADMIN_URL . '/images' );
 		
 		define( 'NRELATE_MIN_WP', '2.9' );
 		define( 'NRELATE_MIN_PHP', '5.0' );
-		
+	
+/**
+ * nrelate admin menu hook
+ *
+ * Since v0.49.0
+ */
+function nrelate_admin_menu() {
+
+	if ( isset( $_GET['page'] ) && ( substr($_GET['page'], 0, 7) == 'nrelate' ) ) { 
+		do_action ('nrelate_admin_page');
+	}
+}
+add_action('admin_menu','nrelate_admin_menu');
+
+
+/**
+ * Save settings hook
+ *
+ * Since v0.49.0
+ */
+function nrelate_save_settings() {
+
+	function nrelate_admin_notices() {
+	
+		if ( (isset($_GET['updated']) && $_GET['updated'] == 'true') || (isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true') ) {
+			
+			$msg = __('nrelate settings updated');
+			
+			// Flush Total Cache or Super Cache on settings ave
+			// @cred: http://wordpress.org/extend/plugins/wordpress-seo/
+			if ( function_exists('w3tc_pgcache_flush') ) {
+				w3tc_pgcache_flush();
+				$msg .= __(' &amp; W3 Total Cache Page Cache flushed');
+			} else if (function_exists('wp_cache_clear_cache() ')) {
+				wp_cache_clear_cache();
+				$msg .= __(' &amp; WP Super Cache flushed');
+			}
+			
+			echo '<div class="updated"><p><strong>'.$msg.'.</strong></p></div>';
+			
+			do_action ('nrelate_settings_updated');
+		}
+	}
+	add_action('admin_notices','nrelate_admin_notices');
+}
+add_action('nrelate_admin_page','nrelate_save_settings');
+
+
+
 /**
  * Nrelate Products Array
  * 
@@ -72,11 +121,6 @@ function nrelate_system_check(){
 		$message .= "<li>".sprintf(__('You\'re server is running PHP version %1$s. nrelate requires PHP version %2$s.<br/>Please contact your web host and request PHP version %2$s.', 'nrelate' ), PHP_VERSION, NRELATE_MIN_PHP ) . "</li>";
 	}
 	
-	// Check for CURL
-	if ( !function_exists('curl_init')) {
-		$message .= "<li>".__('This nrelate plugin requires CURL installed on your server. Please contact your web host and ask them to install CURL.','nrelate')."</li>";
-	}
-	
 	$closing = "<p>".__('The nrelate plugin has been deactivated.','nrelate')."<br/><br/><a href=\"/wp-admin\">".__('Click here to return to your WordPress dashboard.','nrelate')."</a></p>";
 		
 	if (!empty($message)) {
@@ -85,15 +129,27 @@ function nrelate_system_check(){
 	}
 }
 
+/**
+ * Show Terms of Service in Thickbox
+ */
+function nrelate_tos($pluginpath) {
 
-/**************************************
- *  Admin only code
- *  only load if logged into admin area.
- ***************************************/
- if (is_admin()) {
- 
-  
- 
+	if (file_exists( $pluginpath . '/terms-of-service.html')) {
+			$tos =  file_get_contents( $pluginpath . '/terms-of-service.html');
+			
+		$output = '
+		<div id="nrelate-tos" style="display:none">
+			<div id="nrelate-terms">' . $tos . '</div>
+		</div>
+		<a class="thickbox button add-new-h2" title = "nrelate Terms Of Service" href="#TB_inline?height=385&amp;width=640&amp;inlineId=nrelate-tos">Terms Of Service</a>';
+		echo $output;
+		
+	} else {
+		return;
+	}
+}
+
+
 /**
  * Setup Dashboard menu and menu page
  */
@@ -101,8 +157,10 @@ function nrelate_setup_dashboard() {
 		require_once NRELATE_ADMIN_DIR . '/nrelate-admin-settings.php';
 		require_once NRELATE_ADMIN_DIR . '/nrelate-main-menu.php';
 		require_once NRELATE_ADMIN_DIR . '/admin-messages.php';
-		global $dashboardpage;
-		$dashboardpage = add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/spacer.gif');
+		global $dashboardpage,$mainsectionpage;
+		$mainsectionpage = add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/spacer.gif');
+		$dashboardpage = add_submenu_page('nrelate-main', __('Dashboard','nrelate'), __('Dashboard','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section');
+
 };
 add_action('admin_menu', 'nrelate_setup_dashboard');
  
@@ -130,6 +188,8 @@ function nrelate_load_admin_styles() {
 	wp_enqueue_style('thickbox');
 }
 add_action('admin_print_styles','nrelate_load_admin_styles');
+
+
 
 /**
  * Common function to load YouTube videos into our admin
@@ -167,14 +227,18 @@ function nrelate_reindex() {
 	$rss_mode = isset($rss_mode) ? $rss_mode : '';
 	$rssurl = isset($rssurl) ? $rssurl : '';
 	
-	$curlPost = 'DOMAIN='.NRELATE_BLOG_ROOT.'&ACTION='.$action.'&RSSMODE='.$rss_mode.'&VERSION='.NRELATE_RELATED_PLUGIN_VERSION.'&KEY='.get_option('nrelate_key').'&ADMINVERSION='.NRELATE_RELATED_ADMIN_VERSION.'&PLUGIN=related&RSSURL='.$rssurl;
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/reindex.php');
-	curl_setopt($ch, CURLOPT_POST, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPost);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_exec($ch);
-	curl_close($ch);
+	$body=array(
+		'DOMAIN'=>NRELATE_BLOG_ROOT,
+		'ACTION'=>$action,
+		'RSSMODE'=>$rss_mode,
+		'KEY'=>get_option('nrelate_key'),
+		'ADMINVERSION'=>NRELATE_LATEST_ADMIN_VERSION,
+		'RSSURL'=>$rssurl
+	);
+	$url = 'http://api.nrelate.com/common_wp/'.NRELATE_LATEST_ADMIN_VERSION.'/reindex.php';
+	
+	$request=new WP_Http;
+	$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
 }
 
 /**
@@ -185,7 +249,7 @@ function nrelate_reindex() {
 function nrelate_index_check() {
 	echo '<li class="nolist"><div id="indexcheck" class="info"></div></li>
 		<script type="text/javascript">
-			checkindex(\''.NRELATE_ADMIN_URL.'\',\''.NRELATE_BLOG_ROOT.'\',\''.NRELATE_RELATED_ADMIN_VERSION.'\');
+			checkindex(\''.NRELATE_ADMIN_URL.'\',\''.NRELATE_BLOG_ROOT.'\',\''.NRELATE_LATEST_ADMIN_VERSION.'\');
 		</script>';
 }
 
@@ -197,13 +261,22 @@ function nrelate_index_check() {
  */
 
 function nrelate_get_blogroll(){
-	$bm = get_bookmarks( array(
-		'category_name'  => 'Blogroll', 
-		'hide_invisible' => 1,
-		'show_updated'   => 0, 
-		'include'        => null,
-		'exclude'        => null,
-		'search'         => '.'));
+	$option = get_option('nrelate_related_options');
+	
+	$bm = array();
+	
+	if ( is_array($option['related_blogoption']) && count($option['related_blogoption']) ) {
+		$categories_id = implode(',', $option['related_blogoption']);
+		
+		$bm = get_bookmarks( array(
+			'category'  => $categories_id,
+			'hide_invisible' => 1,
+			'show_updated'   => 0, 
+			'include'        => null,
+			'exclude'        => null,
+			'search'         => '.'));	
+	}
+	
 	$counter=0;
 	$tmp = '';
 	foreach ($bm as $bookmark){
@@ -296,7 +369,7 @@ return $message;
  */
 function nrelate_upgrade_option($old_option, $old_option_key, $new_option, $new_option_key) {
     $old_value = get_option($old_option);
-	$old_value = $old_value[$old_option_key];
+	$old_value = isset($old_value[$old_option_key]) ? $old_value[$old_option_key] : false;
 	$old_value = ($old_value == false) ? array() : $old_value;
     if ($old_value != false) {
         $new_value = get_option($new_option);
@@ -307,10 +380,5 @@ function nrelate_upgrade_option($old_option, $old_option_key, $new_option, $new_
     }
 }
 
-
-
-
-
-};/* end is_admin */
 
 ?>

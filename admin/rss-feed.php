@@ -129,19 +129,42 @@ function nrelate_post_count() {
 			$default_attr = array( 'class' => "nrelate-image featured-image" );
 			$content = '<p>' . get_the_post_thumbnail( $post->ID, 'large', $default_attr ) . '</p>' . $content;
 			$thumb_found = true;
-		} 
+		}
+		
+		// Look for images in post attachments
+		if (!$thumb_found) {
+			$attachments = get_posts( array('post_type' => 'attachment', 'numberposts' => -1, 'post_status' => null, 'post_parent' => $post->ID) );
+			foreach ($attachments as $attach) {
+				if($img = wp_get_attachment_image_src($attach->ID) ) {
+					$content = sprintf('<p><img class="nrelate-image post-attachment" src="%s" alt="post thumbnail" /></p>%s', $img[0], $content);
+					$thumb_found = true;
+					break;
+				}
+			}
+		}
 		
 		// Last resort for custom images, search through all custom fields for image URL and grab the first
 		// url must start with http and file must be a gif, png or jpg.
 		// Since 0.45.0
 		if (!$thumb_found) {
 			foreach ( get_post_custom($post->ID) as $key => $values ) {
-				$values = (array)$values;
-				$imageurl = current($values);
-	
-				if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg|jpeg|tif|tiff|bmp)$#i', $imageurl) ) {
-					$content = sprintf('<p><img class="nrelate-image auto-custom-field-image" src="%s" alt="post thumbnail" /></p>%s', $imageurl, $content);
-					$thumb_found = true;
+				$meta = get_post_meta($post->ID, $key);
+				
+				// Extract metadata
+				if (is_array($meta)) {
+					$meta = current($meta);
+				}
+				
+				foreach( (array)$meta as $key => $imageurl ) {
+
+					if ( $imageurl = nrelate_get_img_url($imageurl) ) {
+						$content = sprintf('<p><img class="nrelate-image auto-custom-field-image" src="%s" alt="post thumbnail" /></p>%s', $imageurl, $content);
+						$thumb_found = true;
+						break;
+					}
+				}
+				
+				if ($thumb_found) {
 					break;
 				}
 			}
@@ -150,15 +173,55 @@ function nrelate_post_count() {
 		if (!$thumb_found) {
 			preg_match('#<img[^>]+src=[\"\']{1}(http:\/\/.*\.(gif|png|jpg|jpeg|tif|tiff|bmp){1})[\"\']{1}[^>]+\/>#i', $content, $images);
 			@$imageurl = $images[1];
-			if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg|jpeg|tif|tiff|bmp)$#i', $imageurl) ) {
+			if ( $imageurl = nrelate_get_img_url($imageurl) ) {
 				$content = sprintf('<p><img class="nrelate-image auto-content-image" src="%s" alt="post thumbnail" /></p>%s', $imageurl, $content);
 				$thumb_found = true;
+			}
+		}
+		
+		
+		// Last resort.  If no images in post, let's check post attachments.
+		if (!$thumb_found) {
+			$attachments = get_posts( array('post_type' => 'attachment', 'numberposts' => -1, 'post_status' => null, 'post_parent' => $post->ID, 'order' => 'ASC', 'orderby' => 'menu_order ID') );
+			foreach ($attachments as $attach) {
+				if($img = wp_get_attachment_image_src($attach->ID) ) {
+					$content = sprintf('<p><img class="nrelate-image post-attachment" src="%s" alt="post thumbnail" /></p>%s', $img[0], $content);
+					$thumb_found = true;
+					break;
+				}
 			}
 		}
 		
 		return $content;
 	}
 
+/**
+ * Helper to get the inner image URL from a string
+ * returns false if no img URL found
+ */
+function nrelate_get_img_url( $url ) {
+	if ( !$url = trim( (string) $url ) ) return false;
+	$parsed = parse_url( html_entity_decode($url) );
+	
+	if( isset($parsed['query']) ) {
+		$params = explode( '&', $parsed['query']);
+		foreach ($params as $pair) {
+			if ( trim($pair) == '' ) continue;
+			list( $param, $value) = explode( '=', $pair );
+			if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg|jpeg|tif|tiff|bmp)$#i', $value) ) {
+				// found a valid image URL in a parameter of the original URL
+				return $value;
+			}
+		}
+	}
+	
+	if ( preg_match('#^http:\/\/(.*)\.(gif|png|jpg|jpeg|tif|tiff|bmp)$#i', $url) ) {
+		return $url;
+	}
+	
+	return false;
+}
+	
 /**
  * Remove Javascript from our feed
  *
@@ -189,7 +252,20 @@ function nrelate_debug() {
 		$options += get_option('nrelate_related_options', array());
 		$options += get_option('nrelate_related_options_styles', array());
 	}
-		
+
+	//Get most popular options
+	if (function_exists('nrelate_popular')) {
+		$options += get_option('nrelate_popular_options', array());
+		$options += get_option('nrelate_popular_options_styles', array());
+	}
+	
+	//Get most popular options
+	if (function_exists('nrelate_flyout')) {
+		$options += get_option('nrelate_flyout_options', array());
+		$options += get_option('nrelate_flyout_options_styles', array());
+		$options += get_option('nrelate_flyout_box_options_styles', array());
+	}
+
 	echo '<pre>';
 	print_r($options);
 	echo '</pre>';
