@@ -27,7 +27,7 @@ Advertising is also possible with the plugin. Ads come with the same display opt
 
 Because all of the processing and analyzing runs on our servers and not yours, nrelate doesn't cause any additional load on your hosting account (especially if you're using shared hosting).
 
-<a href="http://www.nrelate.com" title="nrelate home page">You can learn more about nrelate here</a>.
+<a href="http://www.nrelate.com" title="nrelate home page">Learn more about nrelate</a> or <a href="http://profiles.wordpress.org/users/nrelate/">View other nrelate plugins.</a>
 
 
 == Installation ==
