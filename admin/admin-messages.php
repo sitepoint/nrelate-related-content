@@ -44,15 +44,13 @@ add_action ('nrelate_admin_messages','nr_admin_message_set');
  * Check active theme and provide messages to user that might be helpful.
  */
 function nr_theme_compat() {
-
-	$theme_data = get_theme_data(get_stylesheet_uri());
-	$theme_author =  $theme_data['Author']; // Get the author of the active theme
-
+	
 	// Theme Capability for either Related OR Popular
 	if (defined('NRELATE_RELATED_ACTIVE') || defined('NRELATE_POPULAR_ACTIVE')) {
+		$theme_data = current_theme_info();	
 		
 		// Woothemes
-		if (strlen(strstr($theme_author,'woothemes'))>0) { $msg = $msg . '<li><div class="warning">' . sprintf('<strong>Woothemes</strong> are supported, but may require %sconfiguration%s.', '<a href="http://nrelate.com/theblog/theme-capatibility/woothemes/" target="_blank">', '</a>') . '</div></li>'; }
+		if (strlen(strstr($theme_data->author,'woothemes'))>0) { $msg = $msg . '<li><div class="warning">' . sprintf('<strong>Woothemes</strong> are supported, but may require %sconfiguration%s.', '<a href="http://nrelate.com/theblog/theme-capatibility/woothemes/" target="_blank">', '</a>') . '</div></li>'; }
 	}
 
 echo $msg;

@@ -8,8 +8,10 @@
  * @subpackage Functions
  */
 
-
-wp_enqueue_script('nrelate_related_js', NRELATE_RELATED_SETTINGS_URL.'/nrelate_related_admin'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js', array('jquery'));
+function nrelate_related_load_admin_scripts() {
+	wp_enqueue_script('nrelate_related_js', NRELATE_RELATED_SETTINGS_URL.'/nrelate_related_admin'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js', array('jquery'));
+}
+add_action('nrelate_admin_page','nrelate_related_load_admin_scripts');
  
 /**
  * Add sub menu
@@ -74,8 +76,12 @@ function nrelate_related_settings_page() {
  *
  * since v0.46.0
  */
-function nrelate_related_tabs($current = 0) { 
-    $tabs = array( 'general' => 'General', 'styles' => 'Styles' ); 
+function nrelate_related_tabs($current = 0) {
+
+	$options = get_option('nrelate_related_options');
+	$type = $options['related_thumbnail'];
+
+    $tabs = array( 'general' => 'General', 'styles' => $type . __(' Gallery','nrelate') ); 
     $links = array();
 	
 		if ( $current == 0 ) {

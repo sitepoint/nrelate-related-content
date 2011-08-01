@@ -131,18 +131,6 @@ function nrelate_post_count() {
 			$thumb_found = true;
 		}
 		
-		// Look for images in post attachments
-		if (!$thumb_found) {
-			$attachments = get_posts( array('post_type' => 'attachment', 'numberposts' => -1, 'post_status' => null, 'post_parent' => $post->ID) );
-			foreach ($attachments as $attach) {
-				if($img = wp_get_attachment_image_src($attach->ID) ) {
-					$content = sprintf('<p><img class="nrelate-image post-attachment" src="%s" alt="post thumbnail" /></p>%s', $img[0], $content);
-					$thumb_found = true;
-					break;
-				}
-			}
-		}
-		
 		// Last resort for custom images, search through all custom fields for image URL and grab the first
 		// url must start with http and file must be a gif, png or jpg.
 		// Since 0.45.0
@@ -169,6 +157,7 @@ function nrelate_post_count() {
 				}
 			}
 		}
+		
 		// If no images are found yet, grab the first image in the post.
 		if (!$thumb_found) {
 			preg_match('#<img[^>]+src=[\"\']{1}(http:\/\/.*\.(gif|png|jpg|jpeg|tif|tiff|bmp){1})[\"\']{1}[^>]+\/>#i', $content, $images);

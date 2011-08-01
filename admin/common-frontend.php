@@ -12,11 +12,16 @@
 
  
 define( 'NRELATE_COMMON_FRONTEND_LOADED', true );
- 
+
 /**
- * Load jquery
+ * Load common jquery and styles
  */
-function nrelate_jquery() {
+function nrelate_jquery_styles() {
+
+	// Load Common CSS
+	wp_register_style('nrelate-style-common-' . str_replace(".","-",NRELATE_LATEST_ADMIN_VERSION), NRELATE_CSS_URL . 'nrelate-panels-common.min.css', false, null );
+	wp_enqueue_style( 'nrelate-style-common-' . str_replace(".","-",NRELATE_LATEST_ADMIN_VERSION) );
+			
 	$options=get_option('nrelate_products');
 	if(isset($options["related"]["status"]) && $options["related"]["status"]){
 		$rc_options=get_option('nrelate_related_options');
@@ -48,7 +53,7 @@ function nrelate_jquery() {
 		wp_enqueue_script('nrelate_js', array('jquery'));
 	}
 }
-add_action ('template_redirect', 'nrelate_jquery');
+add_action ('template_redirect', 'nrelate_jquery_styles');
 
 
 /**

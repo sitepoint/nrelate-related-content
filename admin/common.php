@@ -14,7 +14,6 @@
  * Define Admin constants
  */
 		define( 'NRELATE_COMMON_LOADED', true );
-		define( 'NRELATE_LATEST_ADMIN_VERSION', '0.02.0' );
 		define( 'NRELATE_WEBSITE_FORUM_URL', 'http://nrelate.com/forum/' );
 		define( 'NRELATE_WEBSITE_AD_SIGNUP', 'https://partners.nrelate.com/register/');
 		define( 'NRELATE_ADMIN_IMAGES', NRELATE_ADMIN_URL . '/images' );
@@ -158,7 +157,7 @@ function nrelate_setup_dashboard() {
 		require_once NRELATE_ADMIN_DIR . '/nrelate-main-menu.php';
 		require_once NRELATE_ADMIN_DIR . '/admin-messages.php';
 		global $dashboardpage,$mainsectionpage;
-		$mainsectionpage = add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/spacer.gif');
+		$mainsectionpage = add_menu_page(__('Dashboard','nrelate'), __('nrelate','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section', NRELATE_ADMIN_IMAGES . '/menu-logo.png');
 		$dashboardpage = add_submenu_page('nrelate-main', __('Dashboard','nrelate'), __('Dashboard','nrelate'), 'manage_options', 'nrelate-main', 'nrelate_main_section');
 
 };
@@ -174,7 +173,7 @@ function nrelate_load_admin_scripts() {
 	wp_enqueue_script('nrelate_admin_js', NRELATE_ADMIN_URL.'/nrelate_admin_jsfunctions'. ( NRELATE_JS_DEBUG ? '' : '.min') .'.js', array('jquery'));
 	wp_enqueue_script('thickbox'); //used for help videos
 }
-add_action('admin_enqueue_scripts','nrelate_load_admin_scripts');
+add_action('nrelate_admin_page','nrelate_load_admin_scripts');
 
 
 /**
@@ -187,7 +186,7 @@ function nrelate_load_admin_styles() {
 	wp_enqueue_style('nrelate-admin');
 	wp_enqueue_style('thickbox');
 }
-add_action('admin_print_styles','nrelate_load_admin_styles');
+add_action('nrelate_admin_page','nrelate_load_admin_styles');
 
 
 

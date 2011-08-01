@@ -3,8 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.2
 Requires at least: 2.9
-Stable tag: 0.49.0
-
+Stable tag: 0.49.1
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -132,6 +131,12 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 
 == Changelog ==
+
+= 0.49.1 =
+* Common CSS for thumbnails now loads inline.
+* nrelate admin css and js only loads on nrelate admin pages.
+* Remove duplicate code in rss-feed.php.
+* Bug fix: changed the way we do theme check, to stop fopen error.
 
 = 0.49.0 =
 * Switched from CURL to WP_Http.
