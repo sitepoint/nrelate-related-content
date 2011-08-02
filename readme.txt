@@ -123,11 +123,14 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 == Screenshots ==
 
-1. Related thumbnails
-2. Hovering on a related thumbnail
-3. Text list
-4. Advertising mixed into related content
-5. Hovering on an advertisement
+1. nrelate Default style
+2. Bloginity style
+3. LinkWithin style
+4. Huffington Post style
+5. Trendland style
+6. Text style
+7. Advertising mixed into content
+8. Hovering on an advertisement
 
 
 == Changelog ==
