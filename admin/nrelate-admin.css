@@ -37,6 +37,9 @@ display: inline;
 margin: 0;
 font-size: 14px;
 }
+.nrelate-settings .form-table th {
+width: 200px;
+}
 
 .nrelate-style-images {
 padding: 5px 0;
@@ -62,18 +65,19 @@ width: 380px;
 #style-gallery  .style-features-info {
 float: left;
 width: 35%;
+margin: 0 0 0 15px;
 }
 #style-gallery .style-features {
 width: 30%;
 margin: 0 0 0 15px;
 float: left;
 }
-#style-gallery .style-features ul {
+#style-gallery ul {
 list-style: disc;
 list-style-position: outside;
 margin-top:0px;
 }
-#style-gallery .style-features ul li {
+#style-gallery ul li {
 margin:0px;
 }
 #style-gallery .style-info {
@@ -242,7 +246,7 @@ color: #D54E21;
     border-radius: 10px;
 }
 .nrelate-settings h2 {
-	padding: 14px 15px 0;
+	padding: 14px 15px 0 !important;
 }
 .nrelate-settings h3 {
     background: #e4e4e4;

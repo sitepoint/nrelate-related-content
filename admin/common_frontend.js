@@ -17,6 +17,8 @@ if (typeof(nRelate)=='undefined') {
 		domready_list : [],
 		//var that holds whether or not mp should increment
 		increment : 0,
+		//var that determines if flyout stuff should show or not
+		flyout_show : true,
 		//flag that indicates the current browser is IE
 		ie_browser : navigator.appName=='Microsoft Internet Explorer',
 		//redirects the page when click on a nrelate post (old function nr_loadframe)
@@ -51,7 +53,6 @@ if (typeof(nRelate)=='undefined') {
 				event.preventDefault();
 				var src_url = window.location.href;
 				var iframe_src = "http://track.nrelate.com/tracking/";
-				var ifr = document.getElementById('nr_clickthrough_frame');
 				if (jQuery(this).hasClass('nr_partner')) {
 					nr_type = 'ad';
 				} else if (jQuery(this).hasClass('nr_avid')) {
@@ -66,7 +67,8 @@ if (typeof(nRelate)=='undefined') {
 					nr.load_link = true;
 					nr.clicked_link = jQuery(this).attr('href');
 				}
-				ifr.src = iframe_src;
+				
+				jQuery('<iframe id="nr_clickthrough_frame_'+Math.ceil(100*Math.random())+'" height="0" width="0" style="border-width: 0px; display:none;" src="'+iframe_src+'" onload="javascript:nRelate.loadFrame();"></iframe>').appendTo('body');
 			});
 		},
 
@@ -333,6 +335,13 @@ if (typeof(nRelate)=='undefined') {
 			} catch(e) {
 				ifr.src = domainSrc + 'd.write("' + iframe_html.replace(/"/g, '\\"') + '");d.close();';
 			}
+		},
+		/**
+		 * Function to fix the height of flyout div when fade out is selected.
+		 * This function is called at the bottom of a call if fade out is selected.
+		 */
+		flyout_fix_height : function(){
+			jQuery(".nrelate_flyout").css( {"right":"0px","display":"none"} );
 		}
 	};
 }

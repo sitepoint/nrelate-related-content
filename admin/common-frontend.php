@@ -42,7 +42,7 @@ function nrelate_jquery_styles() {
 	$related_load=0;
 	$flyout_load=0;
 	if (function_exists("nrelate_popular_is_loading"))
-		$popular_load=(nrelate_popular_is_loading()? 1:0);
+		$popular_load=((nrelate_popular_is_loading() || is_single())? 1:0);
 	if (function_exists("nrelate_related_is_loading"))	
 		$related_load=(nrelate_related_is_loading()? 1:0);
 	if (function_exists("nrelate_flyout_is_loading"))	

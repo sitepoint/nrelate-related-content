@@ -1,9 +1,9 @@
 === nrelate Related Content ===
 Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
-Tested up to: 3.2
+Tested up to: 3.2.1
 Requires at least: 2.9
-Stable tag: 0.49.1
+Stable tag: 0.49.2
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -132,8 +132,10 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 7. Advertising mixed into content
 8. Hovering on an advertisement
 
-
 == Changelog ==
+
+= 0.49.2 =
+* Compatibility fix for other nrelate plugins.
 
 = 0.49.1 =
 * Common CSS for thumbnails now loads inline.
