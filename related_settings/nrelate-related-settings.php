@@ -46,7 +46,7 @@ function options_init_nr_rc(){
 	
 	// Layout Section
 	add_settings_section('layout_section',__('Layout Settings','nrelate'), 'section_text_nr_rc_layout', __FILE__);
-	add_settings_field('related_where_to_show',__('Which pages should display related content?','nrelate'), 'setting_related_where_to_show', __FILE__, 'layout_section');
+	add_settings_field('related_where_to_show',__('Which pages should display related content?<p>You can read about these options at the <a href="http://codex.wordpress.org/Conditional_Tags">WordPress Codex</a>','nrelate'), 'setting_related_where_to_show', __FILE__, 'layout_section');
 	add_settings_field('related_loc_top',__('Top of post <em>(Automatic)</em>','nrelate'), 'setting_related_loc_top', __FILE__, 'layout_section');
 	add_settings_field('related_loc_bottom',__('Bottom of post <em>(Automatic)</em>','nrelate'), 'setting_related_loc_bottom', __FILE__, 'layout_section');
     add_settings_field('related_loc_widget',__('Widget area or Sidebar <em>(Automatic)</em>','nrelate'), 'setting_related_widget', __FILE__, 'layout_section');
@@ -240,71 +240,8 @@ function section_text_nr_rc_layout(){
 
 // CHECKBOX LIST - Where to show related content
 function setting_related_where_to_show(){
+	global $nrelate_cond_tags;
 	$options = get_option('nrelate_related_options');
-
-	// Define conditional tags tree	
-	$cond_tags = array(
-		(object) array(
-			"term_id" => 1,
-			"check_val" => "is_front_page",
-            "name" => "Front Page", 
-            "parent" => 0
-		),
-		(object) array(
-			"term_id" => 2,
-			"check_val" => "is_single",
-            "name" => "Single Posts", 
-            "parent" => 0
-		),
-		(object) array(
-			"term_id" => 3,
-			"check_val" => "is_page",
-            "name" => "Pages", 
-            "parent" => 0
-		),
-		(object) array(
-			"term_id" => 4,
-			"check_val" => "is_archive",
-            "name" => "All Archives", 
-            "parent" => 0
-		),
-				(object) array(
-					"term_id" => 6,
-					"check_val" => "is_category",
-					"name" => "Category Archives", 
-					"parent" => 4
-				),
-				(object) array(
-					"term_id" => 7,
-					"check_val" => "is_tag",
-					"name" => "Tag Archives", 
-					"parent" => 4
-				),
-				(object) array(
-					"term_id" => 8,
-					"check_val" => "is_author",
-					"name" => "Author Archives", 
-					"parent" => 4
-				),
-				(object) array(
-					"term_id" => 9,
-					"check_val" => "is_date",
-					"name" => "Date Archives", 
-					"parent" => 4
-				),
-		(object) array(
-			"term_id" => 5,
-			"check_val" => "is_search",
-            "name" => "Search Results", 
-            "parent" => 0
-		),
-		(object) array(
-			"term_id" => 11,
-			"check_val" => "is_attachment",
-            "name" => "Attachment Pages", 
-            "parent" => 0
-		)
-	);
 	
 	$args = array('taxonomy' => 'category', 'value_field' => 'check_val');
 	$args['selected_cats'] = is_array(@$options['related_where_to_show']) ? $options['related_where_to_show'] : array();
@@ -312,7 +249,7 @@ function setting_related_where_to_show(){
 	
 	echo '<div id="nrelate-where-to-show" class="categorydiv"><ul id="categorychecklist" class="list:category categorychecklist form-no-clear">';
 	$walker = new nrelate_Walker_Category_Checklist();
-	echo call_user_func_array(array(&$walker, 'walk'), array($cond_tags, 0, $args));
+	echo call_user_func_array(array(&$walker, 'walk'), array($nrelate_cond_tags, 0, $args));
 	
 	echo '</ul></div>';
 	

@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.2.1
 Requires at least: 2.9
-Stable tag: 0.49.2
+Stable tag: 0.49.3
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -128,11 +128,18 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 3. LinkWithin style
 4. Huffington Post style
 5. Trendland style
-6. Text style
-7. Advertising mixed into content
-8. Hovering on an advertisement
+6. Polaroid style
+7. Text style
+8. Advertising mixed into content
+9. Hovering on an advertisement
 
 == Changelog ==
+
+= 0.49.3 =
+* New Polaroid style
+* Added is_home as a display option.
+* Grab proper image for Thumbshots plugin.
+* Bug fix for sticky posts.
 
 = 0.49.2 =
 * Compatibility fix for other nrelate plugins.
