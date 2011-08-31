@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.2.1
 Requires at least: 2.9
-Stable tag: 0.49.3
+Stable tag: 0.49.4
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -134,6 +134,10 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 9. Hovering on an advertisement
 
 == Changelog ==
+
+= 0.49.4 =
+* Javascript change to open ads in a new tab/window
+* Bug fix for Thumbshots plugin
 
 = 0.49.3 =
 * New Polaroid style
