@@ -442,10 +442,10 @@ function section_text_nr_rc_ad() {
 		
 		$admin_options = get_option('nrelate_admin_options');
 		
-		if (empty($admin_options['admin_validate_ad'])) {
+		/*if (empty($admin_options['admin_validate_ad'])) {
 			echo '<div id="ads_warning" class="nr_error" style="margin-right:15px; display:none;"><p>';
 			echo (__('Before you can display ads, you must sign up for an "Advertising ID". Please' ,'nrelate') . ' <a href="' . NRELATE_WEBSITE_AD_SIGNUP . '">' . __('click here','nrelate') . '</a>' . __(' to sign up.','nrelate') . '</p></div>');
-		}
+		}*/
 }
 
 // CHECKBOX - Display ads
