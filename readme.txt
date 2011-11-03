@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.2.1
 Requires at least: 2.9
-Stable tag: 0.49.5
+Stable tag: 0.50.0
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -130,13 +130,30 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 5. Trendland style
 6. Polaroid style
 7. Text style
-8. Advertising mixed into content
-9. Hovering on an advertisement
+8. Engadget style
+9. Advertising mixed into content
+10. Hovering on an advertisement
 
 == Changelog ==
 
-= 0.49.5 =
-* Optimized server side caching.
+= 0.50.0 =
+* The most efficient version yet. Tons of functions are now common to all nrelate plugins!
+* New Engadget style!
+* 404 Page support!
+* Better explaination of advertising opportunities for publishers.
+* Add more CSS classes to Text.
+* nrelate product check notice.
+* nrelate product array now holds the timestamp.
+* Fix bug with Text stylesheet handle is incorrect.
+* Elimnated reindexing trigger for non-index option changes.
+* Fixed some PHP warning errors.
+* Ad animation fix. Animation now on a per plugin basis.
+* JS & CSS Script Optimizer compatibility warning message
+* load css and jquery only when required.
+* Fix nrelate_title_url not getting post ID.
+* Fixed issue with WP Super Cache flush not working properly.
+* Flush cache on plugin activation.
+* Avoid feed search engine indexation.
 
 = 0.49.4 =
 * Javascript change to open ads in a new tab/window
@@ -149,7 +166,7 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 * Bug fix for sticky posts.
 
 = 0.49.2 =
-* Compatibility fix for other nrelate plugins.
+* Compatibility fix for nrelate Flyout plugin.
 
 = 0.49.1 =
 * Common CSS for thumbnails now loads inline.
@@ -348,6 +365,9 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 * Initial release.
 
 == Upgrade Notice ==
+
+= 0.50.0 =
+Two new styles added to style Gallery: Polaroid and Bold Numbers.
 
 = 0.49.0 =
 IMPORTANT: If you have made changes to nrelate's CSS, please visit http://nrelate.com/theblog/ and read the blog post "If you customize nrelate CSS, please read" before upgrading.

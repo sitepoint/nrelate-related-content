@@ -14,64 +14,64 @@ function options_init_nr_rc(){
 	// Display preview image
 	if($options['related_thumbnail']=="Thumbnails"){
 		$divstyle = 'style="display:block;"';
-	}
-	else{
+	}else{
 		$divstyle = 'style="display:none;"';
+	}
+	if(isset($options['related_show_post_title']) && $options['related_show_post_title']=='on'){
+		$showpost_divstyle = 'style="display:block;"';
+	}else{
+		$showpost_divstyle = 'style="display:none;"';
+	}
+	if(isset($options['related_show_post_excerpt']) && $options['related_show_post_excerpt']=='on'){
+		$showexcerpt_divstyle = 'style="display:block;"';
+	}else{
+		$showexcerpt_divstyle = 'style="display:none;"';
 	}
 	
 	// Main Section
-	add_settings_section('main_section', __('Main Settings','nrelate'), 'section_text_nr_rc', __FILE__);
-	add_settings_field('related_save_preview_top','', 'related_save_preview', __FILE__, 'main_section');
-	add_settings_field('related_thumbnail', __('Would you like to display thumbnails with text, or text only','nrelate'), 'setting_thumbnail',__FILE__,'main_section');
-	add_settings_field('related_thumbnail_size', __('<div id="imagesizepreview_header" '.$divstyle.'>Please choose a thumbnail size','nrelate') . nrelate_thickbox_youtube('9Y09dHk8nO0','related_thumbnailsize_video') . '</div>', 'setting_thumbnail_size',__FILE__,'main_section');
-	add_settings_field('related_default_image', __('<div id="imagepreview_header" '.$divstyle.'>Please provide a link to your default image: (This will show up when a related post does not have a picture in it)<br/><i>For best results image should be as large (or larger) than the thumbnail size you chose above.</i>' . nrelate_thickbox_youtube('OzTtXJUgW3c','related_default_image') . '</div>','nrelate'), 'setting_related_default_image',__FILE__,'main_section');
-	add_settings_field('related_custom_field', __('<div id="imagecustomfield_header" '.$divstyle.'>If you use <b>Custom Fields</b> for your images, nrelate can show them.</div>','nrelate'), 'setting_related_custom_field',__FILE__,'main_section');
-	add_settings_field('related_title', __('Please enter a title for the related content box','nrelate') . nrelate_thickbox_youtube('cWEpWJ7Ftsw','related_title_video'), 'setting_string_nr_rc', __FILE__, 'main_section');
-	add_settings_field('related_number_of_posts', __('<b>Maximum</b> number of related posts to display from this site</br><em>To display multiple rows of thumbnails, choose more than will fit in one row.</em>','nrelate'), 'setting_related_number_of_posts_nr_rc', __FILE__, 'main_section');
+	add_settings_section('main_section', __('Main Settings','nrelate'), 'section_text_nr_rc' , __FILE__);
+	add_settings_field('related_save_preview_top','', 'nrelate_save_preview', __FILE__, 'main_section');
+	add_settings_field('related_thumbnail', __('Would you like to display thumbnails with text, or text only','nrelate') . nrelate_tooltip('_thumbnail'), 'setting_thumbnail',__FILE__,'main_section');
+	add_settings_field('related_thumbnail_size', __('<div class="nr_image_option" '.$divstyle.'>Please choose a thumbnail size','nrelate') . nrelate_tooltip('_thumbnail_size') . '</div>', 'setting_thumbnail_size',__FILE__,'main_section');
+	add_settings_field('related_default_image', __('<div class="nr_image_option" '.$divstyle.'>Please provide a link to your default image: (This will show up when a related post does not have a picture in it)<br/><i>For best results image should be as large (or larger) than the thumbnail size you chose above.</i>','nrelate'). nrelate_tooltip('_default_image')."</div>", 'setting_related_default_image',__FILE__,'main_section');
+	add_settings_field('related_custom_field', __('<div class="nr_image_option" '.$divstyle.'>If you use <b>Custom Fields</b> for your images, nrelate can show them.</div>','nrelate'), 'setting_related_custom_field',__FILE__,'main_section');
+	add_settings_field('related_title', __('Please enter a title for the related content box','nrelate') . nrelate_tooltip('_title'), 'setting_string_nr_rc', __FILE__, 'main_section');
+	add_settings_field('related_number_of_posts', __('<b>Maximum</b> number of posts to display from this site</br><em>To display multiple rows of thumbnails, choose more than will fit in one row.</em>','nrelate') . nrelate_tooltip('_number_of_posts'), 'setting_related_number_of_posts_nr_rc', __FILE__, 'main_section');
 	add_settings_field('related_bar', __('How relevant do you want the results to be?<br/><i>Based on the amount/type of content on your website, higher relevancy settings may return little or no posts.</i>','nrelate'), 'setting_related_bar_nr_rc', __FILE__, 'main_section');
-	add_settings_field('related_max_age', __('How deep into your archive would you like to go for related posts?','nrelate'), 'setting_related_max_age', __FILE__, 'main_section');
-	add_settings_field('related_exclude_cats', __('Exclude Categories from your related content.','nrelate'), 'setting_related_exclude_cats',__FILE__,'main_section');
-	add_settings_field('related_show_post_title', '<a name="nrelate_show_post_title"></a>'.__('Show Post Title?','nrelate'), 'setting_related_show_post_title', __FILE__, 'main_section');
-	add_settings_field('related_max_chars_per_line', __('Maximum number of characters for title?','nrelate'), 'setting_related_max_chars_per_line', __FILE__, 'main_section');
-	add_settings_field('related_show_post_excerpt', '<a name="nrelate_show_post_excerpt"></a>'.__('Show Post Excerpt?','nrelate'), 'setting_related_show_post_excerpt', __FILE__, 'main_section');
-	add_settings_field('related_max_chars_post_excerpt', __('Maximum number of words for post excerpt?','nrelate'), 'setting_related_max_chars_post_excerpt', __FILE__, 'main_section');
-	add_settings_field('related_save_preview','', 'related_save_preview', __FILE__, 'main_section');
-	
+	add_settings_field('related_max_age', __('How deep into your archive would you like to go for related posts?','nrelate') . nrelate_tooltip('_max_age'), 'setting_related_max_age', __FILE__, 'main_section');
+	add_settings_field('related_exclude_cats', __('Exclude Categories from your related content.','nrelate') . nrelate_tooltip('_exclude_cats'), 'nrelate_text_exclude_categories',__FILE__,'main_section');
+	add_settings_field('related_show_post_title', '<a name="nrelate_show_post_title"></a>'.__('Show Post Title?','nrelate') . nrelate_tooltip('_show_post_title'), 'setting_related_show_post_title', __FILE__, 'main_section');
+	add_settings_field('related_max_chars_per_line', __('<div class="nr_showpost_option" '.$showpost_divstyle.'>Maximum number of characters for title?','nrelate') . nrelate_tooltip('_max_chars_per_line').'</div>', 'setting_related_max_chars_per_line', __FILE__, 'main_section');
+	add_settings_field('related_show_post_excerpt', '<a name="nrelate_show_post_excerpt"></a>'.__('Show Post Excerpt?','nrelate') . nrelate_tooltip('_show_post_excerpt'), 'setting_related_show_post_excerpt', __FILE__, 'main_section');
+	add_settings_field('related_max_chars_post_excerpt', __('<div class="nr_showexcerpt_option" '.$showexcerpt_divstyle.'>Maximum number of words for post excerpt?','nrelate') . nrelate_tooltip('_max_chars_post_excerpt').'</div>', 'setting_related_max_chars_post_excerpt', __FILE__, 'main_section');
+	add_settings_field('nrelate_save_preview','', 'nrelate_save_preview', __FILE__, 'main_section');
 	
 	//Partner Section
 	add_settings_section('partner_section',__('Partner Settings','nrelate'),'section_text_nr_rc_partner',__FILE__);
 	add_settings_field('related_blogoption',__('Would you like to display related content from any of your blogroll categories?','nrelate'), 'setting_related_blogoption',__FILE__,'partner_section');
 	add_settings_field('related_number_of_posts_ext',__('<b>Maximum</b> number of related posts to display from this site\'s blogroll','nrelate'), 'setting_related_number_of_posts_nr_rc_ext', __FILE__, 'partner_section');
-	add_settings_field('related_save_preview','', 'related_save_preview', __FILE__, 'partner_section');
+	add_settings_field('nrelate_save_preview','', 'nrelate_save_preview', __FILE__, 'partner_section');
 	
 	// Layout Section
 	add_settings_section('layout_section',__('Layout Settings','nrelate'), 'section_text_nr_rc_layout', __FILE__);
 	add_settings_field('related_where_to_show',__('Which pages should display related content?<p>You can read about these options at the <a href="http://codex.wordpress.org/Conditional_Tags">WordPress Codex</a>','nrelate'), 'setting_related_where_to_show', __FILE__, 'layout_section');
 	add_settings_field('related_loc_top',__('Top of post <em>(Automatic)</em>','nrelate'), 'setting_related_loc_top', __FILE__, 'layout_section');
 	add_settings_field('related_loc_bottom',__('Bottom of post <em>(Automatic)</em>','nrelate'), 'setting_related_loc_bottom', __FILE__, 'layout_section');
-    add_settings_field('related_loc_widget',__('Widget area or Sidebar <em>(Automatic)</em>','nrelate'), 'setting_related_widget', __FILE__, 'layout_section');
-	add_settings_field('related_loc_manual',__('Add to Theme <em>(Manual)</em>','nrelate'), 'setting_related_manual', __FILE__, 'layout_section');
+    add_settings_field('related_loc_widget',__('Widget area or Sidebar <em>(Automatic)</em>','nrelate'), 'nrelate_text_widget_page', __FILE__, 'layout_section');
+	add_settings_field('related_loc_manual',__('<span id="loc_manual">Add to Theme <em>(Manual)</em><span>','nrelate'), 'setting_related_manual', __FILE__, 'layout_section');
 	add_settings_field('related_css_link',__('Change the Style','nrelate','nrelate'), 'setting_related_css_link', __FILE__, 'layout_section');
 	add_settings_field('related_display_logo',__('Would you like to support nrelate by displaying our logo?','nrelate'), 'setting_related_display_logo', __FILE__, 'layout_section');
-	add_settings_field('related_save_preview','', 'related_save_preview', __FILE__, 'layout_section');
+	add_settings_field('nrelate_save_preview','', 'nrelate_save_preview', __FILE__, 'layout_section');
 
-	// Ad Section
-	add_settings_section('ad_section',__('Advertising Settings','nrelate'), 'section_text_nr_rc_ad', __FILE__);
-	add_settings_field('related_display_ad',__('Would you like to display ads?','nrelate'), 'setting_related_display_ad', __FILE__, 'ad_section');
-	add_settings_field('related_ad_number',__('How many ad spaces do you wish to show?','nrelate'), 'setting_related_ad_number', __FILE__, 'ad_section');
-	add_settings_field('related_ad_placement',__('Where would you like to place the ads?','nrelate'), 'setting_related_ad_placement', __FILE__, 'ad_section');
-	add_settings_field('related_ad_animation',__('Would you like to show animated "sponsored" text in ads?','nrelate'), 'setting_related_ad_animation', __FILE__, 'ad_section');
-	add_settings_field('related_save_preview','', 'related_save_preview', __FILE__, 'ad_section');
-	
 	// Labs Section
-	add_settings_section('labs_section',__('nrelate Labs','nrelate'), 'section_text_nr_rc_labs', __FILE__);
+	add_settings_section('labs_section',__('nrelate Labs','nrelate'), 'nrelate_text_labs', __FILE__);
 	add_settings_field('related_nonjs', __('Which nrelate version would you like to use?','nrelate'), 'setting_related_nonjs', __FILE__, 'labs_section');
 	
-
+	
 	// Reset Setting
-	add_settings_section('reset_section',__('Reset Settings to Default','nrelate'), 'section_text_nr_rc_reset', __FILE__);
+	add_settings_section('reset_section',__('Reset Settings to Default','nrelate'), 'nrelate_text_reset', __FILE__);
 	add_settings_field('related_reset',__('Would you like to restore to defaults upon reactivation?','nrelate'), 'setting_reset_nr_rc', __FILE__, 'reset_section');
-	add_settings_field('related_save_preview','', 'related_save_preview', __FILE__, 'reset_section');
+	add_settings_field('nrelate_save_preview','', 'nrelate_save_preview', __FILE__, 'reset_section');
 	
 }
 add_action('admin_init', 'options_init_nr_rc' );
@@ -85,11 +85,8 @@ add_action('admin_init', 'options_init_nr_rc' );
 //   Main Settings
 //////////////////////////
  
-// Section HTML, displayed before the first option
-function section_text_nr_rc() {
-	_e('<p class="section-desc">Main controls for your related content.</p>','nrelate');
-}
-
+// Section description
+function section_text_nr_rc() { nrelate_text_main(NRELATE_RELATED_NAME); }
 
 
 // DROP-DOWN-BOX - Name: nrelate_related_options[related_number_of_posts]
@@ -150,36 +147,45 @@ function setting_related_max_age() {
 // CHECKBOX - Show Post Title
 function setting_related_show_post_title(){
 	$options = get_option('nrelate_related_options');
-	$checked = @$options['related_show_post_title']=='on' ? ' checked="checked" ' : '';
-	echo "<input ".$checked." id='related_show_post_title' name='nrelate_related_options[related_show_post_title]' type='checkbox'/>";
+	$checked = (isset($options['related_show_post_title']) && $options['related_show_post_title']=='on') ? ' checked="checked" ' : '';
+	echo "<input ".$checked." id='related_show_post_title' name='nrelate_related_options[related_show_post_title]' type='checkbox' onclick=\"if(this.checked){jQuery('.nr_showpost_option').show('slow');}else{jQuery('.nr_showpost_option').hide('slow');}\"/>";
 }
 
 // TEXTBOX - Characters for Post Title
 function setting_related_max_chars_per_line() {
 	$options = get_option('nrelate_related_options');
-	echo "<input id='related_max_chars_per_line' name='nrelate_related_options[related_max_chars_per_line]' size='4' type='text' value='{$options['related_max_chars_per_line']}' />";
+	if(isset($options['related_show_post_title']) && $options['related_show_post_title']=='on'){
+		$showpost_divstyle = 'style="display:block;"';
+	}else{
+		$showpost_divstyle = 'style="display:none;"';
+	}
+	echo "<div class='nr_showpost_option' ".$showpost_divstyle."><input class='nr_showpost_option' id='related_max_chars_per_line' name='nrelate_related_options[related_max_chars_per_line]' size='4' type='text' value='{$options['related_max_chars_per_line']}' /></div>";
 }
 
 // CHECKBOX - Show Post Excerpt
 function setting_related_show_post_excerpt(){
 	$options = get_option('nrelate_related_options');
-	$checked = @$options['related_show_post_excerpt']=='on' ? ' checked="checked" ' : '';
-	echo "<input ".$checked." id='related_show_post_excerpt' name='nrelate_related_options[related_show_post_excerpt]' type='checkbox'/>";
+	$checked = (isset($options['related_show_post_excerpt']) && $options['related_show_post_excerpt']=='on') ? ' checked="checked" ' : '';
+	echo "<input ".$checked." id='related_show_post_excerpt' name='nrelate_related_options[related_show_post_excerpt]' type='checkbox' onclick=\"if(this.checked){jQuery('.nr_showexcerpt_option').show('slow');}else{jQuery('.nr_showexcerpt_option').hide('slow');}\"/>";
 }
-
 
 
 // TEXTBOX - Characters for Post Excerpt
 function setting_related_max_chars_post_excerpt() {
 	$options = get_option('nrelate_related_options');
-	echo "<input id='related_max_chars_post_excerpt' name='nrelate_related_options[related_max_chars_post_excerpt]' size='4' type='text' value='{$options['related_max_chars_post_excerpt']}' />";
+	if(isset($options['related_show_post_excerpt']) && $options['related_show_post_excerpt']=='on'){
+		$showexcerpt_divstyle = 'style="display:block;"';
+	}else{
+		$showexcerpt_divstyle = 'style="display:none;"';
+	}
+	echo "<div class='nr_showexcerpt_option' ".$showexcerpt_divstyle."><input class='nr_showexcerpt_option' id='related_max_chars_post_excerpt' name='nrelate_related_options[related_max_chars_post_excerpt]' size='4' type='text' value='{$options['related_max_chars_post_excerpt']}' /></div>";
 }
 
 
 // CHECKBOX - Name: nrelate_related_options[related_reset]
 function setting_reset_nr_rc() {
 	$options = get_option('nrelate_related_options');
-	$checked = @$options['related_reset'] == 'on' ? ' checked="checked" ' : '';
+	$checked = (isset($options['related_reset']) && $options['related_reset'] == 'on') ? ' checked="checked" ' : '';
 	echo "<input ".$checked." id='plugin_related_reset' name='nrelate_related_options[related_reset]' type='checkbox' />";
 }
 
@@ -187,9 +193,8 @@ function setting_reset_nr_rc() {
 //   Partner Settings
 //////////////////////////
 
-function section_text_nr_rc_partner(){
-	_e('<p class="section-desc">Related content can be brought in from your blogroll.</p>','nrelate');
-}
+// Section description
+function section_text_nr_rc_partner() { nrelate_text_partner(NRELATE_RELATED_NAME); }
 
 // CHECKBOX-LIST - Name: nrelate_related_options[related_blogoption]
 function setting_related_blogoption() {
@@ -233,10 +238,8 @@ function setting_related_number_of_posts_nr_rc_ext(){
 //   Layout Settings
 //////////////////////////
 
-// Section HTML, displayed before the first option
-function section_text_nr_rc_layout(){
-	echo '<div class="section-desc">Where do you want your related content to display?</div>';
-}
+// Section description
+function section_text_nr_rc_layout() { nrelate_text_layout(NRELATE_RELATED_NAME); }
 
 // CHECKBOX LIST - Where to show related content
 function setting_related_where_to_show(){
@@ -244,7 +247,7 @@ function setting_related_where_to_show(){
 	$options = get_option('nrelate_related_options');
 	
 	$args = array('taxonomy' => 'category', 'value_field' => 'check_val');
-	$args['selected_cats'] = is_array(@$options['related_where_to_show']) ? $options['related_where_to_show'] : array();
+	$args['selected_cats'] = is_array(isset($options['related_where_to_show']) ? $options['related_where_to_show'] : null) ? $options['related_where_to_show'] : array();
 	$args['name'] = 'nrelate_related_options[related_where_to_show]';
 	
 	echo '<div id="nrelate-where-to-show" class="categorydiv"><ul id="categorychecklist" class="list:category categorychecklist form-no-clear">';
@@ -253,63 +256,21 @@ function setting_related_where_to_show(){
 	
 	echo '</ul></div>';
 	
-	$javascript = <<< JAVA_SCRIPT
-jQuery(document).ready(function(){
-	var nrelate_where_to_show_check = jQuery('#nrelate-where-to-show :checkbox');
-	
-	nrelate_where_to_show_check.change(function(){
-		var me = jQuery(this);
-		
-		if ( !me.is(':checked') && me.val() == 'is_single' ) {
-			if ( !confirm("Are you sure you do not want to show related content on single posts?") ) {
-				me.attr('checked', true );
-			}
-		}
-		
-		if ( nrelate_where_to_show_check.filter(':checked').size() == 0 ) {
-			if ( !confirm("Related content will not be shown anywhere. Please confirm.") ) {
-				me.attr('checked', true );
-			}
-		}
-		
-		// Check children
-		me.parent().siblings('.children').find(':checkbox').attr('checked', me.is(':checked'));
-		
-		// If a child, check/uncheck parent according to group
-		var siblings = me.closest('.children').find(':checkbox');
-		if ( siblings.size() ) {
-			if ( siblings.size() == siblings.filter(':checked').size() ) {
-				me.closest('.parent-category').children('.selectit').find(':checkbox').attr('checked', true);	
-			} else {
-				me.closest('.parent-category').children('.selectit').find(':checkbox').attr('checked', false);
-			}
-		}
-		
-	});								
-});
-JAVA_SCRIPT;
-
-	echo "<script type='text/javascript'>{$javascript}</script>";
+	nrelate_where_to_show_check();
 }
 
 // CHECKBOX - Location Post Top
 function setting_related_loc_top(){
 	$options = get_option('nrelate_related_options');
-	$checked = @$options['related_loc_top']=='on' ? ' checked="checked" ' : '';
+	$checked = (isset($options['related_loc_top']) && $options['related_loc_top']=='on') ? ' checked="checked" ' : '';
 	echo "<input ".$checked." id='related_loc_top' name='nrelate_related_options[related_loc_top]' type='checkbox'/>";
 }
 
 // CHECKBOX - Location Post Bottom
 function setting_related_loc_bottom(){
 	$options = get_option('nrelate_related_options');
-	$checked = @$options['related_loc_bottom']=='on' ? ' checked="checked" ' : '';
+	$checked = (isset($options['related_loc_bottom']) && $options['related_loc_bottom']=='on') ? ' checked="checked" ' : '';
 	echo "<input ".$checked." id='related_loc_bottom' name='nrelate_related_options[related_loc_bottom]' type='checkbox' />";
-}
-
-
-// TEXT ONLY - use widget
-function setting_related_widget(){
-	_e("To use our widget, visit <a href=\"widgets.php\">your widget page.</a></b>","nrelate");
 }
 
 // TEXT ONLY - no options
@@ -327,7 +288,7 @@ function setting_related_css_link(){
 // CHECKBOX - Show nrelate logo
 function setting_related_display_logo(){
 	$options = get_option('nrelate_related_options');
-	$checked = @$options['related_display_logo']=='on' ? ' checked="checked" ' : '';
+	$checked = (isset($options['related_display_logo']) && $options['related_display_logo']=='on') ? ' checked="checked" ' : '';
 	echo "<input ".$checked." id='show_logo' name='nrelate_related_options[related_display_logo]' type='checkbox' />";
 }
 
@@ -338,7 +299,7 @@ function setting_thumbnail() {
 	echo "<select id='related_thumbnail' name='nrelate_related_options[related_thumbnail]' onChange='nrelate_showhide_thumbnail(\"related_thumbnail\");'>";
 	/*?><select id='related_thumbnail' name='nrelate_related_options[related_thumbnail]'>;
 	<?php*/
-	foreach($items as $type=>$item) {
+	foreach($items as $type => $item) {
 		$selected = ($options['related_thumbnail']==$type) ? 'selected="selected"' : '';
 		echo "<option value='".$type."' ".$selected.">".$item."</option>";
 	}
@@ -356,16 +317,14 @@ function setting_thumbnail_size(){
 		$divstyle = "style='display:none;'";
 	}
 	
-	echo "<div id='imagesizepreview' ".$divstyle.">";
+	echo "<div id='imagesizepreview' class='nr_image_option' ".$divstyle.">";
 	$sizes = array(80,90,100,110,120,130,140,150);
-	
-	foreach($sizes as $size){ ?>
-		<div class="nrelate-layout-thumbnails-1">
-			<?php $checked = ($options['related_thumbnail_size']==$size) ? ' checked="checked" ' : '';
-			echo "<label for='related_imagesize_".$size."'><input ".$checked." id='related_imagesize_".$size."' value='$size' name='nrelate_related_options[related_thumbnail_size]' type='radio' class='nrelate-thumb-size' /><br/>$size<br /><img src='" . NRELATE_ADMIN_IMAGES . "/thumbnails/preview_cloud_" . $size.".jpeg' /></label>";?>
-		</div>
-	<?php
+	echo "<select id='related_thumbnail_size' name='nrelate_related_options[related_thumbnail_size]' onChange='document.getElementById(\"related_thumbnail_image\").src=\"". NRELATE_ADMIN_IMAGES ."/thumbnails/preview_cloud_\"+this.value+\".jpeg\";'>";
+	foreach ($sizes as $size){
+		$selected = ($options['related_thumbnail_size']==$size) ? 'selected="selected"' : '';
+		echo "<option value='".$size."' ".$selected.">".$size."</option>";
 	}
+	echo "</select><div class='thumbnail_wrapper' style='height:160px;'><img id='related_thumbnail_image' src='" . NRELATE_ADMIN_IMAGES . "/thumbnails/preview_cloud_" .$options['related_thumbnail_size'].".jpeg' /></div>";
 }
 
 // TEXTBOX - Name: nrelate_related_options[related_thumbnail]
@@ -380,7 +339,7 @@ function setting_related_default_image(){
 	else{
 		$divstyle = "style='display:none;'";
 	}
-	echo "<div id='imagepreview' ".$divstyle.">";
+	echo "<div class='nr_image_option' ".$divstyle.">";
 	$imageurl = stripslashes(stripslashes($options['related_default_image']));
 	$imageurl = htmlspecialchars($imageurl);
 	
@@ -422,80 +381,14 @@ function setting_related_custom_field() {
 	else{
 		$divstyle = "style='display:none;'";
 	}
-		_e('<div id="imagecustomfield" '.$divstyle.'><a href="admin.php?page=nrelate-main#admin_custom_field">Click Here, to enter your custom field on the nrelate dashboard, under CUSTOM FIELD FOR IMAGES settings. ></a></div>','nrelate');
-		echo "<script type='text/javascript'> nrelate_showhide_thumbnail('related_thumbnail');</script>";
-}
-
-
-// TEXTBOX - Name: nrelate_related_options[related_exclude_cats]
-function setting_related_exclude_cats() {
-	_e('<a href="admin.php?page=nrelate-main#exclude-cats">Click Here, to select categories to exclude under the EXCLUDE CATEGORIES settings. ></a></div>','nrelate');
-}
-
-///////////////////////////
-//   Advertising Settings
-//////////////////////////
-
-// Section HTML, displayed before the first option
-function section_text_nr_rc_ad() {
-		_e('<p class="section-desc">nrelate can display ads under your related posts and you can earn money. Make sure you have signed up for an <a href="' . NRELATE_WEBSITE_AD_SIGNUP . '" target="_blank">Advertising ID</a>, and entered it on the <a href="admin.php?page=nrelate-main">nrelate Dashboard page</a>.</p>','nrelate');
 		
-		$admin_options = get_option('nrelate_admin_options');
-		
-		/*if (empty($admin_options['admin_validate_ad'])) {
-			echo '<div id="ads_warning" class="nr_error" style="margin-right:15px; display:none;"><p>';
-			echo (__('Before you can display ads, you must sign up for an "Advertising ID". Please' ,'nrelate') . ' <a href="' . NRELATE_WEBSITE_AD_SIGNUP . '">' . __('click here','nrelate') . '</a>' . __(' to sign up.','nrelate') . '</p></div>');
-		}*/
+	nrelate_text_custom_fields( $divstyle );
+	echo "<script type='text/javascript'> nrelate_showhide_thumbnail('related_thumbnail');</script>";
 }
-
-// CHECKBOX - Display ads
-function setting_related_display_ad() {
-	$options = get_option('nrelate_related_options');
-	$checked = @$options['related_display_ad']=='on' ? ' checked="checked" ' : '';
-	echo "<input ".$checked." id='show_ad' name='nrelate_related_options[related_display_ad]' type='checkbox' />";
-}
-
-// DROPDOWN - number of ads to show
-function setting_related_ad_number(){
-	$options = get_option('nrelate_related_options');
-	$items = array("1", "2", "3", "4", "5", "6", "7", "8", "9", "10");
-	echo "<div id='adnumber'><select id='related_number_of_ads' name='nrelate_related_options[related_number_of_ads]'>";
-	foreach($items as $item) {
-		$selected = ($options['related_number_of_ads']==$item) ? 'selected="selected"' : '';
-		echo "<option value='$item' $selected>$item</option>";
-	}
-	echo "</select></div>";
-}
-
-// DROPDOWN - ad placement
-function setting_related_ad_placement(){	
-	$options = get_option('nrelate_related_options');
-	$items = array("Mixed","First","Last");
-	echo "<div id='adplacement'><select id='related_ad_placement' name='nrelate_related_options[related_ad_placement]'>";
-	foreach($items as $item) {
-		$selected = ($options['related_ad_placement']==$item) ? 'selected="selected"' : '';
-		echo "<option value='$item' $selected>$item</option>";
-	}
-	echo "</select></div>";
-}
-
-// CHECKBOX - Animated "sponsored" text in ads
-function setting_related_ad_animation(){
-	$options = get_option('nrelate_related_options');
-	$checked = !empty($options['related_ad_animation']) ? ' checked="checked" ' : '';
-	echo "<input ".$checked." id='ad_animation' name='nrelate_related_options[related_ad_animation]' type='checkbox' />";
-}
-
-
 
 ///////////////////////////
 //   nrelate Labs
 //////////////////////////
-
-// Section HTML, displayed before the first option
-function section_text_nr_rc_labs() {
-	_e('<p class="section-desc">Try out some new nrelate features, by selecting the BETA VERSION.</p>','nrelate');
-}
 
 // Radio - Use Non js: nonjs=1, js=0
 function setting_related_nonjs(){
@@ -504,26 +397,11 @@ function setting_related_nonjs(){
 	$valuedescription = array ("js" => __("<strong>Javascript:</strong> Stable and fast",'nrelate'), "nonjs" => __("<strong>No Javascript:</strong> BETA VERSION: Allows search engines to index our plugin and may help your SEO.",'nrelate')); 
 	$i=0;
 	foreach($values as $value){
-		$checked = @$options['related_nonjs']==$i ? ' checked="checked" ' : '';
+		$checked = (isset($options['related_nonjs']) && $options['related_nonjs']==$i) ? ' checked="checked" ' : '';
 		echo "<label for='related_nonjs_".$i."'><input ".$checked." id='related_nonjs_".$i."' name='nrelate_related_options[related_nonjs]' value='$i' type='radio'/>  ".$valuedescription[$value]."</label><br/>";
 		$i+=1;
 	}
 }
-
-
-
-
-
-
-///////////////////////////
-//   Reset
-//////////////////////////
-
-// Section HTML, displayed before the first option
-function section_text_nr_rc_reset() {
-	_e('<p class="section-desc">To reset the plugin to defaults, check the box below, deactivate the plugin, and then reactivate it.</p>','nrelate');
-}
-
 
 /****************************************************************
  ******************** Build the Admin Page ********************** 
@@ -531,70 +409,10 @@ function section_text_nr_rc_reset() {
 
 function nrelate_related_do_page() {
 
-//Convert some visual option parameters for preview purposes
-	$option = get_option('nrelate_related_options');
-	$number = $option['related_number_of_posts'];
-	$r_title = urlencode($option['related_title']);
-	$r_show_post_title = @$option['related_show_post_title'];
-	$r_max_char_per_line = $option['related_max_chars_per_line'];
-	$r_show_post_excerpt = @$option['related_show_post_excerpt'];
-	$r_max_char_post_excerpt = $option['related_max_chars_post_excerpt'];
-	$r_display_ad = empty($option['related_display_ad']) ? false : true;
-	$r_display_logo = empty($option['related_display_logo']) ? false : true;
-	$related_thumbnail = $option['related_thumbnail'];
-	$number_ext = $option ['related_number_of_posts_ext'];
-	
-	
-	// Convert ad parameter
-	switch ($r_display_ad){
-	case true:
-		$ad = 1;
-		break;
-	default:
-		$ad = 0;
-	}
-	
-	// Convert display post title parameter
-	switch ($r_show_post_title)
-	{
-	case 'on':
-	  $r_show_post_title = 1;
-	  break;
-	default:
-	 $r_show_post_title = 0;
-	}
-	
-	// Convert display post excerpt parameter
-	switch ($r_show_post_excerpt)
-	{
-	case 'on':
-	  $r_show_post_excerpt = 1;
-	  break;
-	default:
-	 $r_show_post_excerpt = 0;
-	}
-		
-	
-	// Convert logo parameter
-	switch ($r_display_logo){
-	case true:
-	  $logo = 1;
-	  break;
-	default:
-	 $logo = 0;
-	}
-	
-	// Convert thumbnail parameter
-	switch ($related_thumbnail)
-	{
-	case 'Thumbnails':
-	  $thumb = 1;
-	  break;
-	default:
-	 $thumb = 0;
-	}
-	$tag = '?NUM='.$number.'&TITLE='.$r_title.'&SHOWPOSTTITLE='.$r_show_post_title.'&MAXCHAR='.$r_max_char_per_line.'&SHOWEXCERPT='.$r_show_post_excerpt.'&MAXCHAREXCERPT='.$r_max_char_post_excerpt.'&AD='.$ad.'&LOGO='.$logo.'&THUMB='.$thumb;
-	//echo $tag;
+	// nrelated option loaded from wp db
+	$options = get_option('nrelate_related_options');
+	$ad_options = get_option('nrelate_related_options_ads');
+	$style_options = get_option('nrelate_related_options_styles');
 ?>
 	
 	<?php nrelate_related_settings_header(); ?>
@@ -606,12 +424,16 @@ function nrelate_related_do_page() {
 		//]]>
     </script>
 		<form name="settings" action="options.php" method="post" enctype="multipart/form-action">
-    	<?php
-			$style_options = get_option('nrelate_related_options_styles');
-      ?>
+      <div class="nrelate-hidden">
+      <input type="checkbox" id="show_ad" <?php echo empty($ad_options['related_display_ad']) ? '' : 'checked="checked"'; ?> value="on" />
+      <input type="hidden" id="related_number_of_ads" value="<?php echo isset($ad_options['related_number_of_ads']) ? $ad_options['related_number_of_ads'] : ''; ?>" />
+      <input type="hidden" id="related_ad_placement" value="<?php echo isset($ad_options['related_ad_placement']) ? $ad_options['related_ad_placement'] : ''; ?>" />
+      <input type="checkbox" id="ad_animation" value="on" <?php echo empty($ad_options['related_ad_animation']) ? '' : ' checked="checked" '; ?> />
       <input type="hidden" id="related_imagestyle" value="<?php echo $style_options['related_thumbnails_style']; ?>" />
       <input type="hidden" id="related_textstyle" value="<?php echo $style_options['related_text_style']; ?>" />
 	  <input type="hidden" id="related_blogoption" value="<?php echo ( is_array($options['related_blogoption']) && count($options['related_blogoption'] > 0) ) ? 1 : 0; ?>" />
+      </div>
+     
 			<?php settings_fields('nrelate_related_options'); ?>
 			<?php do_settings_sections(__FILE__);?>
 		</form>
@@ -657,14 +479,14 @@ function nrelate_related_do_page() {
 	</div>
 <?php
 	
-	update_nrelate_data();
+	update_nrelate_data_rc();
 }
 
 // Loads all of the nrelate_related_options from wp database
 // Makes necessary conversion for some parameters.
 // Sends nrelate_related_options entries, rss feed mode, and wordpress home url to the nrelate server
 // Returns Success if connection status is "200". Returns error if not "200"
-function update_nrelate_data(){
+function update_nrelate_data_rc(){
 	
 	// Get nrelate_related options from wordpress database
 	$option = get_option('nrelate_related_options');
@@ -677,7 +499,6 @@ function update_nrelate_data(){
 	$r_max_char_per_line = $option['related_max_chars_per_line'];
 	$r_show_post_excerpt = empty($option['related_show_post_excerpt']) ? false : true;
 	$r_max_char_post_excerpt = $option['related_max_chars_post_excerpt'];
-	$r_display_ad = empty($option['related_display_ad']) ? false : true;
 	$r_display_logo = empty($option['related_display_logo']) ? false : true;
 	//$r_related_reset = $option['related_reset'];
 	$related_blogoption = $option['related_blogoption'];
@@ -685,11 +506,9 @@ function update_nrelate_data(){
 	$backfill = $option['related_default_image'];
 	$number_ext = $option ['related_number_of_posts_ext'];
 	$related_thumbnail_size = $option['related_thumbnail_size'];
-	$related_loc_top = @$option['related_loc_top'];
-	$related_loc_bot = @$option['related_loc_bottom'];
-	$related_ad_num = $option['related_number_of_ads'];
-	$related_ad_place = $option['related_ad_placement'];
-	$related_nonjs = $option['related_nonjs'];
+	$related_loc_top = isset($option['related_loc_top']) ? $option['related_loc_top'] : null;
+	$related_loc_bot = isset($option['related_loc_bottom']) ? $option['related_loc_bottom'] : null;
+	$related_nonjs = isset($option['related_nonjs']) ? $option['related_nonjs'] : null;
 	
 	$related_layout= '';
 	if ($related_loc_top=='on') {
@@ -719,48 +538,17 @@ function update_nrelate_data(){
 	}
 	
 	// Convert show post title parameter
-	switch ($r_show_post_title){
-	case true:
-		$r_show_post_title = 1;
-		break;
-	default:
-		$r_show_post_title = 0;
-	}
+	$r_show_post_title=($r_show_post_title)?1:0;
 
 	// Convert show post excerpt parametet
-	switch ($r_show_post_excerpt){
-	case true:
-		$r_show_post_excerpt = 1;
-		break;
-	default:
-		$r_show_post_excerpt = 0;
-	}
-
-
-	// Convert ad parameter
-	switch ($r_display_ad){
-	case true:
-		$ad = 1;
-		break;
-	default:
-		$ad = 0;
-	}
-
+	$r_show_post_excerpt=($r_show_post_excerpt)?1:0;
+	
 	// Convert logo parameter
-	switch ($r_display_logo){
-	case true:
-		$logo = 1;
-		break;
-	default:
-		$logo = 0;
-	}
+	$logo=($r_display_logo)?1:0;
 	
 	// Convert blogroll option parameter
-	if ( is_array($related_blogoption) && count($related_blogoption) > 0 ) {
-		$blogroll = 1;
-	} else {
-		$blogroll = 0;
-	}
+	$blogroll=( is_array($related_blogoption) && count($related_blogoption) > 0 )?1:0;
+	
 	
 	// Convert thumbnail option parameter
 	switch ($related_thumbnail){
@@ -777,6 +565,8 @@ function update_nrelate_data(){
 
 	$body=array(
 		'DOMAIN'=>NRELATE_BLOG_ROOT,
+		'VERSION'=>NRELATE_RELATED_PLUGIN_VERSION,
+		'KEY'=>	get_option('nrelate_key'),
 		'NUM'=>$number,
 		'NUMEXT'=>$number_ext,
 		'R_BAR'=>$r_bar,
@@ -788,14 +578,11 @@ function update_nrelate_data(){
 		'MAXCHAR'=>$r_max_char_per_line,
 		'SHOWEXCERPT'=>$r_show_post_excerpt,
 		'MAXCHAREXCERPT'=>$r_max_char_post_excerpt,
-		'ADOPT'=>$ad,
 		'THUMB'=>$thumb,
 		'LOGO'=>$logo,
 		'IMAGEURL'=>$backfill,
 		'THUMBSIZE'=>$related_thumbnail_size,
 		'LAYOUT'=>$related_layout,
-		'ADNUM'=>$related_ad_num,
-		'ADPLACE'=>$related_ad_place,
 		'NONJS'=>$related_nonjs
 	);
 	$url = 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated.php';

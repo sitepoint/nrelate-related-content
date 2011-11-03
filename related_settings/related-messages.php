@@ -17,7 +17,7 @@ function nr_rc_message_set(){
 	$show_thumbnails = $related_options['related_thumbnail'];
 	$thumbnailurl = $related_options['related_default_image'];
 	// Related ad options
-	$adcodeopt = @$related_options['related_display_ad'];
+	$adcodeopt = isset($related_options['related_display_ad']) ? $related_options['related_display_ad'] : null;
 	$msg = '';
 	// Thumbnail
 	if ($show_thumbnails == 'Thumbnails') {

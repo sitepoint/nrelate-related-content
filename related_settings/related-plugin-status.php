@@ -9,7 +9,7 @@
  */
  
 
-global $nr_rc_std_options, $nr_rc_layout_options, $nr_rc_old_checkbox_options;
+global $nr_rc_std_options, $nr_rc_ad_options, $nr_rc_layout_options, $nr_rc_old_checkbox_options, $nr_rc_ad_old_checkbox_options;
 
 // Default Options
 // ALL options must be listed
@@ -20,8 +20,6 @@ $nr_rc_std_options = array(
 		"related_title" => "You may also like -",
 		"related_max_age_num" => "10",
 		"related_max_age_frame" => "Year(s)",
-		"related_display_ad" => false,
-		"related_ad_animation" => "on",
 		"related_loc_top" => "",
 		"related_loc_bottom" => "on",
 		"related_display_logo" => false,
@@ -35,11 +33,15 @@ $nr_rc_std_options = array(
 		"related_thumbnail_size" => 110,
 		"related_default_image" => NULL,
 		"related_number_of_posts_ext" => 3,
-		"related_validate_ad" => NULL,
-		"related_number_of_ads" => 1,
-		"related_ad_placement" => "Last",
 		"related_where_to_show" => array( "is_single" ),
 		"related_nonjs" => 0
+	);
+$nr_rc_ad_options = array(
+		"related_display_ad" => false,
+		"related_ad_animation" => "on",
+		"related_validate_ad" => NULL,
+		"related_number_of_ads" => 1,
+		"related_ad_placement" => "Last"
 	);
 		
 $nr_rc_layout_options = array(		
@@ -55,12 +57,14 @@ $nr_rc_layout_options = array(
  */ 
 $nr_rc_old_checkbox_options = array(
 		"related_show_post_title" => "",	// Since 0.46.0 default on
-		"related_ad_animation" => "",		// Since 0.46.0 default on
 		"related_show_post_excerpt" => "",
 		"related_reset" => "",
 		"related_loc_top" => "",
 		"related_loc_bottom" => "",
-		"related_display_logo" => "",
+		"related_display_logo" => ""
+);
+$nr_rc_ad_old_checkbox_options = array(
+		"related_ad_animation" => "",		// Since 0.46.0 default on
 		"related_display_ad" => ""
 );
 
@@ -74,6 +78,7 @@ $nr_rc_old_checkbox_options = array(
 add_action('admin_init','nr_rc_upgrade');
 function nr_rc_upgrade() {
 	$related_settings = get_option('nrelate_related_options');
+	$related_ad_settings = get_option('nrelate_related_options_ads');
 	$related_layout_settings = get_option('nrelate_related_options_styles');
 	$current_version = $related_settings['related_version'];
 	
@@ -82,16 +87,23 @@ function nr_rc_upgrade() {
 	
 		nrelate_system_check(); // run system check
 		
-		global $nr_rc_std_options, $nr_rc_layout_options, $nr_rc_old_checkbox_options;
+		global $nr_rc_std_options, $nr_rc_ad_options, $nr_rc_layout_options, $nr_rc_old_checkbox_options, $nr_rc_ad_old_checkbox_options;
 			
 			// move custom field option from related settings to admin settings: v.0.42.2
 			nrelate_upgrade_option('nrelate_related_options', 'related_custom_field', 'nrelate_admin_options', 'admin_custom_field');
 
 			// move ad code field option from related settings to admin settings: v0.42.6
 			nrelate_upgrade_option('nrelate_related_options', 'related_validate_ad', 'nrelate_admin_options', 'admin_validate_ad');
+			
+			// move all ad settings code from related settings to advertising settings: v0.50.0
+			nrelate_upgrade_option('nrelate_related_options', 'related_display_ad', 'nrelate_related_options_ads', 'related_display_ad');
+			nrelate_upgrade_option('nrelate_related_options', 'related_number_of_ads', 'nrelate_related_options_ads', 'related_number_of_ads');
+			nrelate_upgrade_option('nrelate_related_options', 'related_ad_placement', 'nrelate_related_options_ads', 'related_ad_placement');
+			nrelate_upgrade_option('nrelate_related_options', 'related_ad_animation', 'nrelate_related_options_ads', 'related_ad_animation');
 
 			// re-get the latest since we just made changes
 			$related_settings = get_option('nrelate_related_options');
+			$related_ad_settings = get_option('nrelate_related_options_ads'); 
 			
 			// Sanitize settings for versions <= 0.46.0
 			if ( $current_version <= '0.46.0' ) {
@@ -100,14 +112,16 @@ function nr_rc_upgrade() {
 				if ( $current_version < '0.46.0' ) {
 					// Apply 0.46.0 defaults before running standard upgrade
 					$nr_rc_old_checkbox_options["related_show_post_title"] = 'on';
-					$nr_rc_old_checkbox_options["related_ad_animation"] = 'on';
+					$nr_rc_ad_old_checkbox_options["related_ad_animation"] = 'on';
 				}
 				
 				$related_settings = wp_parse_args( $related_settings, $nr_rc_old_checkbox_options );
+				$related_ad_settings = wp_parse_args( $related_ad_settings, $nr_rc_ad_old_checkbox_options );
 			}
 
 			// STD OPTIONS: Update new options if they don't exist
 			$related_settings = wp_parse_args( $related_settings, $nr_rc_std_options );
+			$related_ad_settings = wp_parse_args( $related_ad_settings, $nr_rc_ad_options );
 			
 			/**
 			* Backwards compatibility
@@ -135,6 +149,7 @@ function nr_rc_upgrade() {
 			
 			// now update again
 			update_option('nrelate_related_options', $related_settings);
+			update_option('nrelate_related_options_ads', $related_ad_settings);
 			
 			// LAYOUT OPTIONS
 			$related_layout_settings = wp_parse_args( $related_layout_settings, $nr_rc_layout_options );
@@ -144,6 +159,24 @@ function nr_rc_upgrade() {
 			$related_settings = get_option('nrelate_related_options');
 			$related_settings['related_version'] = NRELATE_RELATED_PLUGIN_VERSION;
 			update_option('nrelate_related_options', $related_settings);
+			
+			// Ping nrelate servers about the upgrade
+			$body=array(
+				'DOMAIN'=>NRELATE_BLOG_ROOT,
+				'VERSION'=>NRELATE_RELATED_PLUGIN_VERSION,
+				'KEY'=>get_option('nrelate_key'),
+				'PLUGIN'=>"related"
+			);
+			$url = 'http://api.nrelate.com/common_wp/'.NRELATE_LATEST_ADMIN_VERSION.'/versionupdate.php';
+			$request=new WP_Http;
+			$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
+			
+			// Calculate plugin file path
+			$dir = substr( realpath(dirname(__FILE__) . '/..'), strlen(WP_PLUGIN_DIR) );
+			$file = key( get_plugins( $dir ) );
+			$plugin_file = substr($dir, 1) . '/' . $file;
+			// Update the WP database with the new version number and additional info about this plugin
+			nrelate_products("related",NRELATE_RELATED_PLUGIN_VERSION,NRELATE_RELATED_ADMIN_VERSION,1, $plugin_file);
 	}
 }
 
@@ -164,15 +197,22 @@ function nr_rc_upgrade() {
 function nr_rc_add_defaults() {
 
 	nrelate_system_check(); // run system check
-	nrelate_products("related",NRELATE_RELATED_PLUGIN_VERSION,NRELATE_RELATED_ADMIN_VERSION,1); // add this product to the nrelate_products array
+
+	// Calculate plugin file path
+	$dir = substr( realpath(dirname(__FILE__) . '/..'), strlen(WP_PLUGIN_DIR) );
+	$file = key( get_plugins( $dir ) );
+	$plugin_file = substr($dir, 1) . '/' . $file;
+
+	nrelate_products("related",NRELATE_RELATED_PLUGIN_VERSION,NRELATE_RELATED_ADMIN_VERSION,1, $plugin_file); // add this product to the nrelate_products array
 	
-	global $nr_rc_std_options, $nr_rc_layout_options;
+	global $nr_rc_std_options, $nr_rc_ad_options, $nr_rc_layout_options;
 
 	$tmp = get_option('nrelate_related_options');
 	// If related_reset value is on or if nrelate_related_options was never created, insert default values
     if(($tmp['related_reset']=='on')||(!is_array($tmp))) {
 		
 		update_option('nrelate_related_options', $nr_rc_std_options);
+		update_option('nrelate_related_options_ads', $nr_rc_ad_options);		
 		update_option('nrelate_related_options_styles', $nr_rc_layout_options);
 
 		// Convert some values to send to nrelate server
@@ -265,13 +305,15 @@ function nr_rc_add_defaults() {
 		// Get the wordpress root url and the rss url
 		$bloglist = nrelate_get_blogroll();
 		// Write the parameters to be sent
-
+		
 		$r_show_post_title = isset($r_show_post_title) ? $r_show_post_title : null;
 		$r_show_post_excerpt = isset($r_show_post_excerpt) ? $r_show_post_excerpt : null;
 		$backfill = isset($backfill) ? $backfill : null;
 		
 		$body=array(
 			'DOMAIN'=>NRELATE_BLOG_ROOT,
+			'VERSION'=>NRELATE_RELATED_PLUGIN_VERSION,
+			'KEY'=>get_option('nrelate_key'),
 			'NUM'=>$number,
 			'NUMEXT'=>$number_ext,
 			'R_BAR'=>$r_bar,
@@ -292,7 +334,7 @@ function nr_rc_add_defaults() {
 			'ADPLACE'=>$r_ad_placement,
 			'NONJS'=>$r_nonjs
 		);
-		$url = 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated.php';
+		$url = 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelatedAll.php';
 		
 		$request=new WP_Http;
 		$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
@@ -398,6 +440,7 @@ function nr_rc_uninstall(){
 	
 	// Delete nrelate related options from user's wordpress db
 	delete_option('nrelate_related_options');
+	delete_option('nrelate_related_options_ads');
 	delete_option('nrelate_related_options_styles');
 	
 	$nrelate_active=nrelate_products("related",NRELATE_RELATED_PLUGIN_VERSION,NRELATE_RELATED_ADMIN_VERSION,-1);

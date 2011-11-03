@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.49.5
+Version: 0.50.0
 Author URI: http://nrelate.com/
 
 
@@ -27,28 +27,26 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.49.5' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.50.0' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
-define( 'NRELATE_RELATED_ADMIN_VERSION', '0.03.0' );
+define( 'NRELATE_RELATED_ADMIN_VERSION', '0.04.0' );
+define( 'NRELATE_RELATED_NAME' , __('Related Content','nrelate'));
+define( 'NRELATE_RELATED_DESCRIPTION' , sprintf( __('The related content plugin allows you to display related posts on your website.','nrelate')));
 
-define( 'NRELATE_LATEST_ADMIN_VERSION', '0.03.0' );
-define( 'NRELATE_CSS_URL', 'http://static.nrelate.com/common_wp/' . NRELATE_RELATED_ADMIN_VERSION . '/' );
-define( 'NRELATE_BLOG_ROOT', urlencode(str_replace(array('http://','https://'), '', get_bloginfo( 'url' ))));
-define( 'NRELATE_JS_DEBUG', isset($_REQUEST['nrelate_debug']) ? true : false );
-
-define( 'NRELATE_ADMIN_COMMON_FILE', plugin_basename( __FILE__ ) );
-define( 'NRELATE_ADMIN_DIR_NAME', trim( dirname( NRELATE_ADMIN_COMMON_FILE ), '/' ) );
-define( 'NRELATE_ADMIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_ADMIN_DIR_NAME.'/admin');
-define( 'NRELATE_ADMIN_URL', WP_PLUGIN_URL . '/' . NRELATE_ADMIN_DIR_NAME.'/admin');
+if(!defined('NRELATE_CSS_URL')) { define( 'NRELATE_CSS_URL', 'http://static.nrelate.com/common_wp/' . NRELATE_RELATED_ADMIN_VERSION . '/' ); }
+if(!defined('NRELATE_BLOG_ROOT')) { define( 'NRELATE_BLOG_ROOT', urlencode(str_replace(array('http://','https://'), '', get_bloginfo( 'url' )))); }
+if(!defined('NRELATE_JS_DEBUG')) { define( 'NRELATE_JS_DEBUG', isset($_REQUEST['nrelate_debug']) ? true : false ); }
 
 /**
  * Define Path constants
  */
 // Generic: will be assigned to the last nrelate plugin that loads
-define( 'NRELATE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-define( 'NRELATE_PLUGIN_NAME', trim( dirname( NRELATE_PLUGIN_BASENAME ), '/' ) );
-define( 'NRELATE_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_PLUGIN_NAME );
-	
+if (!defined( 'NRELATE_PLUGIN_BASENAME')) { define( 'NRELATE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); }
+if (!defined( 'NRELATE_PLUGIN_NAME')) { define( 'NRELATE_PLUGIN_NAME', trim( dirname( NRELATE_PLUGIN_BASENAME ), '/' ) ); }
+if (!defined( 'NRELATE_PLUGIN_DIR')) { define( 'NRELATE_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_PLUGIN_NAME ); }
+if (!defined('NRELATE_ADMIN_DIR')) { define( 'NRELATE_ADMIN_DIR', NRELATE_PLUGIN_DIR .'/admin'); }
+if (!defined('NRELATE_ADMIN_URL')) { define( 'NRELATE_ADMIN_URL', WP_PLUGIN_URL . '/' . NRELATE_PLUGIN_NAME .'/admin'); }
+
 // Plugin specific
 define( 'NRELATE_RELATED_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 define( 'NRELATE_RELATED_PLUGIN_NAME', trim( dirname( NRELATE_RELATED_PLUGIN_BASENAME ), '/' ) );
@@ -71,7 +69,7 @@ load_plugin_textdomain('nrelate-related', false, NRELATE_RELATED_PLUGIN_DIR . '/
  *
  * @since 0.49.0
  */
-if ( ! defined( 'NRELATE_PRODUCT_STATUS' ) ) { require_once ( NRELATE_RELATED_ADMIN_DIR . '/product-status.php' ); }
+if ( !defined( 'NRELATE_PRODUCT_STATUS' ) ) { require_once ( NRELATE_RELATED_ADMIN_DIR . '/product-status.php' ); }
 
 /**
  * Load plugin styles if another nrelate plugin has not loaded it yet.
@@ -89,18 +87,29 @@ if (is_admin()) {
 
 		//load common admin files if not already loaded from another nrelate plugin
 		if ( ! defined( 'NRELATE_COMMON_LOADED' ) ) { require_once ( NRELATE_RELATED_ADMIN_DIR . '/common.php' ); }
+		if ( ! defined( 'NRELATE_COMMON_50_LOADED' ) ) { require_once ( NRELATE_RELATED_ADMIN_DIR . '/common-50.php' ); }
 		
 		//load plugin status
 		require_once ( NRELATE_RELATED_SETTINGS_DIR . '/related-plugin-status.php' );
 		
 		//load related menu
 		require_once ( NRELATE_RELATED_SETTINGS_DIR . '/related-menu.php' );
+		
+		// Load Tooltips
+		if (!isset($nrelate_tooltips)) { require_once ( NRELATE_RELATED_ADMIN_DIR . '/tooltips.php' ); }
+		
+		// temporary file for 0.50.0 upgrades
+		require_once ( 'nrelate-abstraction.php' );
 }
 
 
 
 /** Load common frontend functions **/
 if ( ! defined( 'NRELATE_COMMON_FRONTEND_LOADED' ) ) { require_once ( NRELATE_RELATED_ADMIN_DIR . '/common-frontend.php' ); }
+if ( ! defined( 'NRELATE_COMMON_FRONTEND_50_LOADED' ) ) { require_once ( NRELATE_RELATED_ADMIN_DIR . '/common-frontend-50.php' ); }
+
+// temporary file for 0.50.0 upgrades
+require_once ( 'nrelate-abstraction-frontend.php' );
 
 
 /*
@@ -119,12 +128,9 @@ function nrelate_related_styles() {
 			$style_type = $style_options['related_thumbnails_style'];
 			$stylesheet = 'nrelate-panels-' . $style_type .'.min.css';
 			
-			// Register ie6 styles
-			$nr_css_ie6_url = NRELATE_CSS_URL . "ie6-panels.min.css";
-			$nr_ie6_id = 'nrelate-ie6-' . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION);
-			wp_register_style($nr_ie6_id, $nr_css_ie6_url, false, null );
-			$GLOBALS['wp_styles']->add_data( $nr_ie6_id, 'conditional', 'IE 6' );
-		
+			// Load IE6 style
+			nrelate_ie6_thumbnail_style();
+			
 		} else {
 		//Text mode
 			if ('none'==$style_options['related_text_style']) return;
@@ -134,9 +140,11 @@ function nrelate_related_styles() {
 		
 		$nr_css_url = NRELATE_CSS_URL . $stylesheet;
 		
+		/* For local development */
+		//$nr_css_url = NRELATE_RELATED_PLUGIN_URL . '/' . $stylesheet;
+		
 		wp_register_style('nrelate-style-'. $style_type . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION), $nr_css_url, false, null );
 		wp_enqueue_style( 'nrelate-style-'. $style_type . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION) );
-		wp_enqueue_style( 'nrelate-ie6-' . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION) );
 	}
 }
 add_action('wp_print_styles', 'nrelate_related_styles');
@@ -177,7 +185,7 @@ function nrelate_related_is_loading() {
 function nrelate_related_inject($content) {
 	global $post;
 	
-	if ( nrelate_related_should_inject() ) {
+	if ( nrelate_should_inject('related') ) {
 		$nrelate_related_options = get_option( 'nrelate_related_options' );
 
 		$related_loc_top = $nrelate_related_options['related_loc_top'];
@@ -207,43 +215,6 @@ function nrelate_related_inject($content) {
 }
 add_filter( 'the_content', 'nrelate_related_inject', 10 );
 add_filter( 'the_excerpt', 'nrelate_related_inject', 10 );
-
-
-/**
- * Returns true if currently the_content or the_excerpt
- * filter should be injected with nrelate code
- *
- * @since 0.47.3
- */
-function nrelate_related_should_inject() {
-	global $wp_current_filter;
-	
-	$should_inject = true;
-	
-	if ( !nrelate_is_main_loop() ) {
-		// Don't inject if out of main loop
-		$should_inject = false;
-	} elseif ( in_array( 'get_the_excerpt', $wp_current_filter ) ) {
-		// Don't inject if calling get_the_excerpt
-		$should_inject = false;
-	} elseif ( is_single() && in_array( 'the_excerpt', $wp_current_filter ) ) {
-		// Don't inject the_excerpt on single post pages
-		$should_inject = false;
-	}
-	
-	// Third party widgets
-	// For php 5.25 support: debug_backtrace(false);
-	$call_stack = debug_backtrace();
-	foreach ( $call_stack as $call ) {
-		if ( $call['function'] == 'widget' ) {
-			$should_inject = false;
-			break;
-		}
-	}
-	
-	return apply_filters( 'nrelate_related_should_inject', $should_inject );
-}
-
 
 
 /**
@@ -299,25 +270,27 @@ function nrelate_related($opt=false) {
 		$nr_counter++;
 		
 		$nrelate_related_options = get_option('nrelate_related_options');
+		$nrelate_related_options_ads = get_option('nrelate_related_options_ads');
 		$style_options = get_option('nrelate_related_options_styles');
 		$style_code = 'nrelate_' . (($nrelate_related_options['related_thumbnail']=='Thumbnails') ? $style_options['related_thumbnails_style'] : $style_options['related_text_style']);
 		$nr_width_class = 'nr_' . (($nrelate_related_options['related_thumbnail']=='Thumbnails') ? $nrelate_related_options['related_thumbnail_size'] : "text");
-		$post_title = urlencode(get_the_title($post->ID));
-		$post_urlencoded = urlencode(get_permalink($post->ID));
+		
+		// Get the page title and url array
+		$nrelate_title_url = nrelate_title_url();
 		
 		$nonjs=$nrelate_related_options['related_nonjs'];
 		
 		$nr_url = "http://api.nrelate.com/rcw_wp/" . NRELATE_RELATED_PLUGIN_VERSION . "/?tag=nrelate_related";
-		$nr_url .= "&keywords=$post_title&domain=" . NRELATE_BLOG_ROOT . "&url=$post_urlencoded&nr_div_number=".$nr_counter;
+		$nr_url .= "&keywords=$nrelate_title_url[post_title]&domain=" . NRELATE_BLOG_ROOT . "&url=$nrelate_title_url[post_urlencoded]&nr_div_number=".$nr_counter;
 		$nr_url .= is_home() ? '&source=hp' : '';
 		
 		//is loaded only once per page for related
 		if (!defined('NRELATE_RELATED_HOME')) {
 			define('NRELATE_RELATED_HOME', true);
 			
-			$animation_fix = '<style type="text/css">.nrelate .nr_sponsored{ left:0px !important; }</style>';
+			$animation_fix = '<style type="text/css">.nrelate_related .nr_sponsored{ left:0px !important; }</style>';
 			
-			if (!empty($nrelate_related_options['related_ad_animation'])) {
+			if (!empty($nrelate_related_options_ads['related_ad_animation'])) {
 				$animation_fix = '';
 			}
 		}
@@ -328,9 +301,9 @@ function nrelate_related($opt=false) {
 			$script= <<< EOD
 					$animation_fix
 					<script type="text/javascript">
-					//<![CDATA[
+					/* <![CDATA[ */
 					nRelate.domain = "{$domain}";
-					//]]>
+					/* ]]> */
 					</script>
 EOD;
 			echo $script;
@@ -352,17 +325,16 @@ EOD;
 		    }else{
 		    	$nr_rc_nonjsbody="<!-- WP-request to nrelate server failed. -->";
 		    }
-		}
-		else{
-			$nr_rc_js_str= <<<EOD
+	}else{
+		$nr_rc_js_str= <<<EOD
 <script type="text/javascript">
-	//<![CDATA[
+	/* <![CDATA[ */
 		var entity_decoded_nr_url = jQuery('<span/>').html("$nr_url").text();
 		nRelate.getNrelatePosts(entity_decoded_nr_url);
-	//]]>
+	/* ]]> */
 	</script>
 EOD;
-		}
+	}
 		
 		$markup = <<<EOD
 $animation_fix

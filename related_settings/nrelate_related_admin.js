@@ -33,7 +33,7 @@ function nrelate_related_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr, 
 		nr_thumbsize = jQuery('.nrelate-thumb-size:checked').val();
 	else
 		nr_thumbsize  = 80;
-	
+		
 	// Convert max age time frame to minutes
 	switch (nr_age_frame){
 		case 'Hour(s)':
@@ -122,6 +122,10 @@ function nr_iframe_reload(){
 jQuery(document).ready(function($){
 	$('.nrelate-thumbnail-style-prev').click(function(){
 		$('#related_imagestyle').val( $(this).parents('div:first').find('input:first').val() );
+	});
+
+	$('.nrelate-text-style-prev').click(function(){
+		$('#related_textstyle').val( $(this).parents('div:first').find('input:first').val() );
 	});
 
 	$('.nrelate_preview_button').click(function(event){
