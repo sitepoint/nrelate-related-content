@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.2.1
 Requires at least: 2.9
-Stable tag: 0.50.0
+Stable tag: 0.50.1
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -136,20 +136,27 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 
 == Changelog ==
 
+= 0.50.1 =
+* Fixed file_get_contents error.
+
 = 0.50.0 =
 * The most efficient version yet. Tons of functions are now common to all nrelate plugins!
 * New Engadget style!
 * 404 Page support!
-* Better explanation of advertising opportunities for publishers.
+* Better explaination of advertising opportunities for publishers.
 * Add more CSS classes to Text.
 * nrelate product check notice.
 * nrelate product array now holds the timestamp.
 * Fix bug with Text stylesheet handle is incorrect.
-* Eliminated reindexing trigger for non-index option changes.
+* Elimnated reindexing trigger for non-index option changes.
 * Fixed some PHP warning errors.
 * Ad animation fix. Animation now on a per plugin basis.
 * JS & CSS Script Optimizer compatibility warning message
 * load css and jquery only when required.
+* Fix nrelate_title_url not getting post ID.
+* Fixed issue with WP Super Cache flush not working properly.
+* Flush cache on plugin activation.
+* Avoid feed search engine indexation.
 
 = 0.49.4 =
 * Javascript change to open ads in a new tab/window
