@@ -54,9 +54,9 @@ function options_init_nr_rc(){
 	
 	// Layout Section
 	add_settings_section('layout_section',__('Layout Settings','nrelate'), 'section_text_nr_rc_layout', __FILE__);
-	add_settings_field('related_where_to_show',__('Which pages should display related content?<p>You can read about these options at the <a href="http://codex.wordpress.org/Conditional_Tags">WordPress Codex</a>','nrelate'), 'setting_related_where_to_show', __FILE__, 'layout_section');
-	add_settings_field('related_loc_top',__('Top of post <em>(Automatic)</em>','nrelate'), 'setting_related_loc_top', __FILE__, 'layout_section');
-	add_settings_field('related_loc_bottom',__('Bottom of post <em>(Automatic)</em>','nrelate'), 'setting_related_loc_bottom', __FILE__, 'layout_section');
+	add_settings_field('related_where_to_show',__('Which pages should display related content?'  . nrelate_tooltip('_where_to_show') . '<p>You can read about these options at the <a href="http://codex.wordpress.org/Conditional_Tags">WordPress Codex</a>','nrelate'), 'setting_related_where_to_show', __FILE__, 'layout_section');
+	add_settings_field('related_loc_top',__('Top of post <em>(Automatic)</em>' . nrelate_tooltip('_loc_top'),'nrelate'), 'setting_related_loc_top', __FILE__, 'layout_section');
+	add_settings_field('related_loc_bottom',__('Bottom of post <em>(Automatic)</em>' . nrelate_tooltip('_loc_bottom'),'nrelate'), 'setting_related_loc_bottom', __FILE__, 'layout_section');
     add_settings_field('related_loc_widget',__('Widget area or Sidebar <em>(Automatic)</em>','nrelate'), 'nrelate_text_widget_page', __FILE__, 'layout_section');
 	add_settings_field('related_loc_manual',__('<span id="loc_manual">Add to Theme <em>(Manual)</em><span>','nrelate'), 'setting_related_manual', __FILE__, 'layout_section');
 	add_settings_field('related_css_link',__('Change the Style','nrelate','nrelate'), 'setting_related_css_link', __FILE__, 'layout_section');

@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.50.1
+Version: 0.50.2
 Author URI: http://nrelate.com/
 
 
@@ -27,7 +27,7 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.50.1' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.50.2' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.04.0' );
 define( 'NRELATE_RELATED_NAME' , __('Related Content','nrelate'));
@@ -147,7 +147,7 @@ function nrelate_related_styles() {
 		wp_enqueue_style( 'nrelate-style-'. $style_type . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION) );
 	}
 }
-add_action('wp_print_styles', 'nrelate_related_styles');
+add_action('wp_enqueue_scripts', 'nrelate_related_styles');
 
 /*
  * Check if nrelate is loading (frontend only)
@@ -270,7 +270,6 @@ function nrelate_related($opt=false) {
 		$nr_counter++;
 		
 		$nrelate_related_options = get_option('nrelate_related_options');
-		$nrelate_related_options_ads = get_option('nrelate_related_options_ads');
 		$style_options = get_option('nrelate_related_options_styles');
 		$style_code = 'nrelate_' . (($nrelate_related_options['related_thumbnail']=='Thumbnails') ? $style_options['related_thumbnails_style'] : $style_options['related_text_style']);
 		$nr_width_class = 'nr_' . (($nrelate_related_options['related_thumbnail']=='Thumbnails') ? $nrelate_related_options['related_thumbnail_size'] : "text");
@@ -288,6 +287,7 @@ function nrelate_related($opt=false) {
 		if (!defined('NRELATE_RELATED_HOME')) {
 			define('NRELATE_RELATED_HOME', true);
 			
+			$nrelate_related_options_ads = get_option('nrelate_related_options_ads');
 			$animation_fix = '<style type="text/css">.nrelate_related .nr_sponsored{ left:0px !important; }</style>';
 			
 			if (!empty($nrelate_related_options_ads['related_ad_animation'])) {
@@ -298,16 +298,10 @@ function nrelate_related($opt=false) {
 		if (!defined('NRELATE_HOME')) {
 			define('NRELATE_HOME', true);
 			$domain = addslashes(NRELATE_BLOG_ROOT);
-			$script= <<< EOD
-					$animation_fix
-					<script type="text/javascript">
-					/* <![CDATA[ */
-					nRelate.domain = "{$domain}";
-					/* ]]> */
-					</script>
-EOD;
-			echo $script;
-		} 
+			$nr_domain_init = "nRelate.domain = \"{$domain}\";";
+		} else {
+			$nr_domain_init = '';
+		}
 		
 	if($nonjs){
 			$request = new WP_Http;
@@ -316,7 +310,7 @@ EOD;
 		    if( !is_wp_error( $response ) ){
 			    if($response['response']['code']==200 && $response['response']['message']=='OK'){
 				    $nr_rc_nonjsbody=$response['body'];
-			   		$nr_rc_nonjsfix='<script type="text/javascript">nRelate.fixHeight("nrelate_related_'.$nr_counter.'");';
+			   		$nr_rc_nonjsfix='<script type="text/javascript">'.$nr_domain_init.'nRelate.fixHeight("nrelate_related_'.$nr_counter.'");';
 			   		$nr_rc_nonjsfix.='nRelate.adAnimation("nrelate_related_'.$nr_counter.'");';
 					$nr_rc_nonjsfix.='nRelate.tracking("rc");</script>';
 			    }else{
@@ -329,6 +323,7 @@ EOD;
 		$nr_rc_js_str= <<<EOD
 <script type="text/javascript">
 	/* <![CDATA[ */
+		$nr_domain_init
 		var entity_decoded_nr_url = jQuery('<span/>').html("$nr_url").text();
 		nRelate.getNrelatePosts(entity_decoded_nr_url);
 	/* ]]> */
