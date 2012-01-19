@@ -195,7 +195,6 @@ function nr_rc_upgrade() {
 // UPDATE (v.0.2.2): notify nrelate server when this plugin is activated
 // UPDATE (v.0.3): send the plugin version info to nrelate server
 function nr_rc_add_defaults() {
-
 	nrelate_system_check(); // run system check
 
 	// Calculate plugin file path
@@ -395,7 +394,6 @@ EOD;
  
 // Deactivation hook callback
 function nr_rc_deactivate(){
-
 	$nrelate_active=nrelate_products("related",NRELATE_RELATED_PLUGIN_VERSION,NRELATE_RELATED_ADMIN_VERSION,0);
 	
 	if($nrelate_active==0){
@@ -437,7 +435,6 @@ function nr_rc_deactivate(){
 
 // Uninstallation hook callback
 function nr_rc_uninstall(){
-	
 	// Delete nrelate related options from user's wordpress db
 	delete_option('nrelate_related_options');
 	delete_option('nrelate_related_options_ads');
