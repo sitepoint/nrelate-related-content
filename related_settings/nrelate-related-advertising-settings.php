@@ -163,8 +163,7 @@ function update_nrelate_data_rc_adv(){
 	);
 	$url = 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated_ad.php';
 	
-	$request=new WP_Http;
-	$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
+	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
 }
 
 

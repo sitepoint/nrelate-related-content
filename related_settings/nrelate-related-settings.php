@@ -217,7 +217,7 @@ function setting_related_blogoption() {
 	
 	// Ajax calls to contact nrelate servers and update as necessary
 	echo "<div id='bloglinks'></div>";
-	echo '<script type="text/javascript"> checkblog(\''.NRELATE_RELATED_SETTINGS_URL.'\',\''.NRELATE_BLOG_ROOT.'\',\''.NRELATE_RELATED_ADMIN_VERSION.'\'); </script>';
+	echo '<script type="text/javascript"> checkblog(\''.NRELATE_RELATED_SETTINGS_URL.'\',\''.NRELATE_API_URL.'\',\''.NRELATE_BLOG_ROOT.'\',\''.NRELATE_RELATED_ADMIN_VERSION.'\'); </script>';
 
 }
 
@@ -355,8 +355,9 @@ function setting_related_default_image(){
 		);
 		$url = 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/thumbimagecheck.php';
 		
-		$request=new WP_Http;
-		$result=$request->request($url,array('method'=>'POST','body'=>$body));
+		$result = wp_remote_post($url, array('body'=>$body));
+
+
 		$imageurl_cached=!is_wp_error($result) ? $result['body'] : null;
 		if ($imageurl_cached) {
 			echo "Current default image: &nbsp &nbsp";
@@ -587,8 +588,9 @@ function update_nrelate_data_rc(){
 	);
 	$url = 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated.php';
 	
-	$request=new WP_Http;
-	$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
+	$result = wp_remote_post( $url, array('body'=>$body,'blocking'=>false));
+
+
 }
 
 

@@ -168,8 +168,8 @@ function nr_rc_upgrade() {
 				'PLUGIN'=>"related"
 			);
 			$url = 'http://api.nrelate.com/common_wp/'.NRELATE_LATEST_ADMIN_VERSION.'/versionupdate.php';
-			$request=new WP_Http;
-			$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
+
+			$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
 			
 			// Calculate plugin file path
 			$dir = substr( realpath(dirname(__FILE__) . '/..'), strlen(WP_PLUGIN_DIR) );
@@ -335,8 +335,7 @@ function nr_rc_add_defaults() {
 		);
 		$url = 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelatedAll.php';
 		
-		$request=new WP_Http;
-		$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
+		$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
 	}
 
 	// RSS mode is sent again just incase if the user already had nrelate_related_options in their wordpress db
@@ -387,8 +386,7 @@ EOD;
 	);
 	$url = 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php';
 	
-	$request=new WP_Http;
-	$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));	
+	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
 }
  
  
@@ -429,8 +427,7 @@ function nr_rc_deactivate(){
 	);
 	$url = 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php';
 	
-	$request=new WP_Http;
-	$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
+	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
 }
 
 // Uninstallation hook callback
@@ -484,8 +481,7 @@ function nr_rc_uninstall(){
 	);
 	$url = 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php';
 	
-	$request=new WP_Http;
-	$result=$request->request($url,array('method'=>'POST','body'=>$body,'blocking'=>false));
+	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
 }
 
 ?>

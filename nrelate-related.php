@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.50.3
+Version: 0.50.6
 Author URI: http://nrelate.com/
 
 
@@ -27,7 +27,7 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.50.3' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.50.6' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.04.0' );
 define( 'NRELATE_RELATED_NAME' , __('Related Content','nrelate'));
@@ -40,18 +40,19 @@ if(!defined('NRELATE_JS_DEBUG')) { define( 'NRELATE_JS_DEBUG', isset($_REQUEST['
 /**
  * Define Path constants
  */
-// Generic: will be assigned to the last nrelate plugin that loads
+// Generic: will be assigned to the first nrelate plugin that loads
 if (!defined( 'NRELATE_PLUGIN_BASENAME')) { define( 'NRELATE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); }
 if (!defined( 'NRELATE_PLUGIN_NAME')) { define( 'NRELATE_PLUGIN_NAME', trim( dirname( NRELATE_PLUGIN_BASENAME ), '/' ) ); }
 if (!defined( 'NRELATE_PLUGIN_DIR')) { define( 'NRELATE_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_PLUGIN_NAME ); }
 if (!defined('NRELATE_ADMIN_DIR')) { define( 'NRELATE_ADMIN_DIR', NRELATE_PLUGIN_DIR .'/admin'); }
-if (!defined('NRELATE_ADMIN_URL')) { define( 'NRELATE_ADMIN_URL', WP_PLUGIN_URL . '/' . NRELATE_PLUGIN_NAME .'/admin'); }
+if (!defined('NRELATE_ADMIN_URL')) { define( 'NRELATE_ADMIN_URL', plugins_url( NRELATE_PLUGIN_NAME . '/admin')); }
+if (!defined('NRELATE_API_URL')) { define ('NRELATE_API_URL', is_ssl() ? 'https://api.nrelate.com' : 'http://api.nrelate.com'); }
 
 // Plugin specific
 define( 'NRELATE_RELATED_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 define( 'NRELATE_RELATED_PLUGIN_NAME', trim( dirname( NRELATE_RELATED_PLUGIN_BASENAME ), '/' ) );
 define( 'NRELATE_RELATED_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_RELATED_PLUGIN_NAME );
-define( 'NRELATE_RELATED_PLUGIN_URL', WP_PLUGIN_URL . '/' . NRELATE_RELATED_PLUGIN_NAME );
+define( 'NRELATE_RELATED_PLUGIN_URL', plugins_url( NRELATE_RELATED_PLUGIN_NAME ) );
 define( 'NRELATE_RELATED_SETTINGS_DIR', NRELATE_RELATED_PLUGIN_DIR . '/related_settings' );
 define( 'NRELATE_RELATED_SETTINGS_URL', NRELATE_RELATED_PLUGIN_URL . '/related_settings' );
 define( 'NRELATE_RELATED_ADMIN_DIR', NRELATE_RELATED_PLUGIN_DIR . '/admin' );
@@ -304,9 +305,9 @@ function nrelate_related($opt=false) {
 		}
 		
 	if($nonjs){
-			$request = new WP_Http;
 		    $args=array("timeout"=>5);
-		    $response = $request->request( $nr_url."&nonjs=1",$args);
+		    $response = wp_remote_get($nr_url."&nonjs=1",$args);
+
 		    if( !is_wp_error( $response ) ){
 			    if($response['response']['code']==200 && $response['response']['message']=='OK'){
 				    $nr_rc_nonjsbody=$response['body'];

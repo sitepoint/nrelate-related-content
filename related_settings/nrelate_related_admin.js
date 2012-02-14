@@ -110,8 +110,8 @@ function nrelate_related_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr, 
 }
 
 // Ajax call to blog_transport.php to check the site status from blogroll
-function checkblog(NRELATE_RELATED_SETTINGS_URL,nr_domain,nr_admin_version){	
-	jQuery.getScript("http://api.nrelate.com/common_wp/"+nr_admin_version+"/blogcheck.php?domain="+nr_domain+"&getrequest=1", function(data) { jQuery('#bloglinks').html(data);});
+function checkblog(NRELATE_RELATED_SETTINGS_URL,NRELATE_API_URL,nr_domain,nr_admin_version){	
+	jQuery.getScript(NRELATE_API_URL+"/common_wp/"+nr_admin_version+"/blogcheck.php?domain="+nr_domain+"&getrequest=1", function(data) { jQuery('#bloglinks').html(data);});
 }
 
 function nr_iframe_reload(){
