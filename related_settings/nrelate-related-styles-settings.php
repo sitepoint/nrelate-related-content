@@ -57,7 +57,7 @@ function setting_related_style_type(){
 		$options = get_option('nrelate_related_options');
 	}
 	
-	//Common header for both styles
+	// Common header for both styles
 	echo '<div id="style-gallery">
 			<h4 class="style-select"></h4>
 			<h4 class="style-image">Screenshot (click on image for live preview)</h4>
@@ -67,18 +67,35 @@ function setting_related_style_type(){
 			</div>
 			';
 	
+	// Tab switcher
+	$related_ad_type = get_option('nrelate_related_options_ads');
 	if($options['related_thumbnail']=="Thumbnails"){
-		related_thumbnail_styles();
+		if ($related_ad_type['related_ad_placement']=="Separate"){
+			related_thumbnail_styles_separate();
+		} else {
+			related_thumbnail_styles();
+		}
 	} else {
-		related_text_styles();
+		if ($related_ad_type['related_ad_placement']=="Separate"){
+			related_text_styles_separate();
+		} else {
+			related_text_styles();
+		}
 	}
 }
 
+
+/* = Thumbnail Styles
+-----------------------------------------------
+ * Generates style gallery
+ */
 function related_thumbnail_styles() {
 	global $nrelate_thumbnail_styles;
 	$options = get_option('nrelate_related_options_styles');
 	foreach ( $nrelate_thumbnail_styles as $style_code => $nrelate_thumbnail_style ) {
-		$style_name = $nrelate_thumbnail_style['name'];	?>
+		$style_name = $nrelate_thumbnail_style['name'];
+		$stylesheet = $nrelate_thumbnail_style['stylesheet'];
+?>
 	
 		<div class="nrelate-style-images nrelate-style-prev">
 <?php		$checked = ($options['related_thumbnails_style']==$style_code) ? 'checked="checked"' : ''; ?>
@@ -94,7 +111,7 @@ function related_thumbnail_styles() {
 				<div class="style-info">
 					<p><?php echo $nrelate_thumbnail_style['info']; ?></p>
 					<?php if ($style_code!='none') { ?>
-						<a href="<?php echo NRELATE_CSS_URL . 'nrelate-panels-' . $style_code .'.css';?>?keepThis=true&TB_iframe=true&height=450&width=500" title="CSS for <strong><?php echo $style_name; ?></strong> Style" class="thickbox">View Stylesheet</a>
+						<a href="<?php echo NRELATE_CSS_URL . $stylesheet .'.css';?>?keepThis=true&TB_iframe=true&height=450&width=500" title="CSS for <?php echo wp_filter_nohtml_kses( $style_name ); ?> Style" class="thickbox">View Stylesheet</a>
 					<?php } ?>
 				</div>
 			</div>
@@ -102,18 +119,76 @@ function related_thumbnail_styles() {
 		</div>
 <?php
 	} ?>
-		<div style="clear:both;"></div>
-    <input type="hidden" name="nrelate_related_options_styles[related_text_style]" value="<?php echo htmlentities(isset($options['related_text_style']) ? $options['related_text_style'] : ''); ?>" />
-  <?php
-  echo '</div>';
+
+	<div style="clear:both;"></div>
+	<input type="hidden" name="nrelate_related_options_styles[related_text_style]" value="<?php echo htmlentities(isset($options['related_text_style']) ? $options['related_text_style'] : ''); ?>" />
+    <input type="hidden" name="nrelate_related_options_styles[related_text_style_separate]" value="<?php echo htmlentities(isset($options['related_text_style_separate']) ? $options['related_text_style_separate'] : ''); ?>" />
+	<input type="hidden" name="nrelate_related_options_styles[related_thumbnails_style_separate]" value="<?php echo htmlentities(isset($options['related_thumbnails_style_separate']) ? $options['related_thumbnails_style_separate'] : ''); ?>" />
+	
+	<?php
+	echo '</div>';
 }
 
+
+/* = Thumbnail/Ad Styles
+-----------------------------------------------
+ * Generates style gallery
+ */
+function related_thumbnail_styles_separate() {
+	global $nrelate_thumbnail_styles_separate;
+	$options = get_option('nrelate_related_options_styles');
+	foreach ( $nrelate_thumbnail_styles_separate as $style_code => $nrelate_thumbnail_style_separate ) {
+		$style_name = $nrelate_thumbnail_style_separate['name'];
+		$stylesheet = $nrelate_thumbnail_style_separate['stylesheet'];
+?>
+	
+		<div class="nrelate-style-images nrelate-style-prev">
+<?php		$checked = ($options['related_thumbnails_style_separate']==$style_code) ? 'checked="checked"' : ''; ?>
+			<label class="style-select" for="nrelate_style_<?php echo $style_code; ?>">
+				<input id="nrelate_style_<?php echo $style_code; ?>" <?php echo $checked; ?> type="radio" name="nrelate_related_options_styles[related_thumbnails_style_separate]" value="<?php echo $style_code; ?>" /><br />
+				<?php echo $style_name; ?><br />
+			</label>
+			<a href="#" class="nrelate_preview_button nrelate-thumbnail-style-prev" title="Preview this style">
+				<img class="style-image" src="<?php echo NRELATE_ADMIN_IMAGES; ?>/thumbnail_style_<?php echo $style_code; ?>.png"  alt="<?php echo $style_code; ?>" />
+			</a>
+			<div id="info-style-<?php echo $style_code;?>" class="style-features-info">
+				<div class="style-features"><?php echo $nrelate_thumbnail_style_separate['features']; ?></div>
+				<div class="style-info">
+					<p><?php echo $nrelate_thumbnail_style_separate['info']; ?></p>
+					<?php if ($style_code!='none') { ?>
+						<a href="<?php echo NRELATE_CSS_URL . $stylesheet .'.css';?>?keepThis=true&TB_iframe=true&height=450&width=500" title="CSS for <?php echo wp_filter_nohtml_kses( $style_name ); ?> Style" class="thickbox">View Stylesheet</a>
+					<?php } ?>
+				</div>
+			</div>
+				
+		</div>
+<?php
+	} ?>
+
+	<div style="clear:both;"></div>
+	<input type="hidden" name="nrelate_related_options_styles[related_text_style]" value="<?php echo htmlentities(isset($options['related_text_style']) ? $options['related_text_style'] : ''); ?>" />
+    <input type="hidden" name="nrelate_related_options_styles[related_text_style_separate]" value="<?php echo htmlentities(isset($options['related_text_style_separate']) ? $options['related_text_style_separate'] : ''); ?>" />
+	<input type="hidden" name="nrelate_related_options_styles[related_thumbnails_style]" value="<?php echo htmlentities(isset($options['related_thumbnails_style']) ? $options['related_thumbnails_style'] : ''); ?>" />
+  
+	<?php
+	echo '</div>';
+}
+
+
+
+
+/* = Text Styles
+-----------------------------------------------
+ * Generates style gallery
+ */
 function related_text_styles() {
 	global $nrelate_text_styles;
 	$options = get_option('nrelate_related_options_styles');
 
 	foreach ( $nrelate_text_styles as $style_code => $nrelate_text_style ) {
-		$style_name = $nrelate_text_style['name'];	?>
+		$style_name = $nrelate_text_style['name'];
+		$stylesheet = $nrelate_text_style['stylesheet'];
+?>
 	
 		<div class="nrelate-style-images nrelate-style-prev">
 <?php		$checked = ($options['related_text_style']==$style_code) ? 'checked="checked"' : ''; ?>
@@ -126,21 +201,76 @@ function related_text_styles() {
 			</a>
 			<div id="info-style-<?php echo $style_code;?>" class="style-features-info">
 				<div class="style-features"><?php echo $nrelate_text_style['features']; ?></div>
-				<div class="style-info"><p><?php echo $nrelate_text_style['info']; ?></p></div>
+				<div class="style-info">
+					<p><?php echo $nrelate_text_style['info']; ?></p>
+					<?php if ($style_code!='none') { ?>
+						<a href="<?php echo NRELATE_CSS_URL . $stylesheet .'.css';?>?keepThis=true&TB_iframe=true&height=450&width=500" title="CSS for <?php echo wp_filter_nohtml_kses( $style_name ); ?> Style" class="thickbox">View Stylesheet</a>
+					<?php } ?>
+				</div>
+			</div>				
+		</div>
+<?php
+	} ?>
+	
+
+  	<div style="clear:both;"></div>
+    <input type="hidden" name="nrelate_related_options_styles[related_text_style_separate]" value="<?php echo htmlentities(isset($options['related_text_style_separate']) ? $options['related_text_style_separate'] : ''); ?>" />
+	<input type="hidden" name="nrelate_related_options_styles[related_thumbnails_style]" value="<?php echo htmlentities(isset($options['related_thumbnails_style']) ? $options['related_thumbnails_style'] : ''); ?>" />
+	<input type="hidden" name="nrelate_related_options_styles[related_thumbnails_style_separate]" value="<?php echo htmlentities(isset($options['related_thumbnails_style_separate']) ? $options['related_thumbnails_style_separate'] : ''); ?>" />
+	
+	<?php
+	echo '</div>';
+}
+
+
+/* = Text/Ad Styles
+-----------------------------------------------
+ * Generates style gallery
+ */
+function related_text_styles_separate() {
+	global $nrelate_text_styles_separate;
+	$options = get_option('nrelate_related_options_styles');
+
+	foreach ( $nrelate_text_styles_separate as $style_code => $nrelate_text_style_separate ) {
+		$style_name = $nrelate_text_style_separate['name'];
+		$stylesheet = $nrelate_text_style_separate['stylesheet'];
+?>
+	
+		<div class="nrelate-style-images nrelate-style-prev">
+<?php		$checked = ($options['related_text_style_separate']==$style_code) ? 'checked="checked"' : ''; ?>
+			<label class="style-select" for="nrelate_style_<?php echo $style_code; ?>">
+				<input id="nrelate_style_<?php echo $style_code; ?>" <?php echo $checked; ?> type="radio" name="nrelate_related_options_styles[related_text_style_separate]" value="<?php echo $style_code; ?>" /><br />
+				<?php echo $style_name; ?><br />
+			</label>
+			<a href="#" class="nrelate_preview_button nrelate-text-style-prev" title="Preview this style">
+				<img class="style-image" src="<?php echo NRELATE_ADMIN_IMAGES; ?>/text_style_<?php echo $style_code; ?>.png"  alt="<?php echo $style_code; ?>" />
+			</a>
+			<div id="info-style-<?php echo $style_code;?>" class="style-features-info">
+				<div class="style-features"><?php echo $nrelate_text_style_separate['features']; ?></div>
+				<div class="style-info">
+					<p><?php echo $nrelate_text_style_separate['info']; ?></p>
+					<?php if ($style_code!='none') { ?>
+						<a href="<?php echo NRELATE_CSS_URL . $stylesheet .'.css';?>?keepThis=true&TB_iframe=true&height=450&width=500" title="CSS for <?php echo wp_filter_nohtml_kses( $style_name ); ?> Style" class="thickbox">View Stylesheet</a>
+					<?php } ?>
+				</div>
 			</div>				
 		</div>
 <?php
 	} ?>
 
-
   	<div style="clear:both;"></div>
-    <input type="hidden" name="nrelate_related_options_styles[related_thumbnails_style]" value="<?php echo htmlentities(isset($options['related_thumbnails_style']) ? $options['related_thumbnails_style'] : ''); ?>" />
+    <input type="hidden" name="nrelate_related_options_styles[related_text_style]" value="<?php echo htmlentities(isset($options['related_text_style']) ? $options['related_text_style'] : ''); ?>" />
+	<input type="hidden" name="nrelate_related_options_styles[related_thumbnails_style]" value="<?php echo htmlentities(isset($options['related_thumbnails_style']) ? $options['related_thumbnails_style'] : ''); ?>" />
+	<input type="hidden" name="nrelate_related_options_styles[related_thumbnails_style_separate]" value="<?php echo htmlentities(isset($options['related_thumbnails_style_separate']) ? $options['related_thumbnails_style_separate'] : ''); ?>" />
+	
 	<?php
 	echo '</div>';
 }
 
+
+
 /****************************************************************
- ******************** Build the Layout Settings Page ********************** 
+******************** Build the Layout Settings Page *************
 *****************************************************************/
 
 function nrelate_related_styles_do_page() { ?>
@@ -180,7 +310,7 @@ function nrelate_related_styles_do_page() { ?>
       <input type="hidden" id="related_max_age_num" value="<?php echo $options['related_max_age_num']; ?>" />
       <input type="hidden" id="related_max_age_frame" value="<?php echo $options['related_max_age_frame']; ?>" />
       <input type="hidden" id="related_blogoption" value="<?php echo ( is_array($options['related_blogoption']) && count($options['related_blogoption'] > 0) ) ? 1 : 0; ?>" />
-      <input type="checkbox" class="nrelate-thumb-size" value="<?php echo $options['related_thumbnail_size']; ?>" checked="checked" />
+      <input type="hidden" id="related_thumbnail_size" value="<?php echo $options['related_thumbnail_size']; ?>" />
       <input type="checkbox" id="ad_animation" value="on" <?php echo empty($options['related_ad_animation']) ? '' : ' checked="checked" '; ?> />
     </div>
 		<?php settings_fields('nrelate_related_options_styles'); ?>

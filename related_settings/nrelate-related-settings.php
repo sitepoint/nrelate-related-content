@@ -355,7 +355,7 @@ function setting_related_default_image(){
 		);
 		$url = 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/thumbimagecheck.php';
 		
-		$result = wp_remote_post($url, array('body'=>$body));
+		$result = wp_remote_post($url, array('body'=>$body, 'timeout'=>10));
 
 
 		$imageurl_cached=!is_wp_error($result) ? $result['body'] : null;
@@ -429,6 +429,7 @@ function nrelate_related_do_page() {
       <input type="checkbox" id="show_ad" <?php echo empty($ad_options['related_display_ad']) ? '' : 'checked="checked"'; ?> value="on" />
       <input type="hidden" id="related_number_of_ads" value="<?php echo isset($ad_options['related_number_of_ads']) ? $ad_options['related_number_of_ads'] : ''; ?>" />
       <input type="hidden" id="related_ad_placement" value="<?php echo isset($ad_options['related_ad_placement']) ? $ad_options['related_ad_placement'] : ''; ?>" />
+      <input type="hidden" id="related_ad_title" value="<?php echo isset($ad_options['related_ad_title']) ? $ad_options['related_ad_title'] : ''; ?>" />
       <input type="checkbox" id="ad_animation" value="on" <?php echo empty($ad_options['related_ad_animation']) ? '' : ' checked="checked" '; ?> />
       <input type="hidden" id="related_imagestyle" value="<?php echo $style_options['related_thumbnails_style']; ?>" />
       <input type="hidden" id="related_textstyle" value="<?php echo $style_options['related_text_style']; ?>" />
@@ -588,7 +589,7 @@ function update_nrelate_data_rc(){
 	);
 	$url = 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated.php';
 	
-	$result = wp_remote_post( $url, array('body'=>$body,'blocking'=>false));
+	$result = wp_remote_post( $url, array('body'=>$body,'blocking'=>false,'timeout'=>15));
 
 
 }

@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.3.1
 Requires at least: 2.9
-Stable tag: 0.50.6
+Stable tag: 0.51.0
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -86,7 +86,7 @@ You can show related content as cool image thumbnails (choose from six image siz
 Yes, you always have the option to display or not display ads.
 
 = What ad display options do you offer? =
-If you sign up for advertising, you will be able to display up to ten advertisements within the plugin. If you have selected the thumbnail view, then thumbnails will show up. If you have selected text links, then text ads will show up. You can show ads either at the front, end, or mixed within your content links.
+If you sign up for advertising, you will be able to display up to ten advertisements within the plugin. If you have selected the thumbnail view, then thumbnails will show up. If you have selected text links, then text ads will show up. You can show ads either at the front, end, or mixed within your content links. As of version 0.51.0, you can display ads totally separate from your content links as well.
 
 = Does nrelate offer a revenue share on ads? =
 Yes, its your blog, you should be making money on it!
@@ -139,6 +139,10 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 10. Hovering on an advertisement
 
 == Changelog ==
+
+= 0.51.0 =
+* Allow for advertising to appear separately from content.
+* Eighteen(18) new styles for separate advertising.
 
 = 0.50.6 =
 * Update wp_Http calls to WordPress HTTP functions.
@@ -393,6 +397,9 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 * Initial release.
 
 == Upgrade Notice ==
+
+= 0.51.0 =
+18 new styles! Ads can be displayed separately.
 
 = 0.50.0 =
 Two new styles added to style Gallery: Polaroid and Bold Numbers.

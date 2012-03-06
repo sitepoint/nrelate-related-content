@@ -23,17 +23,13 @@ function nrelate_related_popup_preview(NRELATE_RELATED_SETTINGS_URL,wp_root_nr, 
 	nr_age_num = document.getElementById("related_max_age_num").value;
 	nr_age_frame = document.getElementById("related_max_age_frame").value;
 	nr_r_title = escape(nr_r_title);
+	nr_thumbsize = document.getElementById("related_thumbnail_size").value; 
 	
 	nr_ext_opt=0;
 	if(jQuery("#blogroll-categorychecklist li label input:checked").length > 0){
 		nr_ext_opt=1;
 	}
 	
-	if(jQuery('.nrelate-thumb-size:checked').length>0)
-		nr_thumbsize = jQuery('.nrelate-thumb-size:checked').val();
-	else
-		nr_thumbsize  = 80;
-		
 	// Convert max age time frame to minutes
 	switch (nr_age_frame){
 		case 'Hour(s)':

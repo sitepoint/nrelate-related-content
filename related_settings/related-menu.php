@@ -69,10 +69,19 @@ function nrelate_related_settings_page() {
  */
 function nrelate_related_tabs($current = 0) {
 
+	// Text or Thumbnails?
 	$options = get_option('nrelate_related_options');
-	$type = $options['related_thumbnail'];
+	$styletype = $options['related_thumbnail'];
+	
+	// What type of ads?
+	$related_ad_type = get_option('nrelate_related_options_ads');
+	
+	// If Ads == Separate, then overwrite $styletype
+	if ($related_ad_type['related_ad_placement']=="Separate"){
+		$styletype = $styletype . " | " . _('Ads');
+	}
 
-    $tabs = array( 'general' =>  __(' General','nrelate'), 'advertising' => __(' Advertising','nrelate'), 'styles' => $type . __(' Gallery','nrelate') ); 
+    $tabs = array( 'general' =>  __(' General','nrelate'), 'advertising' => __(' Advertising','nrelate'), 'styles' => $styletype . __(' Gallery','nrelate') ); 
     $links = array();
 	
 		if ( $current == 0 ) {

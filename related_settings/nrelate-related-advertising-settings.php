@@ -10,13 +10,17 @@
 function options_init_nr_rc_ads(){
 	register_setting('nrelate_related_options_ads', 'nrelate_related_options_ads', 'related_adv_options_validate' );
 	
+	$options = get_option('nrelate_related_options_ads');
+	// Div style on initial load for showing ad_title
+	$divstyle=($options['related_ad_placement']=="Separate")?'style="display:block;"':'style="display:none;"';
 
 	// Ad Section
 	add_settings_section('ad_section',__('Advertising Settings','nrelate'), 'nrelate_text_advertising', __FILE__);
 	add_settings_field('related_display_ad_image','', 'related_display_ad_money', __FILE__, 'ad_section');
 	add_settings_field('related_display_ad',__('Would you like to display ads?','nrelate'), 'setting_adv_display_ad', __FILE__, 'ad_section');
 	add_settings_field('related_ad_number',__('How many ad spaces do you wish to show?','nrelate'), 'setting_adv_ad_number', __FILE__, 'ad_section');
-	add_settings_field('related_ad_placement',__('Where would you like to place the ads?','nrelate'), 'setting_adv_ad_placement', __FILE__, 'ad_section');
+	add_settings_field('related_ad_placement',__('Where would you like to place the ads?','nrelate') . nrelate_tooltip('_adplacement'), 'setting_adv_ad_placement', __FILE__, 'ad_section');
+	add_settings_field('related_ad_title', __('<div class="nr_separate_ad_opt" '.$divstyle.'>Please enter a title for advertising section</div>','nrelate'), 'setting_adv_ad_title', __FILE__, 'ad_section');
 	add_settings_field('related_ad_animation',__('Would you like to show animated "sponsored" text in ads?','nrelate'), 'setting_adv_ad_animation', __FILE__, 'ad_section');
 	add_settings_field('nrelate_save_preview','', 'nrelate_save_preview', __FILE__, 'ad_section');
 	
@@ -70,13 +74,23 @@ function setting_adv_ad_number(){
 // DROPDOWN - ad placement
 function setting_adv_ad_placement(){	
 	$options = get_option('nrelate_related_options_ads');
-	$items = array("Mixed","First","Last");
-	echo "<div id='adplacement'><select id='related_ad_placement' name='nrelate_related_options_ads[related_ad_placement]'>";
+	$items = array("Mixed","First","Last","Separate");
+	echo "<div id='adplacement'><select id='related_ad_placement' name='nrelate_related_options_ads[related_ad_placement]' onChange='if(this.value==\"Separate\"){jQuery(\".nr_separate_ad_opt\").show(\"slow\");}else{jQuery(\".nr_separate_ad_opt\").hide(\"slow\");}'>";
 	foreach($items as $item) {
 		$selected = ($options['related_ad_placement']==$item) ? 'selected="selected"' : '';
 		echo "<option value='$item' $selected>$item</option>";
 	}
 	echo "</select></div>";
+}
+
+// TEXTBOX - Name: nrelate_related_options_ads[related_ad_title]
+function setting_adv_ad_title() {
+	$options = get_option('nrelate_related_options_ads');
+	// Div style on initial load for showing ad_title
+	$divstyle=($options['related_ad_placement']=="Separate")?'style="display:block;"':'style="display:none;"';
+	$nr_ad_title = stripslashes(stripslashes($options['related_ad_title']));
+	$nr_ad_title = htmlspecialchars($nr_ad_title);
+	echo '<input id="related_ad_title" class="nr_separate_ad_opt" name="nrelate_related_options_ads[related_ad_title]" size="40" type="text" value="'.$nr_ad_title.'" '.$divstyle.'/>';
 }
 
 // CHECKBOX - Animated "sponsored" text in ads
@@ -125,7 +139,7 @@ function nrelate_related_ads_do_page() {
 		      <input type="hidden" id="related_max_age_num" value="<?php echo $options['related_max_age_num']; ?>" />
 		      <input type="hidden" id="related_max_age_frame" value="<?php echo $options['related_max_age_frame']; ?>" />
 		      <input type="hidden" id="related_blogoption" value="<?php echo ( is_array($options['related_blogoption']) && count($options['related_blogoption'] > 0) ) ? 1 : 0; ?>" />
-		      <input type="checkbox" class="nrelate-thumb-size" value="<?php echo $options['related_thumbnail_size']; ?>" checked="checked" />
+		      <input type="hidden" id="related_thumbnail_size" value="<?php echo $options['related_thumbnail_size']; ?>" />
 		      <input type="hidden" id="related_imagestyle" value="<?php echo $style_options['related_thumbnails_style']; ?>" />
 		      <input type="hidden" id="related_textstyle" value="<?php echo $style_options['related_text_style']; ?>" />
 			  <input type="hidden" id="related_blogoption" value="<?php echo ( is_array($options['related_blogoption']) && count($options['related_blogoption'] > 0) ) ? 1 : 0; ?>" />
@@ -150,7 +164,8 @@ function update_nrelate_data_rc_adv(){
 	$r_display_ad = empty($ad_option['related_display_ad']) ? false : true;
 	$related_ad_num = $ad_option['related_number_of_ads'];
 	$related_ad_place = $ad_option['related_ad_placement'];
-
+	$related_ad_title = $ad_option['related_ad_title'];
+	
 	$ad = ($r_display_ad) ? 1:0;
 
 	$body=array(
@@ -158,12 +173,13 @@ function update_nrelate_data_rc_adv(){
 		'ADOPT'=>$ad,
 		'ADNUM'=>$related_ad_num,
 		'ADPLACE'=>$related_ad_place,
+		'ADTITLE'=>$related_ad_title,
 		'VERSION'=>NRELATE_RELATED_PLUGIN_VERSION,
 		'KEY'=>get_option('nrelate_key')
 	);
 	$url = 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelated_ad.php';
 	
-	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
+	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false, 'timeout'=>15));
 }
 
 

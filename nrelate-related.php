@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.50.6
+Version: 0.51.0
 Author URI: http://nrelate.com/
 
 
@@ -27,13 +27,13 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.50.6' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.51.0' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
-define( 'NRELATE_RELATED_ADMIN_VERSION', '0.04.0' );
+define( 'NRELATE_RELATED_ADMIN_VERSION', '0.05.0' );
 define( 'NRELATE_RELATED_NAME' , __('Related Content','nrelate'));
 define( 'NRELATE_RELATED_DESCRIPTION' , sprintf( __('The related content plugin allows you to display related posts on your website.','nrelate')));
 
-if(!defined('NRELATE_CSS_URL')) { define( 'NRELATE_CSS_URL', 'http://static.nrelate.com/common_wp/' . NRELATE_RELATED_ADMIN_VERSION . '/' ); }
+if(!defined('NRELATE_CSS_URL')) { define( 'NRELATE_CSS_URL', 'http://api.nrelate.com/common_wp/' . NRELATE_RELATED_ADMIN_VERSION . '/' ); }
 if(!defined('NRELATE_BLOG_ROOT')) { define( 'NRELATE_BLOG_ROOT', urlencode(str_replace(array('http://','https://'), '', get_bloginfo( 'url' )))); }
 if(!defined('NRELATE_JS_DEBUG')) { define( 'NRELATE_JS_DEBUG', isset($_REQUEST['nrelate_debug']) ? true : false ); }
 
@@ -47,6 +47,7 @@ if (!defined( 'NRELATE_PLUGIN_DIR')) { define( 'NRELATE_PLUGIN_DIR', WP_PLUGIN_D
 if (!defined('NRELATE_ADMIN_DIR')) { define( 'NRELATE_ADMIN_DIR', NRELATE_PLUGIN_DIR .'/admin'); }
 if (!defined('NRELATE_ADMIN_URL')) { define( 'NRELATE_ADMIN_URL', plugins_url( NRELATE_PLUGIN_NAME . '/admin')); }
 if (!defined('NRELATE_API_URL')) { define ('NRELATE_API_URL', is_ssl() ? 'https://api.nrelate.com' : 'http://api.nrelate.com'); }
+if (!defined('NRELATE_EXTENSIONS')) { define ('NRELATE_EXTENSIONS', NRELATE_ADMIN_DIR . '/extensions' ); }
 
 // Plugin specific
 define( 'NRELATE_RELATED_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -121,31 +122,53 @@ require_once ( 'nrelate-abstraction-frontend.php' );
  */
 function nrelate_related_styles() {
 	if ( nrelate_related_is_loading() ) {
+
+		global $nrelate_thumbnail_styles, $nrelate_thumbnail_styles_separate, $nrelate_text_styles, $nrelate_text_styles_separate, $rc_styleclass, $rc_layout;
 		$options = get_option('nrelate_related_options');
 		$style_options = get_option('nrelate_related_options_styles');
-		if ($options['related_thumbnail']=='Thumbnails') {
-			//Thumbnails mode
-			if ('none'==$style_options['related_thumbnails_style']) return;
-			$style_type = $style_options['related_thumbnails_style'];
-			$stylesheet = 'nrelate-panels-' . $style_type .'.min.css';
-			
-			// Load IE6 style
-			nrelate_ie6_thumbnail_style();
-			
+		$ad_options = get_option('nrelate_related_options_ads');
+
+		// Are we loading separate ads?
+		if ($ad_options['related_ad_placement']=='Separate') {
+			$style_suffix = '_separate';
 		} else {
-		//Text mode
-			if ('none'==$style_options['related_text_style']) return;
-			$style_type = 'text' . $style_options['related_text_style'];
-			$stylesheet = 'nrelate-text-'.$style_options['related_text_style'].'.min.css';
+			$style_suffix = '';
+		}
+
+		// Thumbnails or Text?
+		if ($options['related_thumbnail']=='Thumbnails') {
+			$style_type = 'related_thumbnails_style' . $style_suffix;
+				// If we choose NONE as the style, then return.
+				if ('none'==$style_options[$style_type]) return;
+			$style_array = 'nrelate_thumbnail_styles' . $style_suffix;
+			
+			// Load IE6 thumbnail style
+			nrelate_ie6_thumbnail_style();
+		} else {
+			$style_type = 'related_text_style' . $style_suffix;
+				// If we choose NONE as the style, then return.
+				if ('none'==$style_options[$style_type]) return;
+			$style_array = 'nrelate_text_styles' . $style_suffix;
 		}
 		
-		$nr_css_url = NRELATE_CSS_URL . $stylesheet;
+		// Get style name (i.e. Default)
+		$style_name = $style_options [$style_type];
+				
+		// Get the style sheet and class from STYLES.PHP
+		$style_array_convert = ${$style_array};
+		$stylesheet = $style_array_convert[$style_name]['stylesheet'];
+		$rc_styleclass = $style_array_convert[$style_name]['styleclass'];
+		$rc_layout = $style_array_convert[$style_name]['layout'];
+
+
+		// Get full stylesheet url
+		$nr_css_url = NRELATE_CSS_URL . $stylesheet . '.min.css';
 		
 		/* For local development */
-		//$nr_css_url = NRELATE_RELATED_PLUGIN_URL . '/' . $stylesheet;
+		//$nr_css_url = NRELATE_RELATED_PLUGIN_URL . '/' . $stylesheet . '.css';
 		
-		wp_register_style('nrelate-style-'. $style_type . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION), $nr_css_url, false, null );
-		wp_enqueue_style( 'nrelate-style-'. $style_type . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION) );
+		wp_register_style('nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION), $nr_css_url, false, null );
+		wp_enqueue_style( 'nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION) );
 	}
 }
 add_action('wp_enqueue_scripts', 'nrelate_related_styles');
@@ -263,7 +286,7 @@ add_action( 'widgets_init', 'nrelate_related_load_widget' );
 $nr_counter = 0;
 
 function nrelate_related($opt=false) {
-	global $post, $nr_counter;
+	global $post, $nr_counter, $rc_styleclass, $rc_layout;
 	
 	$animation_fix = $nr_rc_nonjsbody = $nr_rc_nonjsfix = $nr_rc_js_str = '';
 	
@@ -272,7 +295,7 @@ function nrelate_related($opt=false) {
 		
 		$nrelate_related_options = get_option('nrelate_related_options');
 		$style_options = get_option('nrelate_related_options_styles');
-		$style_code = 'nrelate_' . (($nrelate_related_options['related_thumbnail']=='Thumbnails') ? $style_options['related_thumbnails_style'] : $style_options['related_text_style']);
+		$style_code = 'nrelate_' . $rc_styleclass;
 		$nr_width_class = 'nr_' . (($nrelate_related_options['related_thumbnail']=='Thumbnails') ? $nrelate_related_options['related_thumbnail_size'] : "text");
 		
 		// Get the page title and url array
@@ -305,7 +328,7 @@ function nrelate_related($opt=false) {
 		}
 		
 	if($nonjs){
-		    $args=array("timeout"=>5);
+		    $args=array("timeout"=>2);
 		    $response = wp_remote_get($nr_url."&nonjs=1",$args);
 
 		    if( !is_wp_error( $response ) ){
@@ -335,7 +358,7 @@ EOD;
 		$markup = <<<EOD
 $animation_fix
 <div class="nr_clear"></div>	
-	<div id="nrelate_related_{$nr_counter}" class="nrelate nrelate_related $style_code $nr_width_class">$nr_rc_nonjsbody</div>
+	<div id="nrelate_related_{$nr_counter}" class="nrelate nrelate_related $style_code nr_$rc_layout $nr_width_class">$nr_rc_nonjsbody</div>
 	<!--[if IE 6]>
 		<script type="text/javascript">jQuery('.$style_code').removeClass('$style_code');</script>
 	<![endif]-->

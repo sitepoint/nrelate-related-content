@@ -41,12 +41,15 @@ $nr_rc_ad_options = array(
 		"related_ad_animation" => "on",
 		"related_validate_ad" => NULL,
 		"related_number_of_ads" => 1,
-		"related_ad_placement" => "Last"
+		"related_ad_placement" => "Last",
+		"related_ad_title" => "More from the Web -"
 	);
 		
 $nr_rc_layout_options = array(		
 		"related_thumbnails_style" => "default",
-		"related_text_style" => "default"
+		"related_thumbnails_style_separate" => "default-2col",
+		"related_text_style" => "default",
+		"related_text_style_separate" => "default-text-2col"
 );
 
 
@@ -103,7 +106,8 @@ function nr_rc_upgrade() {
 
 			// re-get the latest since we just made changes
 			$related_settings = get_option('nrelate_related_options');
-			$related_ad_settings = get_option('nrelate_related_options_ads'); 
+			$related_ad_settings = get_option('nrelate_related_options_ads');
+			$related_layout_settings = get_option('nrelate_related_options_styles'); 
 			
 			// Sanitize settings for versions <= 0.46.0
 			if ( $current_version <= '0.46.0' ) {
@@ -119,9 +123,10 @@ function nr_rc_upgrade() {
 				$related_ad_settings = wp_parse_args( $related_ad_settings, $nr_rc_ad_old_checkbox_options );
 			}
 
-			// STD OPTIONS: Update new options if they don't exist
+			// Update new options if they don't exist
 			$related_settings = wp_parse_args( $related_settings, $nr_rc_std_options );
 			$related_ad_settings = wp_parse_args( $related_ad_settings, $nr_rc_ad_options );
+			$related_layout_settings = wp_parse_args( $related_layout_settings, $nr_rc_layout_options );
 			
 			/**
 			* Backwards compatibility
@@ -150,11 +155,8 @@ function nr_rc_upgrade() {
 			// now update again
 			update_option('nrelate_related_options', $related_settings);
 			update_option('nrelate_related_options_ads', $related_ad_settings);
-			
-			// LAYOUT OPTIONS
-			$related_layout_settings = wp_parse_args( $related_layout_settings, $nr_rc_layout_options );
 			update_option('nrelate_related_options_styles', $related_layout_settings);
-			
+						
 			// Update version number in DB
 			$related_settings = get_option('nrelate_related_options');
 			$related_settings['related_version'] = NRELATE_RELATED_PLUGIN_VERSION;
@@ -169,7 +171,7 @@ function nr_rc_upgrade() {
 			);
 			$url = 'http://api.nrelate.com/common_wp/'.NRELATE_LATEST_ADMIN_VERSION.'/versionupdate.php';
 
-			$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
+			$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false,'timeout'=>15));
 			
 			// Calculate plugin file path
 			$dir = substr( realpath(dirname(__FILE__) . '/..'), strlen(WP_PLUGIN_DIR) );
@@ -233,6 +235,7 @@ function nr_rc_add_defaults() {
 		$related_thumbnail_size=110;
 		$r_number_of_ads = 0;
 		$r_ad_placement = "Last";
+		$r_ad_title = "More from the Web -";
 		$r_nonjs = 0;
 		// Convert max age time frame to minutes
 		switch ($r_max_frame)
@@ -331,11 +334,12 @@ function nr_rc_add_defaults() {
 			'THUMBSIZE'=>$related_thumbnail_size,
 			'ADNUM'=>$r_number_of_ads,
 			'ADPLACE'=>$r_ad_placement,
+			'ADTITLE'=>$r_ad_title,
 			'NONJS'=>$r_nonjs
 		);
 		$url = 'http://api.nrelate.com/rcw_wp/'.NRELATE_RELATED_PLUGIN_VERSION.'/processWPrelatedAll.php';
 		
-		$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
+		$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false,'timeout'=>15));
 	}
 
 	// RSS mode is sent again just incase if the user already had nrelate_related_options in their wordpress db
@@ -386,7 +390,7 @@ EOD;
 	);
 	$url = 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php';
 	
-	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
+	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false,'timeout'=>15));
 }
  
  
@@ -427,7 +431,7 @@ function nr_rc_deactivate(){
 	);
 	$url = 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php';
 	
-	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
+	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false,'timeout'=>15));
 }
 
 // Uninstallation hook callback
@@ -481,7 +485,7 @@ function nr_rc_uninstall(){
 	);
 	$url = 'http://api.nrelate.com/common_wp/'.NRELATE_RELATED_ADMIN_VERSION.'/wordpressnotify_activation.php';
 	
-	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false));
+	$result = wp_remote_post($url, array('body'=>$body,'blocking'=>false,'timeout'=>15));
 }
 
 ?>
