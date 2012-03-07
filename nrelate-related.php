@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.51.0
+Version: 0.51.1
 Author URI: http://nrelate.com/
 
 
@@ -27,13 +27,13 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.51.0' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.51.1' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
-define( 'NRELATE_RELATED_ADMIN_VERSION', '0.05.0' );
+define( 'NRELATE_RELATED_ADMIN_VERSION', '0.05.1' );
 define( 'NRELATE_RELATED_NAME' , __('Related Content','nrelate'));
 define( 'NRELATE_RELATED_DESCRIPTION' , sprintf( __('The related content plugin allows you to display related posts on your website.','nrelate')));
 
-if(!defined('NRELATE_CSS_URL')) { define( 'NRELATE_CSS_URL', 'http://api.nrelate.com/common_wp/' . NRELATE_RELATED_ADMIN_VERSION . '/' ); }
+if(!defined('NRELATE_CSS_URL')) { define( 'NRELATE_CSS_URL', 'http://static.nrelate.com/common_wp/' . NRELATE_RELATED_ADMIN_VERSION . '/' ); }
 if(!defined('NRELATE_BLOG_ROOT')) { define( 'NRELATE_BLOG_ROOT', urlencode(str_replace(array('http://','https://'), '', get_bloginfo( 'url' )))); }
 if(!defined('NRELATE_JS_DEBUG')) { define( 'NRELATE_JS_DEBUG', isset($_REQUEST['nrelate_debug']) ? true : false ); }
 
@@ -138,16 +138,9 @@ function nrelate_related_styles() {
 		// Thumbnails or Text?
 		if ($options['related_thumbnail']=='Thumbnails') {
 			$style_type = 'related_thumbnails_style' . $style_suffix;
-				// If we choose NONE as the style, then return.
-				if ('none'==$style_options[$style_type]) return;
 			$style_array = 'nrelate_thumbnail_styles' . $style_suffix;
-			
-			// Load IE6 thumbnail style
-			nrelate_ie6_thumbnail_style();
 		} else {
 			$style_type = 'related_text_style' . $style_suffix;
-				// If we choose NONE as the style, then return.
-				if ('none'==$style_options[$style_type]) return;
 			$style_array = 'nrelate_text_styles' . $style_suffix;
 		}
 		
@@ -167,8 +160,12 @@ function nrelate_related_styles() {
 		/* For local development */
 		//$nr_css_url = NRELATE_RELATED_PLUGIN_URL . '/' . $stylesheet . '.css';
 		
-		wp_register_style('nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION), $nr_css_url, false, null );
-		wp_enqueue_style( 'nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION) );
+		// Only load if style not set to NONE
+		if ('none'!=$style_options[$style_type]) {
+			nrelate_ie6_thumbnail_style();
+			wp_register_style('nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION), $nr_css_url, false, null );
+			wp_enqueue_style( 'nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION) );
+		}
 	}
 }
 add_action('wp_enqueue_scripts', 'nrelate_related_styles');
