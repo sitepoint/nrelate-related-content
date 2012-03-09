@@ -31,7 +31,7 @@ Because all of the processing and analyzing runs on our servers and not yours, n
 
 = Translators =
 * Romanian (ro_RO) - [Web Hosting Geeks](http://webhostinggeeks.com/)
-* Spanish (es_ES) - [Antonio David Pɡrez Vera](http://www.verasoul.com) 
+* Spanish (es_ES) - [Antonio David Pérez Vera](http://www.verasoul.com) 
 
 == Installation ==
 
