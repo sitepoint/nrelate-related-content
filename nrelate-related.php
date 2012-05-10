@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.51.1
+Version: 0.51.2
 Author URI: http://nrelate.com/
 
 
@@ -27,7 +27,7 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.51.1' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.51.2' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.05.1' );
 define( 'NRELATE_RELATED_NAME' , __('Related Content','nrelate'));
@@ -149,7 +149,7 @@ function nrelate_related_styles() {
 				
 		// Get the style sheet and class from STYLES.PHP
 		$style_array_convert = ${$style_array};
-		$stylesheet = $style_array_convert[$style_name]['stylesheet'];
+		$stylesheet = $style_array_convert[$style_name]['stylesheet'] ? $style_array_convert[$style_name]['stylesheet'] : "nrelate-panels-default";
 		$rc_styleclass = $style_array_convert[$style_name]['styleclass'];
 		$rc_layout = $style_array_convert[$style_name]['layout'];
 
@@ -292,7 +292,8 @@ function nrelate_related($opt=false) {
 		
 		$nrelate_related_options = get_option('nrelate_related_options');
 		$style_options = get_option('nrelate_related_options_styles');
-		$style_code = 'nrelate_' . $rc_styleclass;
+		$style_code = 'nrelate_' . ($rc_styleclass ? $rc_styleclass : "default");
+		$layout_code = 'nr_' . ($rc_layout ? $rc_layout : "1col");
 		$nr_width_class = 'nr_' . (($nrelate_related_options['related_thumbnail']=='Thumbnails') ? $nrelate_related_options['related_thumbnail_size'] : "text");
 		
 		// Get the page title and url array
@@ -303,6 +304,8 @@ function nrelate_related($opt=false) {
 		$nr_url = "http://api.nrelate.com/rcw_wp/" . NRELATE_RELATED_PLUGIN_VERSION . "/?tag=nrelate_related";
 		$nr_url .= "&keywords=$nrelate_title_url[post_title]&domain=" . NRELATE_BLOG_ROOT . "&url=$nrelate_title_url[post_urlencoded]&nr_div_number=".$nr_counter;
 		$nr_url .= is_home() ? '&source=hp' : '';
+		
+		$nr_url = apply_filters('nrelate_api_url', $nr_url, $post->ID);
 		
 		//is loaded only once per page for related
 		if (!defined('NRELATE_RELATED_HOME')) {
@@ -325,7 +328,7 @@ function nrelate_related($opt=false) {
 		}
 		
 	if($nonjs){
-		    $args=array("timeout"=>2);
+		    $args=array("timeout"=>5);
 		    $response = wp_remote_get($nr_url."&nonjs=1",$args);
 
 		    if( !is_wp_error( $response ) ){
@@ -355,7 +358,7 @@ EOD;
 		$markup = <<<EOD
 $animation_fix
 <div class="nr_clear"></div>	
-	<div id="nrelate_related_{$nr_counter}" class="nrelate nrelate_related $style_code nr_$rc_layout $nr_width_class">$nr_rc_nonjsbody</div>
+	<div id="nrelate_related_{$nr_counter}" class="nrelate nrelate_related $style_code $layout_code $nr_width_class">$nr_rc_nonjsbody</div>
 	<!--[if IE 6]>
 		<script type="text/javascript">jQuery('.$style_code').removeClass('$style_code');</script>
 	<![endif]-->

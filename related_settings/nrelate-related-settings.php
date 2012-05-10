@@ -37,7 +37,7 @@ function options_init_nr_rc(){
 	add_settings_field('related_custom_field', __('<div class="nr_image_option" '.$divstyle.'>If you use <b>Custom Fields</b> for your images, nrelate can show them.</div>','nrelate'), 'setting_related_custom_field',__FILE__,'main_section');
 	add_settings_field('related_title', __('Please enter a title for the related content box','nrelate') . nrelate_tooltip('_title'), 'setting_string_nr_rc', __FILE__, 'main_section');
 	add_settings_field('related_number_of_posts', __('<b>Maximum</b> number of posts to display from this site</br><em>To display multiple rows of thumbnails, choose more than will fit in one row.</em>','nrelate') . nrelate_tooltip('_number_of_posts'), 'setting_related_number_of_posts_nr_rc', __FILE__, 'main_section');
-	add_settings_field('related_bar', __('How relevant do you want the results to be?<br/><i>Based on the amount/type of content on your website, higher relevancy settings may return little or no posts.</i>','nrelate'), 'setting_related_bar_nr_rc', __FILE__, 'main_section');
+	add_settings_field('related_bar', __('How relevant do you want the results to be?<br/><i>Based on the amount/type of content on your website, medium and high relevancy settings may return little or no posts.</i>','nrelate'), 'setting_related_bar_nr_rc', __FILE__, 'main_section');
 	add_settings_field('related_max_age', __('How deep into your archive would you like to go for related posts?','nrelate') . nrelate_tooltip('_max_age'), 'setting_related_max_age', __FILE__, 'main_section');
 	add_settings_field('related_exclude_cats', __('Exclude Categories from your related content.','nrelate') . nrelate_tooltip('_exclude_cats'), 'nrelate_text_exclude_categories',__FILE__,'main_section');
 	add_settings_field('related_show_post_title', '<a name="nrelate_show_post_title"></a>'.__('Show Post Title?','nrelate') . nrelate_tooltip('_show_post_title'), 'setting_related_show_post_title', __FILE__, 'main_section');
@@ -105,7 +105,7 @@ function setting_related_number_of_posts_nr_rc() {
 function  setting_related_bar_nr_rc() {
 	$options = get_option('nrelate_related_options');
 	$items = array ("Low", "Medium", "High");
-	$itemval = array ("Low" => __("Low: least relevant",'nrelate'), "Medium" => __("Med: more relevant",'nrelate'), "High" => __("High: most relevant",'nrelate'));
+	$itemval = array ("Low" => __("Low (recommended)",'nrelate'), "Medium" => __("Medium",'nrelate'), "High" => __("High",'nrelate'));
 	echo "<select id='related_bar' name='nrelate_related_options[related_bar]'>";
 	foreach($items as $item) {
 		$selected = ($options['related_bar']==$item) ? 'selected="selected"' : '';

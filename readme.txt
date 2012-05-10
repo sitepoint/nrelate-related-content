@@ -31,7 +31,10 @@ Because all of the processing and analyzing runs on our servers and not yours, n
 
 = Translators =
 * Romanian (ro_RO) - [Web Hosting Geeks](http://webhostinggeeks.com/)
-* Spanish (es_ES) - [Antonio David PÃ©rez Vera](http://www.verasoul.com) 
+* Spanish (es_ES) - [Antonio David Pérez Vera](http://www.verasoul.com)
+* Dutch (nl_NL) - [Vincent G](http://www.host1free.com)
+* Lithuanian (lt_LT) - [Vincent G](http://www.host1free.com)
+
 
 == Installation ==
 
@@ -142,6 +145,14 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 10. Hovering on an advertisement
 
 == Changelog ==
+
+= 0.51.2 =
+* New Style: LoudFeed.
+* Thesis information message on dashboard.
+* Link to support forums on dashboard.
+* Bug: issue with service status message in dashboard.
+* Bug: Only Published posts should show up in nrelate feed.
+* More languages: Dutch and Lithuanian  
 
 = 0.51.1 =
 * Fixed CSS path
