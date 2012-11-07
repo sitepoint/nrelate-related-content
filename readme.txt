@@ -1,9 +1,9 @@
 === nrelate Related Content ===
 Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
-Tested up to: 3.4.1
+Tested up to: 3.4.2
 Requires at least: 2.9
-Stable tag: 0.51.2
+Stable tag: 0.51.3
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -145,6 +145,13 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 10. Hovering on an advertisement
 
 == Changelog ==
+
+= 0.51.3 =
+* Allow users to enter their Paypal ID to receive Advertising payments.
+* Support for nSquared plugin.
+* Bug fix: control clicking a link now correctly opens in a new tab/window.
+* Bug fix: nrelate_product_check.
+* Bug fix: emailopt.
 
 = 0.51.2 =
 * New Style: LoudFeed.

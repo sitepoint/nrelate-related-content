@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.51.2
+Version: 0.51.3
 Author URI: http://nrelate.com/
 
 
@@ -27,9 +27,9 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.51.2' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.51.3' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
-define( 'NRELATE_RELATED_ADMIN_VERSION', '0.05.1' );
+define( 'NRELATE_RELATED_ADMIN_VERSION', '0.05.3' );
 define( 'NRELATE_RELATED_NAME' , __('Related Content','nrelate'));
 define( 'NRELATE_RELATED_DESCRIPTION' , sprintf( __('The related content plugin allows you to display related posts on your website.','nrelate')));
 
@@ -163,7 +163,7 @@ function nrelate_related_styles() {
 		// Only load if style not set to NONE
 		if ('none'!=$style_options[$style_type]) {
 			nrelate_ie6_thumbnail_style();
-			wp_register_style('nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION), $nr_css_url, false, null );
+			wp_register_style('nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION), $nr_css_url, array(), NRELATE_LATEST_ADMIN_VERSION );
 			wp_enqueue_style( 'nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION) );
 		}
 	}
