@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.4.2
 Requires at least: 2.9
-Stable tag: 0.51.3
+Stable tag: 0.51.2
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
