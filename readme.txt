@@ -29,13 +29,6 @@ Because all of the processing and analyzing runs on our servers and not yours, n
 
 <a href="http://www.nrelate.com" title="nrelate home page">Learn more about nrelate</a> or <a href="http://profiles.wordpress.org/users/nrelate/">View other nrelate plugins.</a>
 
-= Translators =
-* Romanian (ro_RO) - [Web Hosting Geeks](http://webhostinggeeks.com/)
-* Spanish (es_ES) - [Antonio David Pérez Vera](http://www.verasoul.com)
-* Dutch (nl_NL) - [Vincent G](http://www.host1free.com)
-* Lithuanian (lt_LT) - [Vincent G](http://www.host1free.com)
-
-
 == Installation ==
 
 1. Activate the nrelate Related posts plugin
