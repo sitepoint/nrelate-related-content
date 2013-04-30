@@ -395,7 +395,7 @@ function setting_related_custom_field() {
 function setting_related_nonjs(){
 	$options = get_option('nrelate_related_options');
 	$values=array("js","nonjs");
-	$valuedescription = array ("js" => __("<strong>Javascript:</strong> Stable and fast",'nrelate'), "nonjs" => __("<strong>No Javascript:</strong> BETA VERSION: Allows search engines to index our plugin and may help your SEO.",'nrelate')); 
+	$valuedescription = array ("js" => __("<strong>Javascript:</strong> Stable and fast",'nrelate'), "nonjs" => __("<strong>BETA VERSION:</strong> Detects search engines and allows them to index our plugin to help your SEO.",'nrelate')); 
 	$i=0;
 	foreach($values as $value){
 		$checked = (isset($options['related_nonjs']) && $options['related_nonjs']==$i) ? ' checked="checked" ' : '';

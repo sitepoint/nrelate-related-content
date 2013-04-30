@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.51.4
+Version: 0.52.0
 Author URI: http://nrelate.com/
 
 
@@ -27,7 +27,7 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.51.4' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.52.0' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.05.3' );
 define( 'NRELATE_RELATED_NAME' , __('Related Content','nrelate'));
@@ -285,7 +285,7 @@ $nr_counter = 0;
 function nrelate_related($opt=false) {
 	global $post, $nr_counter, $rc_styleclass, $rc_layout;
 	
-	$animation_fix = $nr_rc_nonjsbody = $nr_rc_nonjsfix = $nr_rc_js_str = '';
+	$animation_fix = $nr_rc_nonjsbody = '';
 	
 	if ( nrelate_related_is_loading() )  {	
 		$nr_counter++;
@@ -297,12 +297,12 @@ function nrelate_related($opt=false) {
 		$nr_width_class = 'nr_' . (($nrelate_related_options['related_thumbnail']=='Thumbnails') ? $nrelate_related_options['related_thumbnail_size'] : "text");
 		
 		// Get the page title and url array
-		$nrelate_title_url = nrelate_title_url();
+		$nrelate_title_url = nrelate_title_url( false );
 		
 		$nonjs=$nrelate_related_options['related_nonjs'];
 		
 		$nr_url = "http://api.nrelate.com/rcw_wp/" . NRELATE_RELATED_PLUGIN_VERSION . "/?tag=nrelate_related";
-		$nr_url .= "&keywords=$nrelate_title_url[post_title]&domain=" . NRELATE_BLOG_ROOT . "&url=$nrelate_title_url[post_urlencoded]&nr_div_number=".$nr_counter;
+		$nr_url .= "&keywords=" .urlencode($nrelate_title_url[post_title])."&domain=" . NRELATE_BLOG_ROOT . "&url=".  urlencode($nrelate_title_url[post_urlencoded]) ."&nr_div_number=".$nr_counter;
 		$nr_url .= is_home() ? '&source=hp' : '';
 		
 		$nr_url = apply_filters('nrelate_api_url', $nr_url, $post->ID);
@@ -318,53 +318,28 @@ function nrelate_related($opt=false) {
 				$animation_fix = '';
 			}
 		}
-		//is loaded only once per page for nrelate
-		if (!defined('NRELATE_HOME')) {
-			define('NRELATE_HOME', true);
-			$domain = addslashes(NRELATE_BLOG_ROOT);
-			$nr_domain_init = "nRelate.domain = \"{$domain}\";";
-		} else {
-			$nr_domain_init = '';
+		
+		if( $nonjs && nrelate_is_crawler() ){
+			    $args=array("timeout"=>5);
+			    $response = wp_remote_get($nr_url."&nonjs=1",$args);
+
+			    if( !is_wp_error( $response ) ){
+				    if($response['response']['code']==200 && $response['response']['message']=='OK'){
+					    $nr_rc_nonjsbody=$response['body'];
+				    }else{
+				    	$nr_rc_nonjsbody="<!-- nrelate server not 200. -->";
+				    }
+			    }else{
+			    	$nr_rc_nonjsbody="<!-- WP-request to nrelate server failed. -->";
+			    }
 		}
 		
-	if($nonjs){
-		    $args=array("timeout"=>5);
-		    $response = wp_remote_get($nr_url."&nonjs=1",$args);
+		$s_title = esc_attr( $nrelate_title_url[post_title] );
+		$s_permalink = esc_attr( $nrelate_title_url[post_urlencoded] );
 
-		    if( !is_wp_error( $response ) ){
-			    if($response['response']['code']==200 && $response['response']['message']=='OK'){
-				    $nr_rc_nonjsbody=$response['body'];
-			   		$nr_rc_nonjsfix='<script type="text/javascript">'.$nr_domain_init.'nRelate.fixHeight("nrelate_related_'.$nr_counter.'");';
-			   		$nr_rc_nonjsfix.='nRelate.adAnimation("nrelate_related_'.$nr_counter.'");';
-					$nr_rc_nonjsfix.='nRelate.tracking("rc");</script>';
-			    }else{
-			    	$nr_rc_nonjsbody="<!-- nrelate server not 200. -->";
-			    }
-		    }else{
-		    	$nr_rc_nonjsbody="<!-- WP-request to nrelate server failed. -->";
-		    }
-	}else{
-		$nr_rc_js_str= <<<EOD
-<script type="text/javascript">
-	/* <![CDATA[ */
-		$nr_domain_init
-		var entity_decoded_nr_url = jQuery('<span/>').html("$nr_url").text();
-		nRelate.getNrelatePosts(entity_decoded_nr_url);
-	/* ]]> */
-	</script>
-EOD;
-	}
-		
 		$markup = <<<EOD
 $animation_fix
-<div class="nr_clear"></div>	
-	<div id="nrelate_related_{$nr_counter}" class="nrelate nrelate_related $style_code $layout_code $nr_width_class">$nr_rc_nonjsbody</div>
-	<!--[if IE 6]>
-		<script type="text/javascript">jQuery('.$style_code').removeClass('$style_code');</script>
-	<![endif]-->
-	$nr_rc_nonjsfix
-	$nr_rc_js_str
-<div class="nr_clear"></div>
+<div class="nr_related_placeholder" data-permalink="{$s_permalink}" data-title="{$s_title}">$nr_rc_nonjsbody</div>
 EOD;
 
 		if ($opt){

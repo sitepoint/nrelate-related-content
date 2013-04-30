@@ -1,9 +1,9 @@
 === nrelate Related Content ===
 Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
-Tested up to: 3.5
+Tested up to: 3.6
 Requires at least: 2.9
-Stable tag: 0.51.4
+Stable tag: 0.52.0
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -30,10 +30,11 @@ Because all of the processing and analyzing runs on our servers and not yours, n
 <a href="http://www.nrelate.com" title="nrelate home page">Learn more about nrelate</a> or <a href="http://profiles.wordpress.org/users/nrelate/">View other nrelate plugins.</a>
 
 = Translators =
-* Romanian (ro_RO) - Web Hosting Geeks
-* Spanish (es_ES) - Antonio David PÃ©rez Vera
-* Dutch (nl_NL) - Vincent G
-* Lithuanian (lt_LT) - Vincent G
+* Romanian (ro_RO) - [Web Hosting Geeks](http://webhostinggeeks.com/)
+* Spanish (es_ES) - [Antonio David Pérez Vera](http://www.verasoul.com)
+* Dutch (nl_NL) - [Vincent G](http://www.host1free.com)
+* Lithuanian (lt_LT) - [Vincent G](http://www.host1free.com)
+
 
 == Installation ==
 
@@ -144,6 +145,11 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 10. Hovering on an advertisement
 
 == Changelog ==
+
+= 0.52.0 =
+* New Javascript version.
+* Upgrade Mobile Detect to 2.6.0.
+* Bug fixes.
 
 = 0.51.4 =
 * Removed auto-reindexing, and replaced with message to user.
