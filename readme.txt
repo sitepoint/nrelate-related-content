@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.6
 Requires at least: 2.9
-Stable tag: 0.52.0
+Stable tag: 0.52.1
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -145,6 +145,10 @@ Our plugin will work on websites in the following languages: Dutch, English, Fre
 10. Hovering on an advertisement
 
 == Changelog ==
+
+= 0.52.1 =
+* Bug fix for installs in subfolders.
+* Changed name of common_frontend.js to nrelate_js.js for backwards compatibility with WP-Minify.
 
 = 0.52.0 =
 * New Javascript version.
