@@ -4,7 +4,7 @@ Plugin Name: nrelate Related Content
 Plugin URI: http://www.nrelate.com
 Description: Easily display related content on your website. Click on <a href="admin.php?page=nrelate-related">nrelate &rarr; Related Content</a> to configure your settings.
 Author: <a href="http://www.nrelate.com">nrelate</a> and <a href="http://www.slipfire.com">SlipFire</a>
-Version: 0.52.1
+Version: 0.52.2
 Author URI: http://nrelate.com/
 
 
@@ -27,32 +27,34 @@ Author URI: http://nrelate.com/
 /**
  * Define Plugin constants
  */
-define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.52.1' );
+define( 'NRELATE_RELATED_PLUGIN_VERSION', '0.52.2' );
+define( 'NRELATE_PLUGIN_VERSION', '0.52.2' );
 define( 'NRELATE_RELATED_ADMIN_SETTINGS_PAGE', 'nrelate-related' );
 define( 'NRELATE_RELATED_ADMIN_VERSION', '0.05.3' );
 define( 'NRELATE_RELATED_NAME' , __('Related Content','nrelate'));
 define( 'NRELATE_RELATED_DESCRIPTION' , sprintf( __('The related content plugin allows you to display related posts on your website.','nrelate')));
 
-if(!defined('NRELATE_CSS_URL')) { define( 'NRELATE_CSS_URL', 'http://static.nrelate.com/common_wp/' . NRELATE_RELATED_ADMIN_VERSION . '/' ); }
-if(!defined('NRELATE_BLOG_ROOT')) { define( 'NRELATE_BLOG_ROOT', urlencode(str_replace(array('http://','https://'), '', get_bloginfo( 'url' )))); }
-if(!defined('NRELATE_JS_DEBUG')) { define( 'NRELATE_JS_DEBUG', isset($_REQUEST['nrelate_debug']) ? true : false ); }
+if (!defined('NRELATE_BLOG_ROOT')) { define( 'NRELATE_BLOG_ROOT', urlencode(str_replace(array('http://','https://'), '', get_bloginfo( 'url' )))); }
+if (!defined('NRELATE_JS_DEBUG')) { define( 'NRELATE_JS_DEBUG', isset($_REQUEST['nrelate_debug']) ? true : false ); }
 
 /**
  * Define Path constants
  */
 // Generic: will be assigned to the first nrelate plugin that loads
-if (!defined( 'NRELATE_PLUGIN_BASENAME')) { define( 'NRELATE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); }
-if (!defined( 'NRELATE_PLUGIN_NAME')) { define( 'NRELATE_PLUGIN_NAME', trim( dirname( NRELATE_PLUGIN_BASENAME ), '/' ) ); }
-if (!defined( 'NRELATE_PLUGIN_DIR')) { define( 'NRELATE_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_PLUGIN_NAME ); }
+
+if (!defined('NRELATE_PLUGIN_BASENAME')) { define( 'NRELATE_PLUGIN_BASENAME', plugin_basename( __FILE__ ) ); }
+if (!defined('NRELATE_PLUGIN_NAME')) { define( 'NRELATE_PLUGIN_NAME', trim( dirname( NRELATE_PLUGIN_BASENAME ), '/' ) ); }
+if (!defined('NRELATE_PLUGIN_DIR')) { define( 'NRELATE_PLUGIN_DIR', untrailingslashit(plugin_dir_path(__FILE__)) ); }
 if (!defined('NRELATE_ADMIN_DIR')) { define( 'NRELATE_ADMIN_DIR', NRELATE_PLUGIN_DIR .'/admin'); }
 if (!defined('NRELATE_ADMIN_URL')) { define( 'NRELATE_ADMIN_URL', plugins_url( NRELATE_PLUGIN_NAME . '/admin')); }
 if (!defined('NRELATE_API_URL')) { define ('NRELATE_API_URL', is_ssl() ? 'https://api.nrelate.com' : 'http://api.nrelate.com'); }
 if (!defined('NRELATE_EXTENSIONS')) { define ('NRELATE_EXTENSIONS', NRELATE_ADMIN_DIR . '/extensions' ); }
+if (!defined('NRELATE_CSS_URL')) { define( 'NRELATE_CSS_URL', NRELATE_ADMIN_URL . '/styles/' ); }
 
 // Plugin specific
 define( 'NRELATE_RELATED_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 define( 'NRELATE_RELATED_PLUGIN_NAME', trim( dirname( NRELATE_RELATED_PLUGIN_BASENAME ), '/' ) );
-define( 'NRELATE_RELATED_PLUGIN_DIR', WP_PLUGIN_DIR . '/' . NRELATE_RELATED_PLUGIN_NAME );
+define( 'NRELATE_RELATED_PLUGIN_DIR', untrailingslashit(plugin_dir_path(__FILE__)) );
 define( 'NRELATE_RELATED_PLUGIN_URL', plugins_url( NRELATE_RELATED_PLUGIN_NAME ) );
 define( 'NRELATE_RELATED_SETTINGS_DIR', NRELATE_RELATED_PLUGIN_DIR . '/related_settings' );
 define( 'NRELATE_RELATED_SETTINGS_URL', NRELATE_RELATED_PLUGIN_URL . '/related_settings' );
@@ -163,8 +165,8 @@ function nrelate_related_styles() {
 		// Only load if style not set to NONE
 		if ('none'!=$style_options[$style_type]) {
 			nrelate_ie6_thumbnail_style();
-			wp_register_style('nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION), $nr_css_url, array(), NRELATE_LATEST_ADMIN_VERSION );
-			wp_enqueue_style( 'nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_RELATED_ADMIN_VERSION) );
+			wp_register_style('nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_PLUGIN_VERSION), $nr_css_url, array(), NRELATE_PLUGIN_VERSION );
+			wp_enqueue_style( 'nrelate-style-'. $style_name . "-" . str_replace(".","-",NRELATE_PLUGIN_VERSION) );
 		}
 	}
 }
@@ -302,7 +304,7 @@ function nrelate_related($opt=false) {
 		$nonjs=$nrelate_related_options['related_nonjs'];
 		
 		$nr_url = "http://api.nrelate.com/rcw_wp/" . NRELATE_RELATED_PLUGIN_VERSION . "/?tag=nrelate_related";
-		$nr_url .= "&keywords=" .urlencode($nrelate_title_url[post_title])."&domain=" . NRELATE_BLOG_ROOT . "&url=".  urlencode($nrelate_title_url[post_urlencoded]) ."&nr_div_number=".$nr_counter;
+		$nr_url .= "&keywords=" .urlencode($nrelate_title_url['post_title'])."&domain=" . NRELATE_BLOG_ROOT . "&url=".  urlencode($nrelate_title_url['post_urlencoded']) ."&nr_div_number=".$nr_counter;
 		$nr_url .= is_home() ? '&source=hp' : '';
 		
 		$nr_url = apply_filters('nrelate_api_url', $nr_url, $post->ID);
@@ -334,8 +336,8 @@ function nrelate_related($opt=false) {
 			    }
 		}
 		
-		$s_title = esc_attr( $nrelate_title_url[post_title] );
-		$s_permalink = esc_attr( $nrelate_title_url[post_urlencoded] );
+		$s_title = esc_attr( $nrelate_title_url['post_title'] );
+		$s_permalink = esc_attr( $nrelate_title_url['post_urlencoded'] );
 
 		$markup = <<<EOD
 $animation_fix
