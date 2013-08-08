@@ -3,7 +3,7 @@ Contributors: nrelate, slipfire, sbruner
 Tags: related posts, related content, related, feeds, feed, rss, page, pages, post, posts, thumbnails, nrelate
 Tested up to: 3.6
 Requires at least: 2.9
-Stable tag: 0.52.3
+Stable tag: 0.52.4
 
 The best way to display related content: Thumbnails or Text, on all your pages.
 
@@ -147,6 +147,9 @@ As of May 10, 2013, nRelate is working with <a href="http://www.comscore.com">co
 10. Hovering on an advertisement
 
 == Changelog ==
+
+= 0.52.4 =
+* Bug Fixes.
 
 = 0.52.3 =
 * Bug Fixes.
