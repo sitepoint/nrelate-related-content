@@ -108,6 +108,7 @@ function nrelate_get_the_tags_rss() {
 
 function nrelate_cdata() {
 	echo nrelate_get_the_post_ID();
+	echo nrelate_publish_date();
 	echo nrelate_get_the_post_type_rss();
 	echo nrelate_get_the_category_rss();
 	echo nrelate_get_the_tags_rss();
@@ -301,6 +302,36 @@ function nrelate_parse_oembed($content) {
 	return $wp_embed->autoembed( $content );
 }
 
+function nrelate_publish_date()
+{
+	global $post;
+
+	$publish_date = "\t\t<publishDate>" . mysql2date('D, d M Y H:i:s +0000', $post->post_date, false) . "</publishDate>\n";
+
+	return $publish_date;
+}
+
+
+
+/**
+ * Use Excerpt if present
+ *
+ * Since 1.00.0
+ */
+function nrelate_get_excerpt($content)
+{
+	if(has_excerpt())
+	{
+		$content = $post->post_excerpt;
+	}
+	else
+	{
+		return;
+	}
+
+	return $content;
+}
+
 
  /**
  * Execute Shortcodes in our feed
@@ -484,6 +515,11 @@ function nrelate_custom_feed() {
 		// Execute Shortcodes
     add_filter('the_excerpt_rss', 'nrelate_execute_shortcode', 5);
     add_filter('the_content_feed', 'nrelate_execute_shortcode', 5);
+
+
+add_filter('the_content_feed', 'nrelate_get_excerpt');
+
+    
 		
 		// Support oEmbed objects
     add_filter('the_excerpt_rss', 'nrelate_parse_oembed', 7);

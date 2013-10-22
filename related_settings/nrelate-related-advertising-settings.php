@@ -17,7 +17,7 @@ function options_init_nr_rc_ads(){
 	// Ad Section
 	add_settings_section('ad_section',__('Advertising Settings','nrelate'), 'nrelate_text_advertising', __FILE__);
 	add_settings_field('related_display_ad_image','', 'related_display_ad_money', __FILE__, 'ad_section');
-	add_settings_field('related_paypal_email',__('Your monthly advertising payments will begin once you provide us with your PayPal email address.','nrelate'), 'setting_adv_ppemail', __FILE__, 'ad_section');
+	add_settings_field('related_paypal_email',__('Advertising payments.','nrelate'), 'setting_adv_ppemail', __FILE__, 'ad_section');
 	add_settings_field('related_display_ad',__('Would you like to display ads?','nrelate'), 'setting_adv_display_ad', __FILE__, 'ad_section');
 	add_settings_field('related_ad_number',__('How many ad spaces do you wish to show?','nrelate'), 'setting_adv_ad_number', __FILE__, 'ad_section');
 	add_settings_field('related_ad_placement',__('Where would you like to place the ads?','nrelate') . nrelate_tooltip('_adplacement'), 'setting_adv_ad_placement', __FILE__, 'ad_section');
@@ -104,7 +104,7 @@ function setting_adv_ad_animation(){
 // TEXTBOX - Paypal email - link to dashboard
 function setting_adv_ppemail() {
 	echo '<div id="paypal_email">';
-	printf(__('%s Click Here, to enter your paypal email address on the nrelate dashboard, under ADVERTISING settings. > %s','nrelate'), '<a href="admin.php?page=nrelate-main#admin_paypal_email">', '</a>');
+	printf(__('%s Please create an account at partners.nrelate.com and let us know how to pay you. > %s','nrelate'), '<a href="http://partners.nrelate.com">', '</a>');
 	echo '</div>';
 }
 
